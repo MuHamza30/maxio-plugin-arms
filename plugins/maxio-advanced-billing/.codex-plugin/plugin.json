@@ -1,0 +1,18 @@
+{
+  "name": "maxio-advanced-billing",
+  "version": "0.5.0",
+  "description": "Integrate Maxio Advanced Billing with the APIMatic-generated SDK in C#/.NET, Python or TypeScript. Each bundled SDK folder ships its own contract map, Maxio business rules, usage docs and recipes; the plugin adds one router skill, hooks that deliver the rules at the moment they apply, and a Cursor rule.",
+  "author": {
+    "name": "APIMatic"
+  },
+  "skills": "./skills",
+  "hooks": "./hooks/hooks.codex.json",
+  "interface": {
+    "displayName": "Maxio Advanced Billing",
+    "shortDescription": "Maxio billing SDK and rules",
+    "longDescription": "For developers integrating Maxio Advanced Billing (formerly Chargify) in C#/.NET, Python or TypeScript with the APIMatic-generated SDK. It points the agent at the SDK folder for the project's language, which holds the contract map, Maxio's business rules, usage docs and recipes, and its hooks give the agent Maxio's rules at session start, an operation's notes after an edit that calls it, and the documented causes of a Maxio rejection seen in command output. The hooks need Node.js, and Codex runs them only after you review and trust them.",
+    "developerName": "APIMatic",
+    "category": "Developer Tools",
+    "capabilities": []
+  }
+}

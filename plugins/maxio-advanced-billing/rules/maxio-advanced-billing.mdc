@@ -1,0 +1,47 @@
+---
+description: Maxio Advanced Billing business rules and where the SDK's knowledge files are
+alwaysApply: true
+---
+<!-- Generated from knowledge-source/card.md by tools/build.mjs; edit the source, not this file. -->
+
+## Maxio Advanced Billing: read before writing Maxio code
+
+Maxio's business rules and the SDK's contract ship in the SDK folder for your language. Read `AGENTS.md` in that
+folder and follow it. Your memory of these rules is unreliable; look them up.
+
+Where the SDK folder is: the copy the project's code compiles against.
+
+- C#/.NET: the package's folder in the NuGet cache, which the project's `obj/project.assets.json` names and `dotnet
+  build` prints on a line that starts "Maxio Advanced Billing SDK:". With a `<ProjectReference>` to
+  `MaxioAdvancedBilling.csproj` instead, the nearest folder above that `.csproj` that holds `AGENTS.md`.
+- Python: the installed package, `maxio_advanced_billing/` in the environment's `site-packages`: `python -c "import maxio_advanced_billing, os; print(os.path.dirname(maxio_advanced_billing.__file__))"`
+  prints it. If the SDK was installed from a folder with `pip install <folder>`, that folder instead: `pip freeze`
+  prints it after `maxio-advanced-billing @ file:///`.
+- TypeScript: `node_modules/maxio-advanced-billing/`, once the package is installed.
+- If that copy does not exist or holds no `AGENTS.md`, use the copy this plugin bundles: its `sdk/dotnet/`,
+  `sdk/python/` or `sdk/typescript/` folder. In Cursor, the plugin's session-start hook names that folder on
+  this machine.
+- If you cannot find the folder, ask the user for it.
+
+The rules agents most often get wrong. This rule serves all three languages, so the operation names in it
+are the API's operationIds; each SDK's map (`sdk-map.md`) gives its own spelling of them:
+1. Send `payment_collection_method` on every signup; omitted, the site's own default applies. Under
+   `automatic`, a signup owing money with no payment source gets 422 "No payment method was on file…".
+2. `remittance` (Relationship Invoicing) or `invoice` (legacy Statements): the merchant bills by invoice;
+   nothing is charged automatically. Choose by intent, never to clear that 422; `readSite` shows which.
+3. No Idempotency-Key header. Send one `uniqueness_token` per write at the body root (events: inside
+   `chargify`), the same on every resend, a new one after a corrected 422. Serialize writes per customer.
+4. Page every list that takes `page` and `per_page`, with `per_page` ≤ 200, until an empty page; larger
+   values are clamped silently.
+5. `*_in_cents` fields are integer cents; component `unit_price` and invoice amounts are decimal.
+6. Access: `active`, `trialing`, `past_due`, `soft_failure`; `pending`/`assessing` keep the last decision.
+   `on_hold`, `suspended`, `unpaid`, `awaiting_signup` come back: no access, no second one on that plan.
+7. A plan change via `updateSubscription` is not prorated; `migrateSubscriptionProduct` resets the
+   period and charges full price unless `preserve_period: true`.
+8. At most 4 requests in flight per subdomain; on 429 back off for minutes. A write that times out or gets
+   5xx/409 is unknown: read back, wait out 120 s, resend only with the same token; never call it failed.
+9. A 4xx never proves a call works. A 409: outcome unknown. A 422 may be a 3-D Secure `action_link` or an
+   account block. A 404 by reference: "not there", but only "not yet" after an unknown outcome.
+10. Call Maxio from your server only; cards arrive as Maxio.js tokens.
+
+When Maxio rejects a call, find its status and message in the SDK folder's `knowledge/failures.md` before changing code.

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "maxio-plugin-arms",
+  "description": "Treatment arm: the Maxio Advanced Billing plugin proof of concept, plugin folder only.",
+  "owner": { "name": "APIMatic" },
+  "plugins": [
+    { "name": "maxio-advanced-billing", "description": "Maxio Advanced Billing plugin proof of concept: one router skill, hooks that deliver Maxio's rules, and SDK folders with maps, knowledge, docs and recipes.", "source": "./plugins/maxio-advanced-billing", "category": "development" }
+  ]
+}

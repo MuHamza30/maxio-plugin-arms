@@ -1,0 +1,34 @@
+{
+  "description": "Claude Code hooks for Maxio Advanced Billing, run live in Claude Code 2.1.296. They hold no knowledge of their own: they read the SDK folder (the project's installed copy when it carries AGENTS.md, otherwise the plugin's sdk/<language>/) and give the agent the ten rules at session start or on the first prompt that names Maxio, an operation's notes right after an edit that calls it, and the documented causes of a Maxio rejection seen in a command's output, failing or not. One more hook approves the read-only tools Read, Glob and Grep, and only for paths inside this plugin's own sdk/ folder, because that folder is outside the project and those reads would otherwise ask for permission or be refused in a headless run. Nothing else is approved, and no tool call is ever blocked. Requires Node.js on the PATH.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact|fork",
+        "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/maxio-knowledge.mjs", "claude"], "timeout": 15 }]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/maxio-knowledge.mjs", "claude"], "timeout": 10 }]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Read|Glob|Grep",
+        "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/maxio-knowledge.mjs", "claude"], "timeout": 5 }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|Bash|PowerShell",
+        "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/maxio-knowledge.mjs", "claude"], "timeout": 10 }]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [{ "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/maxio-knowledge.mjs", "claude"], "timeout": 10 }]
+      }
+    ]
+  }
+}

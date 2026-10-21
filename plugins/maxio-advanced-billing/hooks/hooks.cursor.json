@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      { "command": "node \"${CURSOR_PLUGIN_ROOT}/hooks/maxio-knowledge.mjs\" cursor sessionStart", "timeout": 15 }
+    ],
+    "postToolUse": [
+      { "command": "node \"${CURSOR_PLUGIN_ROOT}/hooks/maxio-knowledge.mjs\" cursor postToolUse", "matcher": "Write|Shell", "timeout": 10 }
+    ],
+    "postToolUseFailure": [
+      { "command": "node \"${CURSOR_PLUGIN_ROOT}/hooks/maxio-knowledge.mjs\" cursor postToolUseFailure", "matcher": "Shell", "timeout": 10 }
+    ],
+    "preCompact": [
+      { "command": "node \"${CURSOR_PLUGIN_ROOT}/hooks/maxio-knowledge.mjs\" cursor preCompact", "timeout": 5 }
+    ]
+  }
+}

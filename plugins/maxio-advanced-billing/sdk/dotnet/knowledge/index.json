@@ -1,0 +1,2003 @@
+{
+  "about": "One entry per Maxio Advanced Billing operation, keyed by the spec's operationId and by nothing else; to start from a call name, search this file for it. 'call' is this SDK's call. 'map' is the operation's block on the SDK map. 'notes' is the operation's section under knowledge/operations/, or null when Maxio has published none: an explicit \"no notes\", not a gap. In 'map' and 'notes' the part after '#' is the heading of the block or section, in lower case. Paths are relative to the SDK folder.",
+  "apiSpecVersion": "1.0",
+  "operationCount": 285,
+  "withNotes": 114,
+  "operations": {
+    "listWebhooks": {
+      "call": "client.WebhooksApi.ListWebhooks",
+      "route": "GET /webhooks.json",
+      "map": "map/operations/WebhooksApi.md#listwebhooks",
+      "notes": "knowledge/operations/webhooks.md#listwebhooks",
+      "always": null
+    },
+    "enableWebhooks": {
+      "call": "client.WebhooksApi.EnableWebhooks",
+      "route": "PUT /webhooks/settings.json",
+      "map": "map/operations/WebhooksApi.md#enablewebhooks",
+      "notes": "knowledge/operations/webhooks.md#enablewebhooks",
+      "always": null
+    },
+    "replayWebhooks": {
+      "call": "client.WebhooksApi.ReplayWebhooks",
+      "route": "POST /webhooks/replay.json",
+      "map": "map/operations/WebhooksApi.md#replaywebhooks",
+      "notes": "knowledge/operations/webhooks.md#replaywebhooks",
+      "always": "Send at most 1000 ids per call. Replay only after `last_sent_at` is well outside the automatic retry intervals."
+    },
+    "createEndpoint": {
+      "call": "client.WebhooksApi.CreateEndpoint",
+      "route": "POST /endpoints.json",
+      "map": "map/operations/WebhooksApi.md#createendpoint",
+      "notes": "knowledge/operations/webhooks.md#createendpoint",
+      "always": null
+    },
+    "listEndpoints": {
+      "call": "client.WebhooksApi.ListEndpoints",
+      "route": "GET /endpoints.json",
+      "map": "map/operations/WebhooksApi.md#listendpoints",
+      "notes": null,
+      "always": null
+    },
+    "updateEndpoint": {
+      "call": "client.WebhooksApi.UpdateEndpoint",
+      "route": "PUT /endpoints/{endpoint_id}.json",
+      "map": "map/operations/WebhooksApi.md#updateendpoint",
+      "notes": "knowledge/operations/webhooks.md#updateendpoint",
+      "always": "Send the complete `webhook_subscriptions` list: read the current one with `ListEndpoints`, then send every event to keep plus the new ones. An event left out is unsubscribed, and an empty list unsubscribes all."
+    },
+    "readSite": {
+      "call": "client.Sites.ReadSite",
+      "route": "GET /site.json",
+      "map": "map/operations/Sites.md#readsite",
+      "notes": "knowledge/operations/sites.md#readsite",
+      "always": null
+    },
+    "clearSite": {
+      "call": "client.Sites.ClearSite",
+      "route": "POST /sites/clear_data.json",
+      "map": "map/operations/Sites.md#clearsite",
+      "notes": "knowledge/operations/sites.md#clearsite",
+      "always": "Call on test sites only. Choose `cleanup_scope`: `customers` keeps the catalog, `all` also removes products. Afterwards poll until clearing finishes before seeding fixtures."
+    },
+    "createSubscriptionNote": {
+      "call": "client.SubscriptionNotes.CreateSubscriptionNote",
+      "route": "POST /subscriptions/{subscription_id}/notes.json",
+      "map": "map/operations/SubscriptionNotes.md#createsubscriptionnote",
+      "notes": null,
+      "always": null
+    },
+    "listSubscriptionNotes": {
+      "call": "client.SubscriptionNotes.ListSubscriptionNotes",
+      "route": "GET /subscriptions/{subscription_id}/notes.json",
+      "map": "map/operations/SubscriptionNotes.md#listsubscriptionnotes",
+      "notes": null,
+      "always": null
+    },
+    "readSubscriptionNote": {
+      "call": "client.SubscriptionNotes.ReadSubscriptionNote",
+      "route": "GET /subscriptions/{subscription_id}/notes/{note_id}.json",
+      "map": "map/operations/SubscriptionNotes.md#readsubscriptionnote",
+      "notes": null,
+      "always": null
+    },
+    "updateSubscriptionNote": {
+      "call": "client.SubscriptionNotes.UpdateSubscriptionNote",
+      "route": "PUT /subscriptions/{subscription_id}/notes/{note_id}.json",
+      "map": "map/operations/SubscriptionNotes.md#updatesubscriptionnote",
+      "notes": null,
+      "always": null
+    },
+    "deleteSubscriptionNote": {
+      "call": "client.SubscriptionNotes.DeleteSubscriptionNote",
+      "route": "DELETE /subscriptions/{subscription_id}/notes/{note_id}.json",
+      "map": "map/operations/SubscriptionNotes.md#deletesubscriptionnote",
+      "notes": null,
+      "always": null
+    },
+    "createCustomer": {
+      "call": "client.Customers.CreateCustomer",
+      "route": "POST /customers.json",
+      "map": "map/operations/Customers.md#createcustomer",
+      "notes": "knowledge/operations/customers.md#createcustomer",
+      "always": "If your app has a user id, send it as `reference`, call `ReadCustomerByReference` first and create only on a 404. On the duplicate-reference 422, read the existing customer back (L2)."
+    },
+    "listCustomers": {
+      "call": "client.Customers.ListCustomers",
+      "route": "GET /customers.json",
+      "map": "map/operations/Customers.md#listcustomers",
+      "notes": "knowledge/operations/customers.md#listcustomers",
+      "always": "Never take the first result of a `q` search as the customer; use `ReadCustomerByReference` for an exact match. For incremental sync send `date_field` with a start and an end; an unrecognized `date_field` is ignored (R9)."
+    },
+    "readCustomer": {
+      "call": "client.Customers.ReadCustomer",
+      "route": "GET /customers/{id}.json",
+      "map": "map/operations/Customers.md#readcustomer",
+      "notes": null,
+      "always": null
+    },
+    "updateCustomer": {
+      "call": "client.Customers.UpdateCustomer",
+      "route": "PUT /customers/{id}.json",
+      "map": "map/operations/Customers.md#updatecustomer",
+      "notes": "knowledge/operations/customers.md#updatecustomer",
+      "always": "Pass the Maxio customer `id`, not your reference. Never send `entity_identifier_value` without `entity_identifier_kind`. The `vat_eu` and `national_tax` kinds also need `vat_country`; the other kinds do not."
+    },
+    "deleteCustomer": {
+      "call": "client.Customers.DeleteCustomer",
+      "route": "DELETE /customers/{id}.json",
+      "map": "map/operations/Customers.md#deletecustomer",
+      "notes": null,
+      "always": null
+    },
+    "readCustomerByReference": {
+      "call": "client.Customers.ReadCustomerByReference",
+      "route": "GET /customers/lookup.json",
+      "map": "map/operations/Customers.md#readcustomerbyreference",
+      "notes": "knowledge/operations/customers.md#readcustomerbyreference",
+      "always": null
+    },
+    "listCustomerSubscriptions": {
+      "call": "client.Customers.ListCustomerSubscriptions",
+      "route": "GET /customers/{customer_id}/subscriptions.json",
+      "map": "map/operations/Customers.md#listcustomersubscriptions",
+      "notes": "knowledge/operations/customers.md#listcustomersubscriptions",
+      "always": null
+    },
+    "enableBillingPortalForCustomer": {
+      "call": "client.BillingPortal.EnableBillingPortalForCustomer",
+      "route": "POST /portal/customers/{customer_id}/enable.json",
+      "map": "map/operations/BillingPortal.md#enablebillingportalforcustomer",
+      "notes": "knowledge/operations/billing-portal.md#enablebillingportalforcustomer",
+      "always": "Pass `auto_invite=1` if the customer should get the invitation email. Never enable twice; re-send the invite with `ResendBillingPortalInvitation`."
+    },
+    "readBillingPortalLink": {
+      "call": "client.BillingPortal.ReadBillingPortalLink",
+      "route": "GET /portal/customers/{customer_id}/management_link.json",
+      "map": "map/operations/BillingPortal.md#readbillingportallink",
+      "notes": "knowledge/operations/billing-portal.md#readbillingportallink",
+      "always": "Cache the URL and reuse it until `new_link_available_at`; more than 15 requests before then are blocked with 429."
+    },
+    "resendBillingPortalInvitation": {
+      "call": "client.BillingPortal.ResendBillingPortalInvitation",
+      "route": "POST /portal/customers/{customer_id}/invitations/invite.json",
+      "map": "map/operations/BillingPortal.md#resendbillingportalinvitation",
+      "notes": null,
+      "always": null
+    },
+    "revokeBillingPortalAccess": {
+      "call": "client.BillingPortal.RevokeBillingPortalAccess",
+      "route": "DELETE /portal/customers/{customer_id}/invitations/revoke.json",
+      "map": "map/operations/BillingPortal.md#revokebillingportalaccess",
+      "notes": null,
+      "always": null
+    },
+    "readSiteStats": {
+      "call": "client.Insights.ReadSiteStats",
+      "route": "GET /stats.json",
+      "map": "map/operations/Insights.md#readsitestats",
+      "notes": null,
+      "always": null
+    },
+    "validateReferralCode": {
+      "call": "client.ReferralCodes.ValidateReferralCode",
+      "route": "GET /referral_codes/validate.json",
+      "map": "map/operations/ReferralCodes.md#validatereferralcode",
+      "notes": null,
+      "always": null
+    },
+    "createReasonCode": {
+      "call": "client.ReasonCodes.CreateReasonCode",
+      "route": "POST /reason_codes.json",
+      "map": "map/operations/ReasonCodes.md#createreasoncode",
+      "notes": null,
+      "always": null
+    },
+    "listReasonCodes": {
+      "call": "client.ReasonCodes.ListReasonCodes",
+      "route": "GET /reason_codes.json",
+      "map": "map/operations/ReasonCodes.md#listreasoncodes",
+      "notes": null,
+      "always": null
+    },
+    "readReasonCode": {
+      "call": "client.ReasonCodes.ReadReasonCode",
+      "route": "GET /reason_codes/{reason_code_id}.json",
+      "map": "map/operations/ReasonCodes.md#readreasoncode",
+      "notes": null,
+      "always": null
+    },
+    "updateReasonCode": {
+      "call": "client.ReasonCodes.UpdateReasonCode",
+      "route": "PUT /reason_codes/{reason_code_id}.json",
+      "map": "map/operations/ReasonCodes.md#updatereasoncode",
+      "notes": null,
+      "always": null
+    },
+    "deleteReasonCode": {
+      "call": "client.ReasonCodes.DeleteReasonCode",
+      "route": "DELETE /reason_codes/{reason_code_id}.json",
+      "map": "map/operations/ReasonCodes.md#deletereasoncode",
+      "notes": null,
+      "always": null
+    },
+    "createMetafields": {
+      "call": "client.CustomFields.CreateMetafields",
+      "route": "POST /{resource_type}/metafields.json",
+      "map": "map/operations/CustomFields.md#createmetafields",
+      "notes": null,
+      "always": null
+    },
+    "listMetafields": {
+      "call": "client.CustomFields.ListMetafields",
+      "route": "GET /{resource_type}/metafields.json",
+      "map": "map/operations/CustomFields.md#listmetafields",
+      "notes": null,
+      "always": null
+    },
+    "updateMetafield": {
+      "call": "client.CustomFields.UpdateMetafield",
+      "route": "PUT /{resource_type}/metafields.json",
+      "map": "map/operations/CustomFields.md#updatemetafield",
+      "notes": null,
+      "always": null
+    },
+    "deleteMetafield": {
+      "call": "client.CustomFields.DeleteMetafield",
+      "route": "DELETE /{resource_type}/metafields.json",
+      "map": "map/operations/CustomFields.md#deletemetafield",
+      "notes": null,
+      "always": null
+    },
+    "createMetadata": {
+      "call": "client.CustomFields.CreateMetadata",
+      "route": "POST /{resource_type}/{resource_id}/metadata.json",
+      "map": "map/operations/CustomFields.md#createmetadata",
+      "notes": null,
+      "always": null
+    },
+    "listMetadata": {
+      "call": "client.CustomFields.ListMetadata",
+      "route": "GET /{resource_type}/{resource_id}/metadata.json",
+      "map": "map/operations/CustomFields.md#listmetadata",
+      "notes": null,
+      "always": null
+    },
+    "updateMetadata": {
+      "call": "client.CustomFields.UpdateMetadata",
+      "route": "PUT /{resource_type}/{resource_id}/metadata.json",
+      "map": "map/operations/CustomFields.md#updatemetadata",
+      "notes": null,
+      "always": null
+    },
+    "deleteMetadata": {
+      "call": "client.CustomFields.DeleteMetadata",
+      "route": "DELETE /{resource_type}/{resource_id}/metadata.json",
+      "map": "map/operations/CustomFields.md#deletemetadata",
+      "notes": null,
+      "always": null
+    },
+    "listMetadataForResourceType": {
+      "call": "client.CustomFields.ListMetadataForResourceType",
+      "route": "GET /{resource_type}/metadata.json",
+      "map": "map/operations/CustomFields.md#listmetadataforresourcetype",
+      "notes": null,
+      "always": null
+    },
+    "createCoupon": {
+      "call": "client.Coupons.CreateCoupon",
+      "route": "POST /product_families/{product_family_id}/coupons.json",
+      "map": "map/operations/Coupons.md#createcoupon",
+      "notes": "knowledge/operations/coupons.md#createcoupon",
+      "always": "Send exactly one of `percentage` or `amount_in_cents`. Never send a past `end_date`. Put `restricted_products` / `restricted_components` beside `coupon`, not inside it, and never with `allow_negative_balance: true`."
+    },
+    "listCouponsForProductFamily": {
+      "call": "client.Coupons.ListCouponsForProductFamily",
+      "route": "GET /product_families/{product_family_id}/coupons.json",
+      "map": "map/operations/Coupons.md#listcouponsforproductfamily",
+      "notes": null,
+      "always": null
+    },
+    "findCoupon": {
+      "call": "client.Coupons.FindCoupon",
+      "route": "GET /coupons/find.json",
+      "map": "map/operations/Coupons.md#findcoupon",
+      "notes": "knowledge/operations/coupons.md#findcoupon",
+      "always": "Pass `product_family_id` unless the coupon is in the default product family."
+    },
+    "readCoupon": {
+      "call": "client.Coupons.ReadCoupon",
+      "route": "GET /product_families/{product_family_id}/coupons/{coupon_id}.json",
+      "map": "map/operations/Coupons.md#readcoupon",
+      "notes": null,
+      "always": null
+    },
+    "updateCoupon": {
+      "call": "client.Coupons.UpdateCoupon",
+      "route": "PUT /product_families/{product_family_id}/coupons/{coupon_id}.json",
+      "map": "map/operations/Coupons.md#updatecoupon",
+      "notes": null,
+      "always": null
+    },
+    "archiveCoupon": {
+      "call": "client.Coupons.ArchiveCoupon",
+      "route": "DELETE /product_families/{product_family_id}/coupons/{coupon_id}.json",
+      "map": "map/operations/Coupons.md#archivecoupon",
+      "notes": "knowledge/operations/coupons.md#archivecoupon",
+      "always": null
+    },
+    "listCoupons": {
+      "call": "client.Coupons.ListCoupons",
+      "route": "GET /coupons.json",
+      "map": "map/operations/Coupons.md#listcoupons",
+      "notes": null,
+      "always": null
+    },
+    "readCouponUsage": {
+      "call": "client.Coupons.ReadCouponUsage",
+      "route": "GET /product_families/{product_family_id}/coupons/{coupon_id}/usage.json",
+      "map": "map/operations/Coupons.md#readcouponusage",
+      "notes": null,
+      "always": null
+    },
+    "validateCoupon": {
+      "call": "client.Coupons.ValidateCoupon",
+      "route": "GET /coupons/validate.json",
+      "map": "map/operations/Coupons.md#validatecoupon",
+      "notes": "knowledge/operations/coupons.md#validatecoupon",
+      "always": "Pass `product_family_id` unless the coupon is in the default product family (D18)."
+    },
+    "createOrUpdateCouponCurrencyPrices": {
+      "call": "client.Coupons.CreateOrUpdateCouponCurrencyPrices",
+      "route": "PUT /coupons/{coupon_id}/currency_prices.json",
+      "map": "map/operations/Coupons.md#createorupdatecouponcurrencyprices",
+      "notes": null,
+      "always": null
+    },
+    "createCouponSubcodes": {
+      "call": "client.Coupons.CreateCouponSubcodes",
+      "route": "POST /coupons/{coupon_id}/codes.json",
+      "map": "map/operations/Coupons.md#createcouponsubcodes",
+      "notes": "knowledge/operations/coupons.md#createcouponsubcodes",
+      "always": null
+    },
+    "listCouponSubcodes": {
+      "call": "client.Coupons.ListCouponSubcodes",
+      "route": "GET /coupons/{coupon_id}/codes.json",
+      "map": "map/operations/Coupons.md#listcouponsubcodes",
+      "notes": null,
+      "always": null
+    },
+    "updateCouponSubcodes": {
+      "call": "client.Coupons.UpdateCouponSubcodes",
+      "route": "PUT /coupons/{coupon_id}/codes.json",
+      "map": "map/operations/Coupons.md#updatecouponsubcodes",
+      "notes": "knowledge/operations/coupons.md#updatecouponsubcodes",
+      "always": "Use only to replace every subcode, and send the complete list. To add codes use `CreateCouponSubcodes` (D18)."
+    },
+    "deleteCouponSubcode": {
+      "call": "client.Coupons.DeleteCouponSubcode",
+      "route": "DELETE /coupons/{coupon_id}/codes/{subcode}.json",
+      "map": "map/operations/Coupons.md#deletecouponsubcode",
+      "notes": "knowledge/operations/coupons.md#deletecouponsubcode",
+      "always": null
+    },
+    "listEvents": {
+      "call": "client.Events.ListEvents",
+      "route": "GET /events.json",
+      "map": "map/operations/Events.md#listevents",
+      "notes": null,
+      "always": null
+    },
+    "listSubscriptionEvents": {
+      "call": "client.Events.ListSubscriptionEvents",
+      "route": "GET /subscriptions/{subscription_id}/events.json",
+      "map": "map/operations/Events.md#listsubscriptionevents",
+      "notes": null,
+      "always": null
+    },
+    "readEventsCount": {
+      "call": "client.Events.ReadEventsCount",
+      "route": "GET /events/count.json",
+      "map": "map/operations/Events.md#readeventscount",
+      "notes": null,
+      "always": null
+    },
+    "readMrr": {
+      "call": "client.Insights.ReadMrr",
+      "route": "GET /mrr.json",
+      "map": "map/operations/Insights.md#readmrr",
+      "notes": null,
+      "always": null
+    },
+    "createMeteredComponent": {
+      "call": "client.Components.CreateMeteredComponent",
+      "route": "POST /product_families/{product_family_id}/metered_components.json",
+      "map": "map/operations/Components.md#createmeteredcomponent",
+      "notes": "knowledge/operations/components.md#createmeteredcomponent",
+      "always": "Send `unit_price` in decimal major units, not cents (R4). Send `prices` for any scheme other than `per_unit`, as contiguous, non-overlapping brackets. On new-Catalog sites give taxable components a `tax_code`."
+    },
+    "createQuantityBasedComponent": {
+      "call": "client.Components.CreateQuantityBasedComponent",
+      "route": "POST /product_families/{product_family_id}/quantity_based_components.json",
+      "map": "map/operations/Components.md#createquantitybasedcomponent",
+      "notes": "knowledge/operations/components.md#createquantitybasedcomponent",
+      "always": "Send `recurring: false` only for a one-time charge (inferred; D10). In `stairstep`, send each bracket's `unit_price` as the flat charge for the whole band (D17)."
+    },
+    "createOnOffComponent": {
+      "call": "client.Components.CreateOnOffComponent",
+      "route": "POST /product_families/{product_family_id}/on_off_components.json",
+      "map": "map/operations/Components.md#createonoffcomponent",
+      "notes": "knowledge/operations/components.md#createonoffcomponent",
+      "always": null
+    },
+    "createPrepaidUsageComponent": {
+      "call": "client.Components.CreatePrepaidUsageComponent",
+      "route": "POST /product_families/{product_family_id}/prepaid_usage_components.json",
+      "map": "map/operations/Components.md#createprepaidusagecomponent",
+      "notes": "knowledge/operations/components.md#createprepaidusagecomponent",
+      "always": null
+    },
+    "createEventBasedComponent": {
+      "call": "client.Components.CreateEventBasedComponent",
+      "route": "POST /product_families/{product_family_id}/event_based_components.json",
+      "map": "map/operations/Components.md#createeventbasedcomponent",
+      "notes": "knowledge/operations/components.md#createeventbasedcomponent",
+      "always": "Follow with `ActivateEventBasedComponent` for each subscription that should be billed; events streamed without it produce no charge and no error."
+    },
+    "findComponent": {
+      "call": "client.Components.FindComponent",
+      "route": "GET /components/lookup.json",
+      "map": "map/operations/Components.md#findcomponent",
+      "notes": null,
+      "always": null
+    },
+    "readComponent": {
+      "call": "client.Components.ReadComponent",
+      "route": "GET /product_families/{product_family_id}/components/{component_id}.json",
+      "map": "map/operations/Components.md#readcomponent",
+      "notes": null,
+      "always": null
+    },
+    "updateProductFamilyComponent": {
+      "call": "client.Components.UpdateProductFamilyComponent",
+      "route": "PUT /product_families/{product_family_id}/components/{component_id}.json",
+      "map": "map/operations/Components.md#updateproductfamilycomponent",
+      "notes": null,
+      "always": null
+    },
+    "archiveComponent": {
+      "call": "client.Components.ArchiveComponent",
+      "route": "DELETE /product_families/{product_family_id}/components/{component_id}.json",
+      "map": "map/operations/Components.md#archivecomponent",
+      "notes": "knowledge/operations/components.md#archivecomponent",
+      "always": null
+    },
+    "listComponents": {
+      "call": "client.Components.ListComponents",
+      "route": "GET /components.json",
+      "map": "map/operations/Components.md#listcomponents",
+      "notes": null,
+      "always": null
+    },
+    "updateComponent": {
+      "call": "client.Components.UpdateComponent",
+      "route": "PUT /components/{component_id}.json",
+      "map": "map/operations/Components.md#updatecomponent",
+      "notes": "knowledge/operations/components.md#updatecomponent",
+      "always": null
+    },
+    "promoteComponentPricePointToDefault": {
+      "call": "client.ComponentPricePoints.PromoteComponentPricePointToDefault",
+      "route": "PUT /components/{component_id}/price_points/{price_point_id}/default.json",
+      "map": "map/operations/ComponentPricePoints.md#promotecomponentpricepointtodefault",
+      "notes": "knowledge/operations/component-price-points.md#promotecomponentpricepointtodefault",
+      "always": null
+    },
+    "listComponentsForProductFamily": {
+      "call": "client.Components.ListComponentsForProductFamily",
+      "route": "GET /product_families/{product_family_id}/components.json",
+      "map": "map/operations/Components.md#listcomponentsforproductfamily",
+      "notes": null,
+      "always": null
+    },
+    "createComponentPricePoint": {
+      "call": "client.ComponentPricePoints.CreateComponentPricePoint",
+      "route": "POST /components/{component_id}/price_points.json",
+      "map": "map/operations/ComponentPricePoints.md#createcomponentpricepoint",
+      "notes": "knowledge/operations/component-price-points.md#createcomponentpricepoint",
+      "always": "For `per_unit`, send `prices` as one open bracket: `[{\"starting_quantity\": 1, \"unit_price\": X}]`. Keep brackets contiguous and non-overlapping. Hybrid pricing also needs `overage_pricing_scheme`, or the overage block is ignored."
+    },
+    "listComponentPricePoints": {
+      "call": "client.ComponentPricePoints.ListComponentPricePoints",
+      "route": "GET /components/{component_id}/price_points.json",
+      "map": "map/operations/ComponentPricePoints.md#listcomponentpricepoints",
+      "notes": null,
+      "always": null
+    },
+    "bulkCreateComponentPricePoints": {
+      "call": "client.ComponentPricePoints.BulkCreateComponentPricePoints",
+      "route": "POST /components/{component_id}/price_points/bulk.json",
+      "map": "map/operations/ComponentPricePoints.md#bulkcreatecomponentpricepoints",
+      "notes": null,
+      "always": null
+    },
+    "cloneComponentPricePoint": {
+      "call": "client.ComponentPricePoints.CloneComponentPricePoint",
+      "route": "POST /components/{component_id}/price_points/{price_point_id}/clone.json",
+      "map": "map/operations/ComponentPricePoints.md#clonecomponentpricepoint",
+      "notes": null,
+      "always": null
+    },
+    "updateComponentPricePoint": {
+      "call": "client.ComponentPricePoints.UpdateComponentPricePoint",
+      "route": "PUT /components/{component_id}/price_points/{price_point_id}.json",
+      "map": "map/operations/ComponentPricePoints.md#updatecomponentpricepoint",
+      "notes": "knowledge/operations/component-price-points.md#updatecomponentpricepoint",
+      "always": "To change `prices`, get the bracket `id`s from `ReadComponentPricePoint`, then update or `_destroy: true` those; a fresh list is added beside the old one. For new customers only, create and promote a new price point (D9)."
+    },
+    "readComponentPricePoint": {
+      "call": "client.ComponentPricePoints.ReadComponentPricePoint",
+      "route": "GET /components/{component_id}/price_points/{price_point_id}.json",
+      "map": "map/operations/ComponentPricePoints.md#readcomponentpricepoint",
+      "notes": null,
+      "always": null
+    },
+    "archiveComponentPricePoint": {
+      "call": "client.ComponentPricePoints.ArchiveComponentPricePoint",
+      "route": "DELETE /components/{component_id}/price_points/{price_point_id}.json",
+      "map": "map/operations/ComponentPricePoints.md#archivecomponentpricepoint",
+      "notes": "knowledge/operations/component-price-points.md#archivecomponentpricepoint",
+      "always": null
+    },
+    "unarchiveComponentPricePoint": {
+      "call": "client.ComponentPricePoints.UnarchiveComponentPricePoint",
+      "route": "PUT /components/{component_id}/price_points/{price_point_id}/unarchive.json",
+      "map": "map/operations/ComponentPricePoints.md#unarchivecomponentpricepoint",
+      "notes": null,
+      "always": null
+    },
+    "createCurrencyPrices": {
+      "call": "client.ComponentPricePoints.CreateCurrencyPrices",
+      "route": "POST /price_points/{price_point_id}/currency_prices.json",
+      "map": "map/operations/ComponentPricePoints.md#createcurrencyprices",
+      "notes": "knowledge/operations/component-price-points.md#createcurrencyprices",
+      "always": "Send one row per price bracket of the price point (`price_id`) for the currency. `price` is in major units of that currency, like `unit_price`, not cents (R4)."
+    },
+    "updateCurrencyPrices": {
+      "call": "client.ComponentPricePoints.UpdateCurrencyPrices",
+      "route": "PUT /price_points/{price_point_id}/currency_prices.json",
+      "map": "map/operations/ComponentPricePoints.md#updatecurrencyprices",
+      "notes": null,
+      "always": null
+    },
+    "listMrrMovements": {
+      "call": "client.Insights.ListMrrMovements",
+      "route": "GET /mrr_movements.json",
+      "map": "map/operations/Insights.md#listmrrmovements",
+      "notes": null,
+      "always": null
+    },
+    "createProduct": {
+      "call": "client.Products.CreateProduct",
+      "route": "POST /product_families/{product_family_id}/products.json",
+      "map": "map/operations/Products.md#createproduct",
+      "notes": "knowledge/operations/products.md#createproduct",
+      "always": "Set a `handle` (R6). For yearly billing send `interval: 12` with `interval_unit: \"month\"`. With a trial, set `trial_type` on purpose (L4). On new-Catalog sites never send `auto_create_signup_page`."
+    },
+    "listProductsForProductFamily": {
+      "call": "client.ProductFamilies.ListProductsForProductFamily",
+      "route": "GET /product_families/{product_family_id}/products.json",
+      "map": "map/operations/ProductFamilies.md#listproductsforproductfamily",
+      "notes": "knowledge/operations/product-families.md#listproductsforproductfamily",
+      "always": null
+    },
+    "readProduct": {
+      "call": "client.Products.ReadProduct",
+      "route": "GET /products/{product_id}.json",
+      "map": "map/operations/Products.md#readproduct",
+      "notes": null,
+      "always": null
+    },
+    "updateProduct": {
+      "call": "client.Products.UpdateProduct",
+      "route": "PUT /products/{product_id}.json",
+      "map": "map/operations/Products.md#updateproduct",
+      "notes": "knowledge/operations/products.md#updateproduct",
+      "always": "Treat every call as creating a new price point and making it the product's default; never use it to change a price (D9). The body requires the price and interval fields: send the current values unchanged."
+    },
+    "archiveProduct": {
+      "call": "client.Products.ArchiveProduct",
+      "route": "DELETE /products/{product_id}.json",
+      "map": "map/operations/Products.md#archiveproduct",
+      "notes": "knowledge/operations/products.md#archiveproduct",
+      "always": null
+    },
+    "readProductByHandle": {
+      "call": "client.Products.ReadProductByHandle",
+      "route": "GET /products/handle/{api_handle}.json",
+      "map": "map/operations/Products.md#readproductbyhandle",
+      "notes": "knowledge/operations/products.md#readproductbyhandle",
+      "always": "Pass the bare handle; never a `handle:` prefix in this path."
+    },
+    "createProductFamily": {
+      "call": "client.ProductFamilies.CreateProductFamily",
+      "route": "POST /product_families.json",
+      "map": "map/operations/ProductFamilies.md#createproductfamily",
+      "notes": "knowledge/operations/product-families.md#createproductfamily",
+      "always": "Set a stable `handle` you will keep (R6). Send `surcharging: false` if the family's products must not carry surcharges."
+    },
+    "listProductFamilies": {
+      "call": "client.ProductFamilies.ListProductFamilies",
+      "route": "GET /product_families.json",
+      "map": "map/operations/ProductFamilies.md#listproductfamilies",
+      "notes": null,
+      "always": null
+    },
+    "readProductFamily": {
+      "call": "client.ProductFamilies.ReadProductFamily",
+      "route": "GET /product_families/{id}.json",
+      "map": "map/operations/ProductFamilies.md#readproductfamily",
+      "notes": "knowledge/operations/product-families.md#readproductfamily",
+      "always": null
+    },
+    "createProductPricePoint": {
+      "call": "client.ProductPricePoints.CreateProductPricePoint",
+      "route": "POST /products/{product_id}/price_points.json",
+      "map": "map/operations/ProductPricePoints.md#createproductpricepoint",
+      "notes": "knowledge/operations/product-price-points.md#createproductpricepoint",
+      "always": "Settle `interval`, the trial fields and `initial_charge_in_cents` now: `UpdateProductPricePoint` takes only `price_in_cents` and `handle`. Promote the price point if new signups should get it (D9)."
+    },
+    "listProductPricePoints": {
+      "call": "client.ProductPricePoints.ListProductPricePoints",
+      "route": "GET /products/{product_id}/price_points.json",
+      "map": "map/operations/ProductPricePoints.md#listproductpricepoints",
+      "notes": "knowledge/operations/product-price-points.md#listproductpricepoints",
+      "always": "Never take `[0]` as the default; use `filter[type]=default` or the product's `default_product_price_point_id` (R9). Request at most 200 per page (R8)."
+    },
+    "updateProductPricePoint": {
+      "call": "client.ProductPricePoints.UpdateProductPricePoint",
+      "route": "PUT /products/{product_id}/price_points/{price_point_id}.json",
+      "map": "map/operations/ProductPricePoints.md#updateproductpricepoint",
+      "notes": "knowledge/operations/product-price-points.md#updateproductpricepoint",
+      "always": "This reprices every subscription on the price point (inferred). For new customers only, create and promote a new price point instead (D9)."
+    },
+    "readProductPricePoint": {
+      "call": "client.ProductPricePoints.ReadProductPricePoint",
+      "route": "GET /products/{product_id}/price_points/{price_point_id}.json",
+      "map": "map/operations/ProductPricePoints.md#readproductpricepoint",
+      "notes": null,
+      "always": null
+    },
+    "archiveProductPricePoint": {
+      "call": "client.ProductPricePoints.ArchiveProductPricePoint",
+      "route": "DELETE /products/{product_id}/price_points/{price_point_id}.json",
+      "map": "map/operations/ProductPricePoints.md#archiveproductpricepoint",
+      "notes": "knowledge/operations/product-price-points.md#archiveproductpricepoint",
+      "always": null
+    },
+    "unarchiveProductPricePoint": {
+      "call": "client.ProductPricePoints.UnarchiveProductPricePoint",
+      "route": "PATCH /products/{product_id}/price_points/{price_point_id}/unarchive.json",
+      "map": "map/operations/ProductPricePoints.md#unarchiveproductpricepoint",
+      "notes": null,
+      "always": null
+    },
+    "promoteProductPricePointToDefault": {
+      "call": "client.ProductPricePoints.PromoteProductPricePointToDefault",
+      "route": "PATCH /products/{product_id}/price_points/{price_point_id}/default.json",
+      "map": "map/operations/ProductPricePoints.md#promoteproductpricepointtodefault",
+      "notes": "knowledge/operations/product-price-points.md#promoteproductpricepointtodefault",
+      "always": null
+    },
+    "bulkCreateProductPricePoints": {
+      "call": "client.ProductPricePoints.BulkCreateProductPricePoints",
+      "route": "POST /products/{product_id}/price_points/bulk.json",
+      "map": "map/operations/ProductPricePoints.md#bulkcreateproductpricepoints",
+      "notes": null,
+      "always": null
+    },
+    "createProductCurrencyPrices": {
+      "call": "client.ProductPricePoints.CreateProductCurrencyPrices",
+      "route": "POST /product_price_points/{product_price_point_id}/currency_prices.json",
+      "map": "map/operations/ProductPricePoints.md#createproductcurrencyprices",
+      "notes": "knowledge/operations/product-price-points.md#createproductcurrencyprices",
+      "always": "Send `price` in major units of the currency, not cents, although the price point itself is in cents (R4). Send a `baseline` row, plus a `trial` and an `initial` row when the price point has a trial or an initial charge."
+    },
+    "updateProductCurrencyPrices": {
+      "call": "client.ProductPricePoints.UpdateProductCurrencyPrices",
+      "route": "PUT /product_price_points/{product_price_point_id}/currency_prices.json",
+      "map": "map/operations/ProductPricePoints.md#updateproductcurrencyprices",
+      "notes": null,
+      "always": null
+    },
+    "createPaymentProfile": {
+      "call": "client.PaymentProfiles.CreatePaymentProfile",
+      "route": "POST /payment_profiles.json",
+      "map": "map/operations/PaymentProfiles.md#createpaymentprofile",
+      "notes": "knowledge/operations/payment-profiles.md#createpaymentprofile",
+      "always": "Send `customer_id` and one payment source; with a `chargify_token`, no card or bank numbers (R15). It is not made a default: follow with `ChangeSubscriptionDefaultPaymentProfile` if a subscription should charge it (L6)."
+    },
+    "listPaymentProfiles": {
+      "call": "client.PaymentProfiles.ListPaymentProfiles",
+      "route": "GET /payment_profiles.json",
+      "map": "map/operations/PaymentProfiles.md#listpaymentprofiles",
+      "notes": "knowledge/operations/payment-profiles.md#listpaymentprofiles",
+      "always": "Pass `customer_id` in anything customer-facing."
+    },
+    "readPaymentProfile": {
+      "call": "client.PaymentProfiles.ReadPaymentProfile",
+      "route": "GET /payment_profiles/{payment_profile_id}.json",
+      "map": "map/operations/PaymentProfiles.md#readpaymentprofile",
+      "notes": null,
+      "always": null
+    },
+    "updatePaymentProfile": {
+      "call": "client.PaymentProfiles.UpdatePaymentProfile",
+      "route": "PUT /payment_profiles/{payment_profile_id}.json",
+      "map": "map/operations/PaymentProfiles.md#updatepaymentprofile",
+      "notes": "knowledge/operations/payment-profiles.md#updatepaymentprofile",
+      "always": "To replace a card use `CreatePaymentProfile`, then `ChangeSubscriptionDefaultPaymentProfile` (D6). This call never collects: after fixing a past-due subscriber's card here, collect with `RetrySubscription` (D12)."
+    },
+    "deleteUnusedPaymentProfile": {
+      "call": "client.PaymentProfiles.DeleteUnusedPaymentProfile",
+      "route": "DELETE /payment_profiles/{payment_profile_id}.json",
+      "map": "map/operations/PaymentProfiles.md#deleteunusedpaymentprofile",
+      "notes": "knowledge/operations/payment-profiles.md#deleteunusedpaymentprofile",
+      "always": null
+    },
+    "deleteSubscriptionsPaymentProfile": {
+      "call": "client.PaymentProfiles.DeleteSubscriptionsPaymentProfile",
+      "route": "DELETE /subscriptions/{subscription_id}/payment_profiles/{payment_profile_id}.json",
+      "map": "map/operations/PaymentProfiles.md#deletesubscriptionspaymentprofile",
+      "notes": "knowledge/operations/payment-profiles.md#deletesubscriptionspaymentprofile",
+      "always": "This removes the profile from every subscription the customer has, not only the one in the path. Each one that charged it then needs a new default: set it with `ChangeSubscriptionDefaultPaymentProfile` (D7)."
+    },
+    "verifyBankAccount": {
+      "call": "client.PaymentProfiles.VerifyBankAccount",
+      "route": "PUT /bank_accounts/{bank_account_id}/verification.json",
+      "map": "map/operations/PaymentProfiles.md#verifybankaccount",
+      "notes": "knowledge/operations/payment-profiles.md#verifybankaccount",
+      "always": "Turn off the client's automatic retry for this `PUT`: tries are capped at 10, then verification is blocked until the merchant contacts Maxio. Treat a timeout as an unknown outcome: check `verified` before sending again (R11)."
+    },
+    "refundInvoice": {
+      "call": "client.Invoices.RefundInvoice",
+      "route": "POST /invoices/{uid}/refunds.json",
+      "map": "map/operations/Invoices.md#refundinvoice",
+      "notes": "knowledge/operations/invoices.md#refundinvoice",
+      "always": "Send `external: true` only to record a refund made elsewhere (D15). Send `void_invoice: true` only with `apply_credit: false` and a full refund. On consolidated invoices send `segment_uids`."
+    },
+    "listInvoices": {
+      "call": "client.Invoices.ListInvoices",
+      "route": "GET /invoices.json",
+      "map": "map/operations/Invoices.md#listinvoices",
+      "notes": "knowledge/operations/invoices.md#listinvoices",
+      "always": "Request each nested array you need (`line_items=true`, ...) (R9). Use datetime filters only with `date_field` set to `created_at` or `updated_at`."
+    },
+    "readInvoice": {
+      "call": "client.Invoices.ReadInvoice",
+      "route": "GET /invoices/{uid}.json",
+      "map": "map/operations/Invoices.md#readinvoice",
+      "notes": null,
+      "always": null
+    },
+    "listInvoiceEvents": {
+      "call": "client.Invoices.ListInvoiceEvents",
+      "route": "GET /invoices/events.json",
+      "map": "map/operations/Invoices.md#listinvoiceevents",
+      "notes": null,
+      "always": null
+    },
+    "recordPaymentForInvoice": {
+      "call": "client.Invoices.RecordPaymentForInvoice",
+      "route": "POST /invoices/{uid}/payments.json",
+      "map": "map/operations/Invoices.md#recordpaymentforinvoice",
+      "notes": "knowledge/operations/invoices.md#recordpaymentforinvoice",
+      "always": "Choose `type` on purpose: default `external` only records money taken elsewhere; `prepayment`/`service_credit` draw on that balance; `payment` with `payment_profile_id` collects from that profile. Keep `amount` ≤ `due_amount`."
+    },
+    "recordPaymentForMultipleInvoices": {
+      "call": "client.Invoices.RecordPaymentForMultipleInvoices",
+      "route": "POST /invoices/payments.json",
+      "map": "map/operations/Invoices.md#recordpaymentformultipleinvoices",
+      "notes": "knowledge/operations/invoices.md#recordpaymentformultipleinvoices",
+      "always": "This records an external payment; it charges nothing (inferred). Give each invoice at most its due amount; to leave a prepayment, raise the total `amount` above the sum of `applications`. Never include a consolidated invoice."
+    },
+    "listCreditNotes": {
+      "call": "client.Invoices.ListCreditNotes",
+      "route": "GET /credit_notes.json",
+      "map": "map/operations/Invoices.md#listcreditnotes",
+      "notes": null,
+      "always": null
+    },
+    "readCreditNote": {
+      "call": "client.Invoices.ReadCreditNote",
+      "route": "GET /credit_notes/{uid}.json",
+      "map": "map/operations/Invoices.md#readcreditnote",
+      "notes": null,
+      "always": null
+    },
+    "recordPaymentForSubscription": {
+      "call": "client.Invoices.RecordPaymentForSubscription",
+      "route": "POST /subscriptions/{subscription_id}/payments.json",
+      "map": "map/operations/Invoices.md#recordpaymentforsubscription",
+      "notes": "knowledge/operations/invoices.md#recordpaymentforsubscription",
+      "always": null
+    },
+    "reopenInvoice": {
+      "call": "client.Invoices.ReopenInvoice",
+      "route": "POST /invoices/{uid}/reopen.json",
+      "map": "map/operations/Invoices.md#reopeninvoice",
+      "notes": "knowledge/operations/invoices.md#reopeninvoice",
+      "always": null
+    },
+    "voidInvoice": {
+      "call": "client.Invoices.VoidInvoice",
+      "route": "POST /invoices/{uid}/void.json",
+      "map": "map/operations/Invoices.md#voidinvoice",
+      "notes": "knowledge/operations/invoices.md#voidinvoice",
+      "always": "Void only `open`, `canceled` or non-consolidated `pending` invoices (D16). No operation reverses a void. Refund a `paid` invoice with `RefundInvoice` instead."
+    },
+    "listConsolidatedInvoiceSegments": {
+      "call": "client.Invoices.ListConsolidatedInvoiceSegments",
+      "route": "GET /invoices/{invoice_uid}/segments.json",
+      "map": "map/operations/Invoices.md#listconsolidatedinvoicesegments",
+      "notes": null,
+      "always": null
+    },
+    "readAccountBalances": {
+      "call": "client.SubscriptionInvoiceAccount.ReadAccountBalances",
+      "route": "GET /subscriptions/{subscription_id}/account_balances.json",
+      "map": "map/operations/SubscriptionInvoiceAccount.md#readaccountbalances",
+      "notes": "knowledge/operations/subscription-invoice-account.md#readaccountbalances",
+      "always": null
+    },
+    "readSubscriptionComponent": {
+      "call": "client.SubscriptionComponents.ReadSubscriptionComponent",
+      "route": "GET /subscriptions/{subscription_id}/components/{component_id}.json",
+      "map": "map/operations/SubscriptionComponents.md#readsubscriptioncomponent",
+      "notes": null,
+      "always": null
+    },
+    "listSubscriptionComponents": {
+      "call": "client.SubscriptionComponents.ListSubscriptionComponents",
+      "route": "GET /subscriptions/{subscription_id}/components.json",
+      "map": "map/operations/SubscriptionComponents.md#listsubscriptioncomponents",
+      "notes": "knowledge/operations/subscription-components.md#listsubscriptioncomponents",
+      "always": null
+    },
+    "bulkUpdateSubscriptionComponentsPricePoints": {
+      "call": "client.SubscriptionComponents.BulkUpdateSubscriptionComponentsPricePoints",
+      "route": "POST /subscriptions/{subscription_id}/price_points.json",
+      "map": "map/operations/SubscriptionComponents.md#bulkupdatesubscriptioncomponentspricepoints",
+      "notes": null,
+      "always": null
+    },
+    "bulkResetSubscriptionComponentsPricePoints": {
+      "call": "client.SubscriptionComponents.BulkResetSubscriptionComponentsPricePoints",
+      "route": "POST /subscriptions/{subscription_id}/price_points/reset.json",
+      "map": "map/operations/SubscriptionComponents.md#bulkresetsubscriptioncomponentspricepoints",
+      "notes": "knowledge/operations/subscription-components.md#bulkresetsubscriptioncomponentspricepoints",
+      "always": "This resets every component on the subscription to its current default price point, \"even ones that have not been allocated yet\". To move only some components use `BulkUpdateSubscriptionComponentsPricePoints`."
+    },
+    "allocateComponent": {
+      "call": "client.SubscriptionComponents.AllocateComponent",
+      "route": "POST /subscriptions/{subscription_id}/components/{component_id}/allocations.json",
+      "map": "map/operations/SubscriptionComponents.md#allocatecomponent",
+      "notes": "knowledge/operations/subscription-components.md#allocatecomponent",
+      "always": "`quantity` is the new total, not a change; on prepaid each allocation adds units (D14). Send `upgrade_charge`, `downgrade_credit` and `accrue_charge` in the `allocation` when the money outcome matters: omitted, defaults decide."
+    },
+    "listAllocations": {
+      "call": "client.SubscriptionComponents.ListAllocations",
+      "route": "GET /subscriptions/{subscription_id}/components/{component_id}/allocations.json",
+      "map": "map/operations/SubscriptionComponents.md#listallocations",
+      "notes": "knowledge/operations/subscription-components.md#listallocations",
+      "always": null
+    },
+    "allocateComponents": {
+      "call": "client.SubscriptionComponents.AllocateComponents",
+      "route": "POST /subscriptions/{subscription_id}/allocations.json",
+      "map": "map/operations/SubscriptionComponents.md#allocatecomponents",
+      "notes": "knowledge/operations/subscription-components.md#allocatecomponents",
+      "always": "Put `upgrade_charge` and `downgrade_credit` inside each allocation: a component default beats the request's top-level values. Send `accrue_charge` at the top level only. Give every allocation a `component_id`."
+    },
+    "previewAllocations": {
+      "call": "client.SubscriptionComponents.PreviewAllocations",
+      "route": "POST /subscriptions/{subscription_id}/allocations/preview.json",
+      "map": "map/operations/SubscriptionComponents.md#previewallocations",
+      "notes": null,
+      "always": null
+    },
+    "updatePrepaidUsageAllocationExpirationDate": {
+      "call": "client.SubscriptionComponents.UpdatePrepaidUsageAllocationExpirationDate",
+      "route": "PUT /subscriptions/{subscription_id}/components/{component_id}/allocations/{allocation_id}.json",
+      "map": "map/operations/SubscriptionComponents.md#updateprepaidusageallocationexpirationdate",
+      "notes": null,
+      "always": null
+    },
+    "deletePrepaidUsageAllocation": {
+      "call": "client.SubscriptionComponents.DeletePrepaidUsageAllocation",
+      "route": "DELETE /subscriptions/{subscription_id}/components/{component_id}/allocations/{allocation_id}.json",
+      "map": "map/operations/SubscriptionComponents.md#deleteprepaidusageallocation",
+      "notes": "knowledge/operations/subscription-components.md#deleteprepaidusageallocation",
+      "always": "Choose `credit_scheme` by what the customer should get back: `credit` (Maxio's default) leaves a service credit and returns no money, `refund` refunds with a credit note, `none` gives nothing."
+    },
+    "createUsage": {
+      "call": "client.SubscriptionComponents.CreateUsage",
+      "route": "POST /subscriptions/{subscription_id_or_reference}/components/{component_id}/usages.json",
+      "map": "map/operations/SubscriptionComponents.md#createusage",
+      "notes": "knowledge/operations/subscription-components.md#createusage",
+      "always": "Send a top-level `uniqueness_token`, unchanged when you resend the same report (R12). After an unknown outcome read `ListUsages` before sending again. Keep a negative `quantity` within the current `unit_balance`."
+    },
+    "listUsages": {
+      "call": "client.SubscriptionComponents.ListUsages",
+      "route": "GET /subscriptions/{subscription_id_or_reference}/components/{component_id}/usages.json",
+      "map": "map/operations/SubscriptionComponents.md#listusages",
+      "notes": "knowledge/operations/subscription-components.md#listusages",
+      "always": null
+    },
+    "activateEventBasedComponent": {
+      "call": "client.SubscriptionComponents.ActivateEventBasedComponent",
+      "route": "POST /event_based_billing/subscriptions/{subscription_id}/components/{component_id}/activate.json",
+      "map": "map/operations/SubscriptionComponents.md#activateeventbasedcomponent",
+      "notes": "knowledge/operations/subscription-components.md#activateeventbasedcomponent",
+      "always": null
+    },
+    "deactivateEventBasedComponent": {
+      "call": "client.SubscriptionComponents.DeactivateEventBasedComponent",
+      "route": "POST /event_based_billing/subscriptions/{subscription_id}/components/{component_id}/deactivate.json",
+      "map": "map/operations/SubscriptionComponents.md#deactivateeventbasedcomponent",
+      "notes": null,
+      "always": null
+    },
+    "createSubscription": {
+      "call": "client.Subscriptions.CreateSubscription",
+      "route": "POST /subscriptions.json",
+      "map": "map/operations/Subscriptions.md#createsubscription",
+      "notes": "knowledge/operations/subscriptions.md#createsubscription",
+      "always": "Find the customer (`ReadCustomerByReference`) and any plan it holds (L2); name it once (D1). Send `payment_collection_method` (R14), `reference`, a body-root `uniqueness_token` kept on resends (R12). Timeout, 409: unknown (R11)."
+    },
+    "listSubscriptions": {
+      "call": "client.Subscriptions.ListSubscriptions",
+      "route": "GET /subscriptions.json",
+      "map": "map/operations/Subscriptions.md#listsubscriptions",
+      "notes": "knowledge/operations/subscriptions.md#listsubscriptions",
+      "always": "Page until a page comes back empty (R8). The `state` filter cannot name `soft_failure`: to list everyone with access, leave it out and classify each row's `state` (R9, R16). Filter `product` by id or exact name, never a handle."
+    },
+    "recordEvent": {
+      "call": "client.SubscriptionComponents.RecordEvent",
+      "route": "POST /events/{api_handle}.json",
+      "map": "map/operations/SubscriptionComponents.md#recordevent",
+      "notes": "knowledge/operations/subscription-components.md#recordevent",
+      "always": "Put a `uniqueness_token` inside the event's `chargify` object (64 characters at most), the same on every resend: a duplicate in the stream is ignored silently, never 409. Events bill only after `ActivateEventBasedComponent`."
+    },
+    "bulkRecordEvents": {
+      "call": "client.SubscriptionComponents.BulkRecordEvents",
+      "route": "POST /events/{api_handle}/bulk.json",
+      "map": "map/operations/SubscriptionComponents.md#bulkrecordevents",
+      "notes": "knowledge/operations/subscription-components.md#bulkrecordevents",
+      "always": "Send at most 1000 events per call. Give each event its own `chargify.uniqueness_token`, unchanged on a resend: duplicates in a stream are ignored silently, never 409."
+    },
+    "createOffer": {
+      "call": "client.Offers.CreateOffer",
+      "route": "POST /offers.json",
+      "map": "map/operations/Offers.md#createoffer",
+      "notes": "knowledge/operations/offers.md#createoffer",
+      "always": null
+    },
+    "listOffers": {
+      "call": "client.Offers.ListOffers",
+      "route": "GET /offers.json",
+      "map": "map/operations/Offers.md#listoffers",
+      "notes": null,
+      "always": null
+    },
+    "readOffer": {
+      "call": "client.Offers.ReadOffer",
+      "route": "GET /offers/{offer_id}.json",
+      "map": "map/operations/Offers.md#readoffer",
+      "notes": null,
+      "always": null
+    },
+    "archiveOffer": {
+      "call": "client.Offers.ArchiveOffer",
+      "route": "PUT /offers/{offer_id}/archive.json",
+      "map": "map/operations/Offers.md#archiveoffer",
+      "notes": null,
+      "always": null
+    },
+    "unarchiveOffer": {
+      "call": "client.Offers.UnarchiveOffer",
+      "route": "PUT /offers/{offer_id}/unarchive.json",
+      "map": "map/operations/Offers.md#unarchiveoffer",
+      "notes": null,
+      "always": null
+    },
+    "listSalesCommissionSettings": {
+      "call": "client.SalesCommissions.ListSalesCommissionSettings",
+      "route": "GET /sellers/{seller_id}/sales_commission_settings.json",
+      "map": "map/operations/SalesCommissions.md#listsalescommissionsettings",
+      "notes": null,
+      "always": null
+    },
+    "listSalesReps": {
+      "call": "client.SalesCommissions.ListSalesReps",
+      "route": "GET /sellers/{seller_id}/sales_reps.json",
+      "map": "map/operations/SalesCommissions.md#listsalesreps",
+      "notes": null,
+      "always": null
+    },
+    "readSalesRep": {
+      "call": "client.SalesCommissions.ReadSalesRep",
+      "route": "GET /sellers/{seller_id}/sales_reps/{sales_rep_id}.json",
+      "map": "map/operations/SalesCommissions.md#readsalesrep",
+      "notes": null,
+      "always": null
+    },
+    "retrySubscription": {
+      "call": "client.SubscriptionStatus.RetrySubscription",
+      "route": "PUT /subscriptions/{subscription_id}/retry.json",
+      "map": "map/operations/SubscriptionStatus.md#retrysubscription",
+      "notes": "knowledge/operations/subscription-status.md#retrysubscription",
+      "always": "Call only on a `past_due` subscription. It takes a payment and cannot carry a `uniqueness_token`: never resend it automatically, allow 120 seconds, and after a timeout read the subscription back (R11)."
+    },
+    "updateSubscription": {
+      "call": "client.Subscriptions.UpdateSubscription",
+      "route": "PUT /subscriptions/{subscription_id}.json",
+      "map": "map/operations/Subscriptions.md#updatesubscription",
+      "notes": "knowledge/operations/subscriptions.md#updatesubscription",
+      "always": "A product sent here switches the plan now, with no proration; add `product_change_delayed: true` to switch at renewal (D13). With card details this call can take a payment: turn off the client's automatic retry for it (R11)."
+    },
+    "cancelSubscription": {
+      "call": "client.SubscriptionStatus.CancelSubscription",
+      "route": "DELETE /subscriptions/{subscription_id}.json",
+      "map": "map/operations/SubscriptionStatus.md#cancelsubscription",
+      "notes": "knowledge/operations/subscription-status.md#cancelsubscription",
+      "always": "To cancel now, send neither `cancel_at_end_of_period` nor `scheduled_cancellation_at` (D11). On prepaid, `refund_prepayment_account_balance` defaults to a refund and needs the Schedule Subscription Cancellation feature."
+    },
+    "readSubscription": {
+      "call": "client.Subscriptions.ReadSubscription",
+      "route": "GET /subscriptions/{subscription_id}.json",
+      "map": "map/operations/Subscriptions.md#readsubscription",
+      "notes": "knowledge/operations/subscriptions.md#readsubscription",
+      "always": null
+    },
+    "resumeSubscription": {
+      "call": "client.SubscriptionStatus.ResumeSubscription",
+      "route": "POST /subscriptions/{subscription_id}/resume.json",
+      "map": "map/operations/SubscriptionStatus.md#resumesubscription",
+      "notes": "knowledge/operations/subscription-status.md#resumesubscription",
+      "always": "Call only when the state is `on_hold`. Check first whether the original renewal date has passed: after it, resuming charges the customer at once (D12)."
+    },
+    "pauseSubscription": {
+      "call": "client.SubscriptionStatus.PauseSubscription",
+      "route": "POST /subscriptions/{subscription_id}/hold.json",
+      "map": "map/operations/SubscriptionStatus.md#pausesubscription",
+      "notes": "knowledge/operations/subscription-status.md#pausesubscription",
+      "always": "Pause only when `current_period_ends_at` is more than 24 hours away. Set any `automatically_resume_at` at least 24 hours ahead; omit it for an open-ended hold. The state becomes `on_hold`, never `paused` (R16)."
+    },
+    "updateAutomaticSubscriptionResumption": {
+      "call": "client.SubscriptionStatus.UpdateAutomaticSubscriptionResumption",
+      "route": "PUT /subscriptions/{subscription_id}/hold.json",
+      "map": "map/operations/SubscriptionStatus.md#updateautomaticsubscriptionresumption",
+      "notes": "knowledge/operations/subscription-status.md#updateautomaticsubscriptionresumption",
+      "always": "Call only while the subscription is `on_hold`. Send `automatically_resume_at` at least 24 hours ahead, or `null` to remove the date and leave the hold open-ended."
+    },
+    "reactivateSubscription": {
+      "call": "client.SubscriptionStatus.ReactivateSubscription",
+      "route": "PUT /subscriptions/{subscription_id}/reactivate.json",
+      "map": "map/operations/SubscriptionStatus.md#reactivatesubscription",
+      "notes": "knowledge/operations/subscription-status.md#reactivatesubscription",
+      "always": "It can take a payment: turn off the client's automatic retry for it, and settle a timeout by R11. For resume-or-nothing send `resume: {\"require_resume\": true}`; plain `resume: true` can start a new, charged period (D12)."
+    },
+    "migrateSubscriptionProduct": {
+      "call": "client.SubscriptionProducts.MigrateSubscriptionProduct",
+      "route": "POST /subscriptions/{subscription_id}/migrations.json",
+      "map": "map/operations/SubscriptionProducts.md#migratesubscriptionproduct",
+      "notes": "knowledge/operations/subscription-products.md#migratesubscriptionproduct",
+      "always": "Send `preserve_period` explicitly: `true` prorates and keeps the billing date; omitted resets the period and charges in full (D13). Preview first (`trialing`: D13). One random `uniqueness_token` per change, never computed (R12)."
+    },
+    "previewSubscriptionProductMigration": {
+      "call": "client.SubscriptionProducts.PreviewSubscriptionProductMigration",
+      "route": "POST /subscriptions/{subscription_id}/migrations/preview.json",
+      "map": "map/operations/SubscriptionProducts.md#previewsubscriptionproductmigration",
+      "notes": "knowledge/operations/subscription-products.md#previewsubscriptionproductmigration",
+      "always": null
+    },
+    "overrideSubscription": {
+      "call": "client.Subscriptions.OverrideSubscription",
+      "route": "PUT /subscriptions/{subscription_id}/override.json",
+      "map": "map/operations/Subscriptions.md#overridesubscription",
+      "notes": "knowledge/operations/subscriptions.md#overridesubscription",
+      "always": "Use it only to align fields Maxio manages with your own history. Other fields do not follow (a new `expires_at` leaves the next assessment date), but `current_period_starts_at` sets how mid-period allocations prorate."
+    },
+    "initiateDelayedCancellation": {
+      "call": "client.SubscriptionStatus.InitiateDelayedCancellation",
+      "route": "POST /subscriptions/{subscription_id}/delayed_cancel.json",
+      "map": "map/operations/SubscriptionStatus.md#initiatedelayedcancellation",
+      "notes": "knowledge/operations/subscription-status.md#initiatedelayedcancellation",
+      "always": "Never call while `past_due` (D11). Send a body-root `uniqueness_token` (R12); a timeout is unknown (R11). The answer is only a message: confirm with `ReadSubscription` that `cancel_at_end_of_period` is `true`."
+    },
+    "cancelDelayedCancellation": {
+      "call": "client.SubscriptionStatus.CancelDelayedCancellation",
+      "route": "DELETE /subscriptions/{subscription_id}/delayed_cancel.json",
+      "map": "map/operations/SubscriptionStatus.md#canceldelayedcancellation",
+      "notes": null,
+      "always": null
+    },
+    "cancelDunning": {
+      "call": "client.SubscriptionStatus.CancelDunning",
+      "route": "POST /subscriptions/{subscription_id}/cancel_dunning.json",
+      "map": "map/operations/SubscriptionStatus.md#canceldunning",
+      "notes": "knowledge/operations/subscription-status.md#canceldunning",
+      "always": null
+    },
+    "previewRenewal": {
+      "call": "client.SubscriptionStatus.PreviewRenewal",
+      "route": "POST /subscriptions/{subscription_id}/renewals/preview.json",
+      "map": "map/operations/SubscriptionStatus.md#previewrenewal",
+      "notes": "knowledge/operations/subscription-status.md#previewrenewal",
+      "always": null
+    },
+    "createScheduledRenewalConfiguration": {
+      "call": "client.SubscriptionRenewals.CreateScheduledRenewalConfiguration",
+      "route": "POST /subscriptions/{subscription_id}/scheduled_renewals.json",
+      "map": "map/operations/SubscriptionRenewals.md#createscheduledrenewalconfiguration",
+      "notes": null,
+      "always": null
+    },
+    "listScheduledRenewalConfigurations": {
+      "call": "client.SubscriptionRenewals.ListScheduledRenewalConfigurations",
+      "route": "GET /subscriptions/{subscription_id}/scheduled_renewals.json",
+      "map": "map/operations/SubscriptionRenewals.md#listscheduledrenewalconfigurations",
+      "notes": null,
+      "always": null
+    },
+    "readScheduledRenewalConfiguration": {
+      "call": "client.SubscriptionRenewals.ReadScheduledRenewalConfiguration",
+      "route": "GET /subscriptions/{subscription_id}/scheduled_renewals/{id}.json",
+      "map": "map/operations/SubscriptionRenewals.md#readscheduledrenewalconfiguration",
+      "notes": null,
+      "always": null
+    },
+    "updateScheduledRenewalConfiguration": {
+      "call": "client.SubscriptionRenewals.UpdateScheduledRenewalConfiguration",
+      "route": "PUT /subscriptions/{subscription_id}/scheduled_renewals/{id}.json",
+      "map": "map/operations/SubscriptionRenewals.md#updatescheduledrenewalconfiguration",
+      "notes": null,
+      "always": null
+    },
+    "scheduleScheduledRenewalLockIn": {
+      "call": "client.SubscriptionRenewals.ScheduleScheduledRenewalLockIn",
+      "route": "PUT /subscriptions/{subscription_id}/scheduled_renewals/{id}/schedule_lock_in.json",
+      "map": "map/operations/SubscriptionRenewals.md#schedulescheduledrenewallockin",
+      "notes": null,
+      "always": null
+    },
+    "lockInScheduledRenewalImmediately": {
+      "call": "client.SubscriptionRenewals.LockInScheduledRenewalImmediately",
+      "route": "PUT /subscriptions/{subscription_id}/scheduled_renewals/{id}/immediate_lock_in.json",
+      "map": "map/operations/SubscriptionRenewals.md#lockinscheduledrenewalimmediately",
+      "notes": null,
+      "always": null
+    },
+    "unpublishScheduledRenewalConfiguration": {
+      "call": "client.SubscriptionRenewals.UnpublishScheduledRenewalConfiguration",
+      "route": "PUT /subscriptions/{subscription_id}/scheduled_renewals/{id}/unpublish.json",
+      "map": "map/operations/SubscriptionRenewals.md#unpublishscheduledrenewalconfiguration",
+      "notes": null,
+      "always": null
+    },
+    "cancelScheduledRenewalConfiguration": {
+      "call": "client.SubscriptionRenewals.CancelScheduledRenewalConfiguration",
+      "route": "PUT /subscriptions/{subscription_id}/scheduled_renewals/{id}/cancel.json",
+      "map": "map/operations/SubscriptionRenewals.md#cancelscheduledrenewalconfiguration",
+      "notes": null,
+      "always": null
+    },
+    "createScheduledRenewalConfigurationItem": {
+      "call": "client.SubscriptionRenewals.CreateScheduledRenewalConfigurationItem",
+      "route": "POST /subscriptions/{subscription_id}/scheduled_renewals/{scheduled_renewals_configuration_id}/configuration_items.json",
+      "map": "map/operations/SubscriptionRenewals.md#createscheduledrenewalconfigurationitem",
+      "notes": null,
+      "always": null
+    },
+    "updateScheduledRenewalConfigurationItem": {
+      "call": "client.SubscriptionRenewals.UpdateScheduledRenewalConfigurationItem",
+      "route": "PUT /subscriptions/{subscription_id}/scheduled_renewals/{scheduled_renewals_configuration_id}/configuration_items/{id}.json",
+      "map": "map/operations/SubscriptionRenewals.md#updatescheduledrenewalconfigurationitem",
+      "notes": null,
+      "always": null
+    },
+    "deleteScheduledRenewalConfigurationItem": {
+      "call": "client.SubscriptionRenewals.DeleteScheduledRenewalConfigurationItem",
+      "route": "DELETE /subscriptions/{subscription_id}/scheduled_renewals/{scheduled_renewals_configuration_id}/configuration_items/{id}.json",
+      "map": "map/operations/SubscriptionRenewals.md#deletescheduledrenewalconfigurationitem",
+      "notes": null,
+      "always": null
+    },
+    "createInvoice": {
+      "call": "client.Invoices.CreateInvoice",
+      "route": "POST /subscriptions/{subscription_id}/invoices.json",
+      "map": "map/operations/Invoices.md#createinvoice",
+      "notes": "knowledge/operations/invoices.md#createinvoice",
+      "always": "Decide `status`: send `\"draft\"` for review; the default `open` issues the invoice now. Make each line item exactly one of `title` + `unit_price`, `product_id` or `component_id`. Keep `issue_date` at today or earlier."
+    },
+    "updateInvoice": {
+      "call": "client.Invoices.UpdateInvoice",
+      "route": "PUT /subscriptions/{subscription_id}/invoices/{uid}.json",
+      "map": "map/operations/Invoices.md#updateinvoice",
+      "notes": "knowledge/operations/invoices.md#updateinvoice",
+      "always": "Send `coupons` only to replace every discount on the invoice: the list you send replaces them all, and `[]` removes them. Send each existing line item with its `uid`; a line without `uid` is added as new."
+    },
+    "deleteInvoice": {
+      "call": "client.Invoices.DeleteInvoice",
+      "route": "DELETE /subscriptions/{subscription_id}/invoices/{uid}.json",
+      "map": "map/operations/Invoices.md#deleteinvoice",
+      "notes": "knowledge/operations/invoices.md#deleteinvoice",
+      "always": "Delete only an ad hoc `draft` invoice, and only when it should be gone for good: the invoice \"is permanently removed\". Void an issued invoice with `VoidInvoice` instead."
+    },
+    "createPrepayment": {
+      "call": "client.SubscriptionInvoiceAccount.CreatePrepayment",
+      "route": "POST /subscriptions/{subscription_id}/prepayments.json",
+      "map": "map/operations/SubscriptionInvoiceAccount.md#createprepayment",
+      "notes": "knowledge/operations/subscription-invoice-account.md#createprepayment",
+      "always": "Choose `method` on purpose: `credit_card_on_file` charges the default card now (D15). `amount` is in major units: the spec's `amount: 100` comes back as `amount_in_cents: 10000`."
+    },
+    "listPrepayments": {
+      "call": "client.SubscriptionInvoiceAccount.ListPrepayments",
+      "route": "GET /subscriptions/{subscription_id}/prepayments.json",
+      "map": "map/operations/SubscriptionInvoiceAccount.md#listprepayments",
+      "notes": null,
+      "always": null
+    },
+    "issueServiceCredit": {
+      "call": "client.SubscriptionInvoiceAccount.IssueServiceCredit",
+      "route": "POST /subscriptions/{subscription_id}/service_credits.json",
+      "map": "map/operations/SubscriptionInvoiceAccount.md#issueservicecredit",
+      "notes": "knowledge/operations/subscription-invoice-account.md#issueservicecredit",
+      "always": null
+    },
+    "deductServiceCredit": {
+      "call": "client.SubscriptionInvoiceAccount.DeductServiceCredit",
+      "route": "POST /subscriptions/{subscription_id}/service_credit_deductions.json",
+      "map": "map/operations/SubscriptionInvoiceAccount.md#deductservicecredit",
+      "notes": null,
+      "always": null
+    },
+    "listServiceCredits": {
+      "call": "client.SubscriptionInvoiceAccount.ListServiceCredits",
+      "route": "GET /subscriptions/{subscription_id}/service_credits/list.json",
+      "map": "map/operations/SubscriptionInvoiceAccount.md#listservicecredits",
+      "notes": null,
+      "always": null
+    },
+    "signupWithSubscriptionGroup": {
+      "call": "client.SubscriptionGroups.SignupWithSubscriptionGroup",
+      "route": "POST /subscription_groups/signup.json",
+      "map": "map/operations/SubscriptionGroups.md#signupwithsubscriptiongroup",
+      "notes": "knowledge/operations/subscription-groups.md#signupwithsubscriptiongroup",
+      "always": "Send one payer source, at most one payment source, `payment_collection_method` by intent (R14), exactly one subscription with `\"primary\": true`, and a top-level `uniqueness_token`, unchanged when you resend the request (R12)."
+    },
+    "createSubscriptionGroup": {
+      "call": "client.SubscriptionGroups.CreateSubscriptionGroup",
+      "route": "POST /subscription_groups.json",
+      "map": "map/operations/SubscriptionGroups.md#createsubscriptiongroup",
+      "notes": null,
+      "always": null
+    },
+    "listSubscriptionGroups": {
+      "call": "client.SubscriptionGroups.ListSubscriptionGroups",
+      "route": "GET /subscription_groups.json",
+      "map": "map/operations/SubscriptionGroups.md#listsubscriptiongroups",
+      "notes": null,
+      "always": null
+    },
+    "readSubscriptionGroup": {
+      "call": "client.SubscriptionGroups.ReadSubscriptionGroup",
+      "route": "GET /subscription_groups/{uid}.json",
+      "map": "map/operations/SubscriptionGroups.md#readsubscriptiongroup",
+      "notes": null,
+      "always": null
+    },
+    "updateSubscriptionGroupMembers": {
+      "call": "client.SubscriptionGroups.UpdateSubscriptionGroupMembers",
+      "route": "PUT /subscription_groups/{uid}.json",
+      "map": "map/operations/SubscriptionGroups.md#updatesubscriptiongroupmembers",
+      "notes": "knowledge/operations/subscription-groups.md#updatesubscriptiongroupmembers",
+      "always": "`member_ids` replaces the whole membership: send every subscription that should stay, plus the new ones. An id you leave out is removed from the group, and an empty list removes every member."
+    },
+    "deleteSubscriptionGroup": {
+      "call": "client.SubscriptionGroups.DeleteSubscriptionGroup",
+      "route": "DELETE /subscription_groups/{uid}.json",
+      "map": "map/operations/SubscriptionGroups.md#deletesubscriptiongroup",
+      "notes": null,
+      "always": null
+    },
+    "findSubscriptionGroup": {
+      "call": "client.SubscriptionGroups.FindSubscriptionGroup",
+      "route": "GET /subscription_groups/lookup.json",
+      "map": "map/operations/SubscriptionGroups.md#findsubscriptiongroup",
+      "notes": null,
+      "always": null
+    },
+    "cancelSubscriptionsInGroup": {
+      "call": "client.SubscriptionGroupStatus.CancelSubscriptionsInGroup",
+      "route": "POST /subscription_groups/{uid}/cancel.json",
+      "map": "map/operations/SubscriptionGroupStatus.md#cancelsubscriptionsingroup",
+      "notes": "knowledge/operations/subscription-group-status.md#cancelsubscriptionsingroup",
+      "always": "This cancels every subscription in the group at once. Unbilled metered and prepaid usage is charged only when you send `charge_unbilled_usage: true`: decide it."
+    },
+    "initiateDelayedCancellationForGroup": {
+      "call": "client.SubscriptionGroupStatus.InitiateDelayedCancellationForGroup",
+      "route": "POST /subscription_groups/{uid}/delayed_cancel.json",
+      "map": "map/operations/SubscriptionGroupStatus.md#initiatedelayedcancellationforgroup",
+      "notes": "knowledge/operations/subscription-group-status.md#initiatedelayedcancellationforgroup",
+      "always": "Call only when every subscription in the group is on automatic billing and the group is not `past_due`."
+    },
+    "cancelDelayedCancellationForGroup": {
+      "call": "client.SubscriptionGroupStatus.CancelDelayedCancellationForGroup",
+      "route": "DELETE /subscription_groups/{uid}/delayed_cancel.json",
+      "map": "map/operations/SubscriptionGroupStatus.md#canceldelayedcancellationforgroup",
+      "notes": "knowledge/operations/subscription-group-status.md#canceldelayedcancellationforgroup",
+      "always": null
+    },
+    "reactivateSubscriptionGroup": {
+      "call": "client.SubscriptionGroupStatus.ReactivateSubscriptionGroup",
+      "route": "POST /subscription_groups/{uid}/reactivate.json",
+      "map": "map/operations/SubscriptionGroupStatus.md#reactivatesubscriptiongroup",
+      "notes": "knowledge/operations/subscription-group-status.md#reactivatesubscriptiongroup",
+      "always": "It attempts payment: canceled invoices from the primary's current period are reopened and charged, and a new period adds new charges. Decide `resume` and `resume_members`. After a timeout read the group back first (R11)."
+    },
+    "deleteSubscriptionGroupPaymentProfile": {
+      "call": "client.PaymentProfiles.DeleteSubscriptionGroupPaymentProfile",
+      "route": "DELETE /subscription_groups/{uid}/payment_profiles/{payment_profile_id}.json",
+      "map": "map/operations/PaymentProfiles.md#deletesubscriptiongrouppaymentprofile",
+      "notes": null,
+      "always": null
+    },
+    "createSubscriptionGroupPrepayment": {
+      "call": "client.SubscriptionGroupInvoiceAccount.CreateSubscriptionGroupPrepayment",
+      "route": "POST /subscription_groups/{uid}/prepayments.json",
+      "map": "map/operations/SubscriptionGroupInvoiceAccount.md#createsubscriptiongroupprepayment",
+      "notes": null,
+      "always": null
+    },
+    "listPrepaymentsForSubscriptionGroup": {
+      "call": "client.SubscriptionGroupInvoiceAccount.ListPrepaymentsForSubscriptionGroup",
+      "route": "GET /subscription_groups/{uid}/prepayments.json",
+      "map": "map/operations/SubscriptionGroupInvoiceAccount.md#listprepaymentsforsubscriptiongroup",
+      "notes": null,
+      "always": null
+    },
+    "issueSubscriptionGroupServiceCredit": {
+      "call": "client.SubscriptionGroupInvoiceAccount.IssueSubscriptionGroupServiceCredit",
+      "route": "POST /subscription_groups/{uid}/service_credits.json",
+      "map": "map/operations/SubscriptionGroupInvoiceAccount.md#issuesubscriptiongroupservicecredit",
+      "notes": null,
+      "always": null
+    },
+    "deductSubscriptionGroupServiceCredit": {
+      "call": "client.SubscriptionGroupInvoiceAccount.DeductSubscriptionGroupServiceCredit",
+      "route": "POST /subscription_groups/{uid}/service_credit_deductions.json",
+      "map": "map/operations/SubscriptionGroupInvoiceAccount.md#deductsubscriptiongroupservicecredit",
+      "notes": null,
+      "always": null
+    },
+    "findSubscription": {
+      "call": "client.Subscriptions.FindSubscription",
+      "route": "GET /subscriptions/lookup.json",
+      "map": "map/operations/Subscriptions.md#findsubscription",
+      "notes": "knowledge/operations/subscriptions.md#findsubscription",
+      "always": "A 404 is \"not there\", not proof that a create failed: after a create with an unknown outcome follow R11. That create gets a new `uniqueness_token` only after a corrected 422, or after a 409 once 120 s pass with nothing found."
+    },
+    "changeSubscriptionDefaultPaymentProfile": {
+      "call": "client.PaymentProfiles.ChangeSubscriptionDefaultPaymentProfile",
+      "route": "POST /subscriptions/{subscription_id}/payment_profiles/{payment_profile_id}/change_payment_profile.json",
+      "map": "map/operations/PaymentProfiles.md#changesubscriptiondefaultpaymentprofile",
+      "notes": "knowledge/operations/payment-profiles.md#changesubscriptiondefaultpaymentprofile",
+      "always": null
+    },
+    "changeSubscriptionGroupDefaultPaymentProfile": {
+      "call": "client.PaymentProfiles.ChangeSubscriptionGroupDefaultPaymentProfile",
+      "route": "POST /subscription_groups/{uid}/payment_profiles/{payment_profile_id}/change_payment_profile.json",
+      "map": "map/operations/PaymentProfiles.md#changesubscriptiongroupdefaultpaymentprofile",
+      "notes": null,
+      "always": null
+    },
+    "purgeSubscription": {
+      "call": "client.Subscriptions.PurgeSubscription",
+      "route": "POST /subscriptions/{subscription_id}/purge.json",
+      "map": "map/operations/Subscriptions.md#purgesubscription",
+      "notes": "knowledge/operations/subscriptions.md#purgesubscription",
+      "always": "Set `ack` to the subscription's customer id. Call on test sites only. Send `cascade[]=customer` or `cascade[]=payment_profile` only to delete those records too."
+    },
+    "updatePrepaidSubscriptionConfiguration": {
+      "call": "client.Subscriptions.UpdatePrepaidSubscriptionConfiguration",
+      "route": "POST /subscriptions/{subscription_id}/prepaid_configurations.json",
+      "map": "map/operations/Subscriptions.md#updateprepaidsubscriptionconfiguration",
+      "notes": null,
+      "always": null
+    },
+    "addSubscriptionToGroup": {
+      "call": "client.SubscriptionGroups.AddSubscriptionToGroup",
+      "route": "POST /subscriptions/{subscription_id}/group.json",
+      "map": "map/operations/SubscriptionGroups.md#addsubscriptiontogroup",
+      "notes": "knowledge/operations/subscription-groups.md#addsubscriptiontogroup",
+      "always": "This decides who pays: the subscription joins the target's group and its payer, or a new group with the target customer as payer (`self`: the subscriber). It must share the target's customer record or hierarchy."
+    },
+    "removeSubscriptionFromGroup": {
+      "call": "client.SubscriptionGroups.RemoveSubscriptionFromGroup",
+      "route": "DELETE /subscriptions/{subscription_id}/group.json",
+      "map": "map/operations/SubscriptionGroups.md#removesubscriptionfromgroup",
+      "notes": null,
+      "always": null
+    },
+    "previewSubscription": {
+      "call": "client.Subscriptions.PreviewSubscription",
+      "route": "POST /subscriptions/preview.json",
+      "map": "map/operations/Subscriptions.md#previewsubscription",
+      "notes": "knowledge/operations/subscriptions.md#previewsubscription",
+      "always": null
+    },
+    "listChargifyJsPublicKeys": {
+      "call": "client.Sites.ListChargifyJsPublicKeys",
+      "route": "GET /chargify_js_keys.json",
+      "map": "map/operations/Sites.md#listchargifyjspublickeys",
+      "notes": null,
+      "always": null
+    },
+    "createConsolidatedProformaInvoice": {
+      "call": "client.ProformaInvoices.CreateConsolidatedProformaInvoice",
+      "route": "POST /subscription_groups/{uid}/proforma_invoices.json",
+      "map": "map/operations/ProformaInvoices.md#createconsolidatedproformainvoice",
+      "notes": null,
+      "always": null
+    },
+    "listSubscriptionGroupProformaInvoices": {
+      "call": "client.ProformaInvoices.ListSubscriptionGroupProformaInvoices",
+      "route": "GET /subscription_groups/{uid}/proforma_invoices.json",
+      "map": "map/operations/ProformaInvoices.md#listsubscriptiongroupproformainvoices",
+      "notes": null,
+      "always": null
+    },
+    "readProformaInvoice": {
+      "call": "client.ProformaInvoices.ReadProformaInvoice",
+      "route": "GET /proforma_invoices/{proforma_invoice_uid}.json",
+      "map": "map/operations/ProformaInvoices.md#readproformainvoice",
+      "notes": null,
+      "always": null
+    },
+    "applyCouponsToSubscription": {
+      "call": "client.Subscriptions.ApplyCouponsToSubscription",
+      "route": "POST /subscriptions/{subscription_id}/add_coupon.json",
+      "map": "map/operations/Subscriptions.md#applycouponstosubscription",
+      "notes": "knowledge/operations/subscriptions.md#applycouponstosubscription",
+      "always": "Send the codes in the request body. Never use the deprecated `code` query parameter: it replaces every coupon already on the subscription (D18)."
+    },
+    "removeCouponFromSubscription": {
+      "call": "client.Subscriptions.RemoveCouponFromSubscription",
+      "route": "DELETE /subscriptions/{subscription_id}/remove_coupon.json",
+      "map": "map/operations/Subscriptions.md#removecouponfromsubscription",
+      "notes": null,
+      "always": null
+    },
+    "createProformaInvoice": {
+      "call": "client.ProformaInvoices.CreateProformaInvoice",
+      "route": "POST /subscriptions/{subscription_id}/proforma_invoices.json",
+      "map": "map/operations/ProformaInvoices.md#createproformainvoice",
+      "notes": null,
+      "always": null
+    },
+    "listProformaInvoices": {
+      "call": "client.ProformaInvoices.ListProformaInvoices",
+      "route": "GET /subscriptions/{subscription_id}/proforma_invoices.json",
+      "map": "map/operations/ProformaInvoices.md#listproformainvoices",
+      "notes": null,
+      "always": null
+    },
+    "deliverProformaInvoice": {
+      "call": "client.ProformaInvoices.DeliverProformaInvoice",
+      "route": "POST /proforma_invoices/{proforma_invoice_uid}/deliveries.json",
+      "map": "map/operations/ProformaInvoices.md#deliverproformainvoice",
+      "notes": null,
+      "always": null
+    },
+    "voidProformaInvoice": {
+      "call": "client.ProformaInvoices.VoidProformaInvoice",
+      "route": "POST /proforma_invoices/{proforma_invoice_uid}/void.json",
+      "map": "map/operations/ProformaInvoices.md#voidproformainvoice",
+      "notes": null,
+      "always": null
+    },
+    "previewProformaInvoice": {
+      "call": "client.ProformaInvoices.PreviewProformaInvoice",
+      "route": "POST /subscriptions/{subscription_id}/proforma_invoices/preview.json",
+      "map": "map/operations/ProformaInvoices.md#previewproformainvoice",
+      "notes": null,
+      "always": null
+    },
+    "sendInvoice": {
+      "call": "client.Invoices.SendInvoice",
+      "route": "POST /invoices/{uid}/deliveries.json",
+      "map": "map/operations/Invoices.md#sendinvoice",
+      "notes": null,
+      "always": null
+    },
+    "previewCustomerInformationChanges": {
+      "call": "client.Invoices.PreviewCustomerInformationChanges",
+      "route": "POST /invoices/{uid}/customer_information/preview.json",
+      "map": "map/operations/Invoices.md#previewcustomerinformationchanges",
+      "notes": null,
+      "always": null
+    },
+    "updateCustomerInformation": {
+      "call": "client.Invoices.UpdateCustomerInformation",
+      "route": "PUT /invoices/{uid}/customer_information.json",
+      "map": "map/operations/Invoices.md#updatecustomerinformation",
+      "notes": null,
+      "always": null
+    },
+    "readOneTimeToken": {
+      "call": "client.PaymentProfiles.ReadOneTimeToken",
+      "route": "GET /one_time_tokens/{chargify_token}.json",
+      "map": "map/operations/PaymentProfiles.md#readonetimetoken",
+      "notes": null,
+      "always": null
+    },
+    "listSubscriptionComponentsForSite": {
+      "call": "client.SubscriptionComponents.ListSubscriptionComponentsForSite",
+      "route": "GET /subscriptions_components.json",
+      "map": "map/operations/SubscriptionComponents.md#listsubscriptioncomponentsforsite",
+      "notes": null,
+      "always": null
+    },
+    "createSegment": {
+      "call": "client.EventsBasedBillingSegments.CreateSegment",
+      "route": "POST /components/{component_id}/price_points/{price_point_id}/segments.json",
+      "map": "map/operations/EventsBasedBillingSegments.md#createsegment",
+      "notes": null,
+      "always": null
+    },
+    "listSegmentsForPricePoint": {
+      "call": "client.EventsBasedBillingSegments.ListSegmentsForPricePoint",
+      "route": "GET /components/{component_id}/price_points/{price_point_id}/segments.json",
+      "map": "map/operations/EventsBasedBillingSegments.md#listsegmentsforpricepoint",
+      "notes": null,
+      "always": null
+    },
+    "updateSegment": {
+      "call": "client.EventsBasedBillingSegments.UpdateSegment",
+      "route": "PUT /components/{component_id}/price_points/{price_point_id}/segments/{id}.json",
+      "map": "map/operations/EventsBasedBillingSegments.md#updatesegment",
+      "notes": null,
+      "always": null
+    },
+    "deleteSegment": {
+      "call": "client.EventsBasedBillingSegments.DeleteSegment",
+      "route": "DELETE /components/{component_id}/price_points/{price_point_id}/segments/{id}.json",
+      "map": "map/operations/EventsBasedBillingSegments.md#deletesegment",
+      "notes": null,
+      "always": null
+    },
+    "bulkCreateSegments": {
+      "call": "client.EventsBasedBillingSegments.BulkCreateSegments",
+      "route": "POST /components/{component_id}/price_points/{price_point_id}/segments/bulk.json",
+      "map": "map/operations/EventsBasedBillingSegments.md#bulkcreatesegments",
+      "notes": null,
+      "always": null
+    },
+    "bulkUpdateSegments": {
+      "call": "client.EventsBasedBillingSegments.BulkUpdateSegments",
+      "route": "PUT /components/{component_id}/price_points/{price_point_id}/segments/bulk.json",
+      "map": "map/operations/EventsBasedBillingSegments.md#bulkupdatesegments",
+      "notes": null,
+      "always": null
+    },
+    "issueAdvanceInvoice": {
+      "call": "client.AdvanceInvoice.IssueAdvanceInvoice",
+      "route": "POST /subscriptions/{subscription_id}/advance_invoice/issue.json",
+      "map": "map/operations/AdvanceInvoice.md#issueadvanceinvoice",
+      "notes": null,
+      "always": null
+    },
+    "readAdvanceInvoice": {
+      "call": "client.AdvanceInvoice.ReadAdvanceInvoice",
+      "route": "GET /subscriptions/{subscription_id}/advance_invoice.json",
+      "map": "map/operations/AdvanceInvoice.md#readadvanceinvoice",
+      "notes": null,
+      "always": null
+    },
+    "voidAdvanceInvoice": {
+      "call": "client.AdvanceInvoice.VoidAdvanceInvoice",
+      "route": "POST /subscriptions/{subscription_id}/advance_invoice/void.json",
+      "map": "map/operations/AdvanceInvoice.md#voidadvanceinvoice",
+      "notes": null,
+      "always": null
+    },
+    "listMrrPerSubscription": {
+      "call": "client.Insights.ListMrrPerSubscription",
+      "route": "GET /subscriptions_mrr.json",
+      "map": "map/operations/Insights.md#listmrrpersubscription",
+      "notes": null,
+      "always": null
+    },
+    "refundPrepayment": {
+      "call": "client.SubscriptionInvoiceAccount.RefundPrepayment",
+      "route": "POST /subscriptions/{subscription_id}/prepayments/{prepayment_id}/refunds.json",
+      "map": "map/operations/SubscriptionInvoiceAccount.md#refundprepayment",
+      "notes": "knowledge/operations/subscription-invoice-account.md#refundprepayment",
+      "always": "`prepayment_id` is the original payment's account transaction id. For a prepayment made through a payment profile send `external` explicitly: `false` refunds to the profile, `true` only records a refund *(inferred)*."
+    },
+    "listProducts": {
+      "call": "client.Products.ListProducts",
+      "route": "GET /products.json",
+      "map": "map/operations/Products.md#listproducts",
+      "notes": null,
+      "always": null
+    },
+    "issueInvoice": {
+      "call": "client.Invoices.IssueInvoice",
+      "route": "POST /invoices/{uid}/issue.json",
+      "map": "map/operations/Invoices.md#issueinvoice",
+      "notes": "knowledge/operations/invoices.md#issueinvoice",
+      "always": "On automatic collection choose `on_failed_payment`. On remittance subscriptions never send `on_failed_payment`. Issue only `draft` or `pending` invoices (D16)."
+    },
+    "listAllComponentPricePoints": {
+      "call": "client.ComponentPricePoints.ListAllComponentPricePoints",
+      "route": "GET /components_price_points.json",
+      "map": "map/operations/ComponentPricePoints.md#listallcomponentpricepoints",
+      "notes": null,
+      "always": null
+    },
+    "listAllProductPricePoints": {
+      "call": "client.ProductPricePoints.ListAllProductPricePoints",
+      "route": "GET /products_price_points.json",
+      "map": "map/operations/ProductPricePoints.md#listallproductpricepoints",
+      "notes": null,
+      "always": null
+    },
+    "activateSubscription": {
+      "call": "client.Subscriptions.ActivateSubscription",
+      "route": "PUT /subscriptions/{subscription_id}/activate.json",
+      "map": "map/operations/Subscriptions.md#activatesubscription",
+      "notes": "knowledge/operations/subscriptions.md#activatesubscription",
+      "always": "It can take a payment: turn off the client's automatic retry for it (R11). Set `revert_on_failure` explicitly. Only on Relationship Invoicing sites (R3), for an `awaiting_signup` or `trialing` subscription not in a group."
+    },
+    "createSignupProformaInvoice": {
+      "call": "client.ProformaInvoices.CreateSignupProformaInvoice",
+      "route": "POST /subscriptions/proforma_invoices.json",
+      "map": "map/operations/ProformaInvoices.md#createsignupproformainvoice",
+      "notes": null,
+      "always": null
+    },
+    "previewSignupProformaInvoice": {
+      "call": "client.ProformaInvoices.PreviewSignupProformaInvoice",
+      "route": "POST /subscriptions/proforma_invoices/preview.json",
+      "map": "map/operations/ProformaInvoices.md#previewsignupproformainvoice",
+      "notes": null,
+      "always": null
+    },
+    "listExportedProformaInvoices": {
+      "call": "client.ApiExports.ListExportedProformaInvoices",
+      "route": "GET /api_exports/proforma_invoices/{batch_id}/rows.json",
+      "map": "map/operations/ApiExports.md#listexportedproformainvoices",
+      "notes": null,
+      "always": null
+    },
+    "listExportedInvoices": {
+      "call": "client.ApiExports.ListExportedInvoices",
+      "route": "GET /api_exports/invoices/{batch_id}/rows.json",
+      "map": "map/operations/ApiExports.md#listexportedinvoices",
+      "notes": null,
+      "always": null
+    },
+    "listExportedSubscriptions": {
+      "call": "client.ApiExports.ListExportedSubscriptions",
+      "route": "GET /api_exports/subscriptions/{batch_id}/rows.json",
+      "map": "map/operations/ApiExports.md#listexportedsubscriptions",
+      "notes": null,
+      "always": null
+    },
+    "exportProformaInvoices": {
+      "call": "client.ApiExports.ExportProformaInvoices",
+      "route": "POST /api_exports/proforma_invoices.json",
+      "map": "map/operations/ApiExports.md#exportproformainvoices",
+      "notes": null,
+      "always": null
+    },
+    "exportInvoices": {
+      "call": "client.ApiExports.ExportInvoices",
+      "route": "POST /api_exports/invoices.json",
+      "map": "map/operations/ApiExports.md#exportinvoices",
+      "notes": null,
+      "always": null
+    },
+    "exportSubscriptions": {
+      "call": "client.ApiExports.ExportSubscriptions",
+      "route": "POST /api_exports/subscriptions.json",
+      "map": "map/operations/ApiExports.md#exportsubscriptions",
+      "notes": null,
+      "always": null
+    },
+    "readProformaInvoicesExport": {
+      "call": "client.ApiExports.ReadProformaInvoicesExport",
+      "route": "GET /api_exports/proforma_invoices/{batch_id}.json",
+      "map": "map/operations/ApiExports.md#readproformainvoicesexport",
+      "notes": null,
+      "always": null
+    },
+    "readInvoicesExport": {
+      "call": "client.ApiExports.ReadInvoicesExport",
+      "route": "GET /api_exports/invoices/{batch_id}.json",
+      "map": "map/operations/ApiExports.md#readinvoicesexport",
+      "notes": null,
+      "always": null
+    },
+    "readSubscriptionsExport": {
+      "call": "client.ApiExports.ReadSubscriptionsExport",
+      "route": "GET /api_exports/subscriptions/{batch_id}.json",
+      "map": "map/operations/ApiExports.md#readsubscriptionsexport",
+      "notes": null,
+      "always": null
+    },
+    "sendRequestUpdatePaymentEmail": {
+      "call": "client.PaymentProfiles.SendRequestUpdatePaymentEmail",
+      "route": "POST /subscriptions/{subscription_id}/request_payment_profiles_update.json",
+      "map": "map/operations/PaymentProfiles.md#sendrequestupdatepaymentemail",
+      "notes": null,
+      "always": null
+    },
+    "listFeatureTemplates": {
+      "call": "client.FeatureTemplates.ListFeatureTemplates",
+      "route": "GET /features.json",
+      "map": "map/operations/FeatureTemplates.md#listfeaturetemplates",
+      "notes": null,
+      "always": null
+    },
+    "createFeatureTemplate": {
+      "call": "client.FeatureTemplates.CreateFeatureTemplate",
+      "route": "POST /features.json",
+      "map": "map/operations/FeatureTemplates.md#createfeaturetemplate",
+      "notes": "knowledge/operations/feature-templates.md#createfeaturetemplate",
+      "always": "Settle `key` and `kind` before creating: `key` is rejected on every later update, and `kind` once any feature catalog item uses the template."
+    },
+    "readFeatureTemplate": {
+      "call": "client.FeatureTemplates.ReadFeatureTemplate",
+      "route": "GET /features/{id}.json",
+      "map": "map/operations/FeatureTemplates.md#readfeaturetemplate",
+      "notes": null,
+      "always": null
+    },
+    "updateFeatureTemplate": {
+      "call": "client.FeatureTemplates.UpdateFeatureTemplate",
+      "route": "PUT /features/{id}.json",
+      "map": "map/operations/FeatureTemplates.md#updatefeaturetemplate",
+      "notes": null,
+      "always": null
+    },
+    "archiveFeatureTemplate": {
+      "call": "client.FeatureTemplates.ArchiveFeatureTemplate",
+      "route": "DELETE /features/{id}.json",
+      "map": "map/operations/FeatureTemplates.md#archivefeaturetemplate",
+      "notes": "knowledge/operations/feature-templates.md#archivefeaturetemplate",
+      "always": "Send `remove_from_catalog=true` only to revoke access for good: it destroys the template's catalog items and their entitlements at once, and `RestoreFeatureTemplate` does not bring them back."
+    },
+    "restoreFeatureTemplate": {
+      "call": "client.FeatureTemplates.RestoreFeatureTemplate",
+      "route": "POST /features/{id}/restore.json",
+      "map": "map/operations/FeatureTemplates.md#restorefeaturetemplate",
+      "notes": null,
+      "always": null
+    },
+    "listProductFeatures": {
+      "call": "client.ProductFeatures.ListProductFeatures",
+      "route": "GET /products/{product_id}/features.json",
+      "map": "map/operations/ProductFeatures.md#listproductfeatures",
+      "notes": null,
+      "always": null
+    },
+    "createProductFeature": {
+      "call": "client.ProductFeatures.CreateProductFeature",
+      "route": "POST /products/{product_id}/features.json",
+      "map": "map/operations/ProductFeatures.md#createproductfeature",
+      "notes": "knowledge/operations/product-features.md#createproductfeature",
+      "always": "Send `propagate_to_subscriptions: true` if existing subscribers should get the feature before their next subscription change. Send `value` as `\"true\"` or `\"false\"` for an access right, the limit itself for a usage limit."
+    },
+    "readProductFeature": {
+      "call": "client.ProductFeatures.ReadProductFeature",
+      "route": "GET /products/{product_id}/features/{id}.json",
+      "map": "map/operations/ProductFeatures.md#readproductfeature",
+      "notes": null,
+      "always": null
+    },
+    "updateProductFeature": {
+      "call": "client.ProductFeatures.UpdateProductFeature",
+      "route": "PUT /products/{product_id}/features/{id}.json",
+      "map": "map/operations/ProductFeatures.md#updateproductfeature",
+      "notes": "knowledge/operations/product-features.md#updateproductfeature",
+      "always": "Send `propagate_to_subscriptions: true` if existing subscribers must get the new value or periodicity. Left out, this call does not update the entitlements they already hold."
+    },
+    "removeProductFeature": {
+      "call": "client.ProductFeatures.RemoveProductFeature",
+      "route": "DELETE /products/{product_id}/features/{id}.json",
+      "map": "map/operations/ProductFeatures.md#removeproductfeature",
+      "notes": "knowledge/operations/product-features.md#removeproductfeature",
+      "always": "Send `destroy_entitlements=true` only to revoke access for good: it permanently deletes the catalog item and every entitlement it created. Without it the item is archived and subscribers keep their entitlements."
+    },
+    "restoreProductFeature": {
+      "call": "client.ProductFeatures.RestoreProductFeature",
+      "route": "POST /products/{product_id}/features/{id}/restore.json",
+      "map": "map/operations/ProductFeatures.md#restoreproductfeature",
+      "notes": null,
+      "always": null
+    },
+    "listComponentFeatures": {
+      "call": "client.ComponentFeatures.ListComponentFeatures",
+      "route": "GET /components/{component_id}/features.json",
+      "map": "map/operations/ComponentFeatures.md#listcomponentfeatures",
+      "notes": null,
+      "always": null
+    },
+    "createComponentFeature": {
+      "call": "client.ComponentFeatures.CreateComponentFeature",
+      "route": "POST /components/{component_id}/features.json",
+      "map": "map/operations/ComponentFeatures.md#createcomponentfeature",
+      "notes": null,
+      "always": null
+    },
+    "readComponentFeature": {
+      "call": "client.ComponentFeatures.ReadComponentFeature",
+      "route": "GET /components/{component_id}/features/{id}.json",
+      "map": "map/operations/ComponentFeatures.md#readcomponentfeature",
+      "notes": null,
+      "always": null
+    },
+    "updateComponentFeature": {
+      "call": "client.ComponentFeatures.UpdateComponentFeature",
+      "route": "PUT /components/{component_id}/features/{id}.json",
+      "map": "map/operations/ComponentFeatures.md#updatecomponentfeature",
+      "notes": null,
+      "always": null
+    },
+    "removeComponentFeature": {
+      "call": "client.ComponentFeatures.RemoveComponentFeature",
+      "route": "DELETE /components/{component_id}/features/{id}.json",
+      "map": "map/operations/ComponentFeatures.md#removecomponentfeature",
+      "notes": null,
+      "always": null
+    },
+    "restoreComponentFeature": {
+      "call": "client.ComponentFeatures.RestoreComponentFeature",
+      "route": "POST /components/{component_id}/features/{id}/restore.json",
+      "map": "map/operations/ComponentFeatures.md#restorecomponentfeature",
+      "notes": null,
+      "always": null
+    },
+    "readSubscriptionEntitlements": {
+      "call": "client.Entitlements.ReadSubscriptionEntitlements",
+      "route": "GET /subscriptions/{subscription_id}/entitlements.json",
+      "map": "map/operations/Entitlements.md#readsubscriptionentitlements",
+      "notes": "knowledge/operations/entitlements.md#readsubscriptionentitlements",
+      "always": "Match on the prefixed key (`feature.<key>`, `usage.<key>`, `service.<key>`), key entries on `periodicity_key`, and grant access only when `enabled` is true."
+    },
+    "listWallets": {
+      "call": "client.Wallets.ListWallets",
+      "route": "GET /wallets.json",
+      "map": "map/operations/Wallets.md#listwallets",
+      "notes": null,
+      "always": null
+    },
+    "createWallet": {
+      "call": "client.Wallets.CreateWallet",
+      "route": "POST /wallets.json",
+      "map": "map/operations/Wallets.md#createwallet",
+      "notes": null,
+      "always": null
+    },
+    "readWallet": {
+      "call": "client.Wallets.ReadWallet",
+      "route": "GET /wallets/{id}.json",
+      "map": "map/operations/Wallets.md#readwallet",
+      "notes": null,
+      "always": null
+    },
+    "archiveWallet": {
+      "call": "client.Wallets.ArchiveWallet",
+      "route": "DELETE /wallets/{id}.json",
+      "map": "map/operations/Wallets.md#archivewallet",
+      "notes": null,
+      "always": null
+    },
+    "updateWallet": {
+      "call": "client.Wallets.UpdateWallet",
+      "route": "PATCH /wallets/{id}.json",
+      "map": "map/operations/Wallets.md#updatewallet",
+      "notes": null,
+      "always": null
+    },
+    "listWalletTransactions": {
+      "call": "client.WalletTransactions.ListWalletTransactions",
+      "route": "GET /wallets/{wallet_id}/transactions.json",
+      "map": "map/operations/WalletTransactions.md#listwallettransactions",
+      "notes": null,
+      "always": null
+    },
+    "createWalletTransaction": {
+      "call": "client.WalletTransactions.CreateWalletTransaction",
+      "route": "POST /wallets/{wallet_id}/transactions.json",
+      "map": "map/operations/WalletTransactions.md#createwallettransaction",
+      "notes": null,
+      "always": null
+    },
+    "createWalletAdjustment": {
+      "call": "client.WalletAdjustments.CreateWalletAdjustment",
+      "route": "POST /wallets/{wallet_id}/adjustments.json",
+      "map": "map/operations/WalletAdjustments.md#createwalletadjustment",
+      "notes": null,
+      "always": null
+    },
+    "createWalletPurchase": {
+      "call": "client.WalletPurchases.CreateWalletPurchase",
+      "route": "POST /wallets/{wallet_id}/purchases.json",
+      "map": "map/operations/WalletPurchases.md#createwalletpurchase",
+      "notes": null,
+      "always": null
+    },
+    "previewWalletPurchase": {
+      "call": "client.WalletPurchases.PreviewWalletPurchase",
+      "route": "POST /wallets/{wallet_id}/purchases/preview.json",
+      "map": "map/operations/WalletPurchases.md#previewwalletpurchase",
+      "notes": null,
+      "always": null
+    },
+    "listWalletProducts": {
+      "call": "client.WalletProducts.ListWalletProducts",
+      "route": "GET /wallet_products.json",
+      "map": "map/operations/WalletProducts.md#listwalletproducts",
+      "notes": null,
+      "always": null
+    },
+    "createWalletProduct": {
+      "call": "client.WalletProducts.CreateWalletProduct",
+      "route": "POST /wallet_products.json",
+      "map": "map/operations/WalletProducts.md#createwalletproduct",
+      "notes": null,
+      "always": null
+    },
+    "readWalletProduct": {
+      "call": "client.WalletProducts.ReadWalletProduct",
+      "route": "GET /wallet_products/{id}.json",
+      "map": "map/operations/WalletProducts.md#readwalletproduct",
+      "notes": null,
+      "always": null
+    },
+    "updateWalletProduct": {
+      "call": "client.WalletProducts.UpdateWalletProduct",
+      "route": "PUT /wallet_products/{id}.json",
+      "map": "map/operations/WalletProducts.md#updatewalletproduct",
+      "notes": null,
+      "always": null
+    },
+    "readWalletProductUsage": {
+      "call": "client.WalletProducts.ReadWalletProductUsage",
+      "route": "GET /wallet_products/{id}/usage.json",
+      "map": "map/operations/WalletProducts.md#readwalletproductusage",
+      "notes": null,
+      "always": null
+    },
+    "archiveWalletProduct": {
+      "call": "client.WalletProducts.ArchiveWalletProduct",
+      "route": "POST /wallet_products/{id}/archive.json",
+      "map": "map/operations/WalletProducts.md#archivewalletproduct",
+      "notes": null,
+      "always": null
+    },
+    "unarchiveWalletProduct": {
+      "call": "client.WalletProducts.UnarchiveWalletProduct",
+      "route": "POST /wallet_products/{id}/unarchive.json",
+      "map": "map/operations/WalletProducts.md#unarchivewalletproduct",
+      "notes": null,
+      "always": null
+    }
+  }
+}

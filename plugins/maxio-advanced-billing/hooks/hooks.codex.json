@@ -1,0 +1,22 @@
+{
+  "description": "Codex hooks for Maxio Advanced Billing, named by .codex-plugin/plugin.json. Built from the Codex hooks documentation and source; never run (the Codex CLI on the test machine, 0.58.0, has no hooks). They read the SDK folder and give the agent the ten rules at session start or on the first prompt that names Maxio, an operation's notes after an apply_patch that calls it, and the documented causes of a Maxio rejection seen in a command's output. Codex runs PostToolUse for a command that exits non-zero, so there is no failure event. Shell form, because Codex has no args field. Requires Node.js on the PATH.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [{ "type": "command", "command": "node \"${PLUGIN_ROOT}/hooks/maxio-knowledge.mjs\" codex", "timeout": 15, "statusMessage": "Loading Maxio Advanced Billing rules" }]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [{ "type": "command", "command": "node \"${PLUGIN_ROOT}/hooks/maxio-knowledge.mjs\" codex", "timeout": 10 }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "^(Bash|apply_patch)$",
+        "hooks": [{ "type": "command", "command": "node \"${PLUGIN_ROOT}/hooks/maxio-knowledge.mjs\" codex", "timeout": 10 }]
+      }
+    ]
+  }
+}

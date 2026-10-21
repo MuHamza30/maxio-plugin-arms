@@ -1,0 +1,2059 @@
+[
+ {
+  "status": 422,
+  "message": "\"Portal is already enabled for this customer.\"",
+  "patterns": [
+   "Portal is already enabled for this customer"
+  ],
+  "quoted": [
+   "Portal is already enabled for this customer."
+  ],
+  "operationId": "enableBillingPortalForCustomer",
+  "call": "client.billingPortal.enableBillingPortalForCustomer",
+  "cause": "The portal is already on for this customer",
+  "do": "Nothing to enable. Match this exact message before you treat the portal as on: any other 422 is a rejection (rules.md R13). Use `resendBillingPortalInvitation` if the customer needs the email again",
+  "notes": "knowledge/operations/billing-portal.md#enablebillingportalforcustomer"
+ },
+ {
+  "status": 422,
+  "message": "\"Billing Portal is not enabled for this customer.\"",
+  "patterns": [
+   "Billing Portal is not enabled for this customer"
+  ],
+  "quoted": [
+   "Billing Portal is not enabled for this customer."
+  ],
+  "operationId": "readBillingPortalLink",
+  "call": "client.billingPortal.readBillingPortalLink",
+  "cause": "Portal not enabled",
+  "do": "Call `enableBillingPortalForCustomer`",
+  "notes": "knowledge/operations/billing-portal.md#readbillingportallink"
+ },
+ {
+  "status": 429,
+  "message": "\"Too many requests for this customer's management link\"",
+  "patterns": [
+   "Too many requests for this customer's management link"
+  ],
+  "quoted": [
+   "Too many requests for this customer's management link"
+  ],
+  "operationId": "readBillingPortalLink",
+  "call": "client.billingPortal.readBillingPortalLink",
+  "cause": "More than 15 requests before `new_link_available_at`",
+  "do": "Serve the cached URL and do not retry. The body's `new_link_available_at` says when a new link can be requested",
+  "notes": "knowledge/operations/billing-portal.md#readbillingportallink"
+ },
+ {
+  "status": 422,
+  "message": "\"There cannot be any overlapping bracket ranges\"",
+  "patterns": [
+   "There cannot be any overlapping bracket ranges"
+  ],
+  "quoted": [
+   "There cannot be any overlapping bracket ranges"
+  ],
+  "operationId": "createComponentPricePoint",
+  "call": "client.componentPricePoints.createComponentPricePoint",
+  "cause": "Two brackets overlap",
+  "do": "Fix the ranges",
+  "notes": "knowledge/operations/component-price-points.md#createcomponentpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Successive brackets may not have gaps in quantity …\"",
+  "patterns": [
+   "Successive brackets may not have gaps in quantity"
+  ],
+  "quoted": [
+   "Successive brackets may not have gaps in quantity …"
+  ],
+  "operationId": "createComponentPricePoint",
+  "call": "client.componentPricePoints.createComponentPricePoint",
+  "cause": "A gap between two brackets",
+  "do": "Start each bracket at the previous `ending_quantity + 1`",
+  "notes": "knowledge/operations/component-price-points.md#createcomponentpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Handle: must begin with a letter or a number, have at least one letter in it, and contain only lowercase letters, numbers, dashes and underscores.\"",
+  "patterns": [
+   "Handle: must begin with a letter or a number, have at least one letter in it, and contain only lowercase letters, numbers, dashes and underscores"
+  ],
+  "quoted": [
+   "Handle: must begin with a letter or a number, have at least one letter in it, and contain only lowercase letters, numbers, dashes and underscores."
+  ],
+  "operationId": "createComponentPricePoint",
+  "call": "client.componentPricePoints.createComponentPricePoint",
+  "cause": "Bad `handle`",
+  "do": "Lowercase letters, digits, `-`, `_`, at least one letter",
+  "notes": "knowledge/operations/component-price-points.md#createcomponentpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Pricing scheme cannot be per_unit for hybrid pricing\"",
+  "patterns": [
+   "Pricing scheme cannot be per_unit for hybrid pricing"
+  ],
+  "quoted": [
+   "Pricing scheme cannot be per_unit for hybrid pricing"
+  ],
+  "operationId": "createComponentPricePoint",
+  "call": "client.componentPricePoints.createComponentPricePoint",
+  "cause": "An overage block beside a `per_unit` primary scheme (status not documented)",
+  "do": "Use `volume`, `tiered` or `stairstep` as the primary scheme",
+  "notes": "knowledge/operations/component-price-points.md#createcomponentpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Prices primary pricing must have a finite included threshold for hybrid pricing\"",
+  "patterns": [
+   "Prices primary pricing must have a finite included threshold for hybrid pricing"
+  ],
+  "quoted": [
+   "Prices primary pricing must have a finite included threshold for hybrid pricing"
+  ],
+  "operationId": "createComponentPricePoint",
+  "call": "client.componentPricePoints.createComponentPricePoint",
+  "cause": "The top primary bracket has no `ending_quantity` (status not documented)",
+  "do": "Set `ending_quantity` on the top bracket",
+  "notes": "knowledge/operations/component-price-points.md#createcomponentpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"all prices must belong to the price point\"",
+  "patterns": [
+   "all prices must belong to the price point"
+  ],
+  "quoted": [
+   "all prices must belong to the price point"
+  ],
+  "operationId": "updateComponentPricePoint",
+  "call": "client.componentPricePoints.updateComponentPricePoint",
+  "cause": "A bracket `id` from another price point. This was a 404 before 2021-10-01 [announcement]",
+  "do": "Use this price point's ids",
+  "notes": "knowledge/operations/component-price-points.md#updatecomponentpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"There cannot be any overlapping bracket ranges\"",
+  "patterns": [
+   "There cannot be any overlapping bracket ranges"
+  ],
+  "quoted": [
+   "There cannot be any overlapping bracket ranges"
+  ],
+  "operationId": "updateComponentPricePoint",
+  "call": "client.componentPricePoints.updateComponentPricePoint",
+  "cause": "Brackets overlap. A fresh list sent beside the existing brackets is one way to get here *(inferred)*",
+  "do": "Update or `_destroy` the existing ids",
+  "notes": "knowledge/operations/component-price-points.md#updatecomponentpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Price point is already archived.\"",
+  "patterns": [
+   "Price point is already archived"
+  ],
+  "quoted": [
+   "Price point is already archived."
+  ],
+  "operationId": "archiveComponentPricePoint",
+  "call": "client.componentPricePoints.archiveComponentPricePoint",
+  "cause": "It is already archived",
+  "do": "Nothing to archive. Match this exact message; any other 422 is a rejection (rules.md R13)",
+  "notes": "knowledge/operations/component-price-points.md#archivecomponentpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Currency: is not one of the allowed values.\"",
+  "patterns": [
+   "Currency: is not one of the allowed values"
+  ],
+  "quoted": [
+   "Currency: is not one of the allowed values."
+  ],
+  "operationId": "createCurrencyPrices",
+  "call": "client.componentPricePoints.createCurrencyPrices",
+  "cause": "The currency is not defined on the site *(cause inferred from the message)*",
+  "do": "Define the currency in the site's settings first (lifecycles.md L1)",
+  "notes": "knowledge/operations/component-price-points.md#createcurrencyprices"
+ },
+ {
+  "status": 422,
+  "message": "\"Pricing already exists for this currency.\"",
+  "patterns": [
+   "Pricing already exists for this currency"
+  ],
+  "quoted": [
+   "Pricing already exists for this currency."
+  ],
+  "operationId": "createCurrencyPrices",
+  "call": "client.componentPricePoints.createCurrencyPrices",
+  "cause": "The price point already has prices in that currency (documented on `updateCurrencyPrices`; assumed here)",
+  "do": "Change them with `updateCurrencyPrices`",
+  "notes": "knowledge/operations/component-price-points.md#createcurrencyprices"
+ },
+ {
+  "status": 422,
+  "message": "\"At least 1 price bracket must be defined\"",
+  "patterns": [
+   "At least 1 price bracket must be defined"
+  ],
+  "quoted": [
+   "At least 1 price bracket must be defined"
+  ],
+  "operationId": "createMeteredComponent",
+  "call": "client.components.createMeteredComponent",
+  "cause": "Bracketed scheme without `prices`",
+  "do": "Add brackets",
+  "notes": "knowledge/operations/components.md#createmeteredcomponent"
+ },
+ {
+  "status": 422,
+  "message": "\"Pricing scheme: is not one of the allowed values.\"",
+  "patterns": [
+   "Pricing scheme: is not one of the allowed values"
+  ],
+  "quoted": [
+   "Pricing scheme: is not one of the allowed values."
+  ],
+  "operationId": "createMeteredComponent",
+  "call": "client.components.createMeteredComponent",
+  "cause": "Unknown scheme",
+  "do": "Send a `pricing_scheme` value the contract lists",
+  "notes": "knowledge/operations/components.md#createmeteredcomponent"
+ },
+ {
+  "status": 422,
+  "message": "\"Must set tax type if taxes enabled\"",
+  "patterns": [
+   "Must set tax type if taxes enabled"
+  ],
+  "quoted": [
+   "Must set tax type if taxes enabled"
+  ],
+  "operationId": "createMeteredComponent",
+  "call": "client.components.createMeteredComponent",
+  "cause": "Site taxes on, component taxable",
+  "do": "Send tax settings / `tax_code`",
+  "notes": "knowledge/operations/components.md#createmeteredcomponent"
+ },
+ {
+  "status": 422,
+  "message": "\"Unit name: cannot be blank.\"",
+  "patterns": [
+   "Unit name: cannot be blank"
+  ],
+  "quoted": [
+   "Unit name: cannot be blank."
+  ],
+  "operationId": "createQuantityBasedComponent",
+  "call": "client.components.createQuantityBasedComponent",
+  "cause": "Missing `unit_name`",
+  "do": "Send a singular unit name",
+  "notes": "knowledge/operations/components.md#createquantitybasedcomponent"
+ },
+ {
+  "status": 422,
+  "message": "\"Pricing scheme cannot be per_unit for hybrid pricing\"",
+  "patterns": [
+   "Pricing scheme cannot be per_unit for hybrid pricing"
+  ],
+  "quoted": [
+   "Pricing scheme cannot be per_unit for hybrid pricing"
+  ],
+  "operationId": "createQuantityBasedComponent",
+  "call": "client.components.createQuantityBasedComponent",
+  "cause": "An overage block beside a `per_unit` primary scheme (status not documented)",
+  "do": "Use `volume`, `tiered` or `stairstep` as the primary scheme",
+  "notes": "knowledge/operations/components.md#createquantitybasedcomponent"
+ },
+ {
+  "status": 422,
+  "message": "\"Prices primary pricing must have a finite included threshold for hybrid pricing\"",
+  "patterns": [
+   "Prices primary pricing must have a finite included threshold for hybrid pricing"
+  ],
+  "quoted": [
+   "Prices primary pricing must have a finite included threshold for hybrid pricing"
+  ],
+  "operationId": "createQuantityBasedComponent",
+  "call": "client.components.createQuantityBasedComponent",
+  "cause": "The top primary bracket has no `ending_quantity` (status not documented)",
+  "do": "Set `ending_quantity` on the top bracket",
+  "notes": "knowledge/operations/components.md#createquantitybasedcomponent"
+ },
+ {
+  "status": 422,
+  "message": "\"Metric: cannot be blank.\"",
+  "patterns": [
+   "Metric: cannot be blank"
+  ],
+  "quoted": [
+   "Metric: cannot be blank."
+  ],
+  "operationId": "createEventBasedComponent",
+  "call": "client.components.createEventBasedComponent",
+  "cause": "No metric attached",
+  "do": "Send `event_based_billing_metric_id`",
+  "notes": "knowledge/operations/components.md#createeventbasedcomponent"
+ },
+ {
+  "status": 422,
+  "message": "\"Expiration Date cannot be in the past\"",
+  "patterns": [
+   "Expiration Date cannot be in the past"
+  ],
+  "quoted": [
+   "Expiration Date cannot be in the past"
+  ],
+  "operationId": "createCoupon",
+  "call": "client.coupons.createCoupon",
+  "cause": "Past `end_date`",
+  "do": "Send a future date, or leave `end_date` out",
+  "notes": "knowledge/operations/coupons.md#createcoupon"
+ },
+ {
+  "status": 422,
+  "message": "\"Code: must be unique - that value has been taken.\"",
+  "patterns": [
+   "Code: must be unique - that value has been taken"
+  ],
+  "quoted": [
+   "Code: must be unique - that value has been taken."
+  ],
+  "operationId": "createCoupon",
+  "call": "client.coupons.createCoupon",
+  "cause": "Duplicate code (documented on `updateCoupon`; assumed here)",
+  "do": "Reuse the existing coupon or pick another code",
+  "notes": "knowledge/operations/coupons.md#createcoupon"
+ },
+ {
+  "status": 422,
+  "message": "\"Amount: must be greater than or equal to $0.00.\"",
+  "patterns": [
+   "Amount: must be greater than or equal to $0.00"
+  ],
+  "quoted": [
+   "Amount: must be greater than or equal to $0.00."
+  ],
+  "operationId": "createCoupon",
+  "call": "client.coupons.createCoupon",
+  "cause": "Negative amount (documented on `updateCoupon`; assumed here)",
+  "do": "Send 0 or more",
+  "notes": "knowledge/operations/coupons.md#createcoupon"
+ },
+ {
+  "status": 404,
+  "message": "\"Coupon code could not be found.\"",
+  "patterns": [
+   "Coupon code could not be found"
+  ],
+  "quoted": [
+   "Coupon code could not be found."
+  ],
+  "operationId": "validateCoupon",
+  "call": "client.coupons.validateCoupon",
+  "cause": "Unknown code, or the coupon lives in another product family",
+  "do": "Pass `product_family_id`. The code is not proven invalid until the right family was searched",
+  "notes": "knowledge/operations/coupons.md#validatecoupon"
+ },
+ {
+  "status": 404,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "deleteCouponSubcode",
+  "call": "client.coupons.deleteCouponSubcode",
+  "cause": "No such subcode on this coupon. A wrongly encoded subcode would give the same answer *(inferred)*",
+  "do": "Compare with the coupon's subcodes from `listCouponSubcodes`",
+  "notes": "knowledge/operations/coupons.md#deletecouponsubcode"
+ },
+ {
+  "status": 404,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "readCustomerByReference",
+  "call": "client.customers.readCustomerByReference",
+  "cause": "No customer has that reference (status not documented: the spec declares only 200; the 404 was seen in sandbox runs [observed])",
+  "do": "This is the lookup's normal \"not there\" answer: create the customer with that `reference`",
+  "notes": "knowledge/operations/customers.md#readcustomerbyreference"
+ },
+ {
+  "status": 422,
+  "message": "Reference: has already been taken",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createCustomer",
+  "call": "client.customers.createCustomer",
+  "cause": "Another create won the race, or the user already exists. The text was seen in a sandbox and is not documented [observed]",
+  "do": "Read the customer with `readCustomerByReference` and continue with it",
+  "notes": "knowledge/operations/customers.md#createcustomer"
+ },
+ {
+  "status": 422,
+  "message": "\"First name: cannot be blank.\" \"Last name: cannot be blank.\" \"Email address: cannot be blank.\"",
+  "patterns": [
+   "First name: cannot be blank",
+   "Last name: cannot be blank",
+   "Email address: cannot be blank"
+  ],
+  "quoted": [
+   "First name: cannot be blank.",
+   "Last name: cannot be blank.",
+   "Email address: cannot be blank."
+  ],
+  "operationId": "createCustomer",
+  "call": "client.customers.createCustomer",
+  "cause": "A name or the email is missing",
+  "do": "Send the missing field",
+  "notes": "knowledge/operations/customers.md#createcustomer"
+ },
+ {
+  "status": 422,
+  "message": "customer: can't be blank",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createCustomer",
+  "call": "client.customers.createCustomer",
+  "cause": "The body has no `customer` object",
+  "do": "Wrap the fields as `{\"customer\": {...}}`",
+  "notes": "knowledge/operations/customers.md#createcustomer"
+ },
+ {
+  "status": 422,
+  "message": "\"Entity identifier kind: is not one of the allowed values.\"",
+  "patterns": [
+   "Entity identifier kind: is not one of the allowed values"
+  ],
+  "quoted": [
+   "Entity identifier kind: is not one of the allowed values."
+  ],
+  "operationId": "createCustomer",
+  "call": "client.customers.createCustomer",
+  "cause": "An identifier sent with an unsupported kind",
+  "do": "Send a supported `entity_identifier_kind` with the value",
+  "notes": "knowledge/operations/customers.md#createcustomer"
+ },
+ {
+  "status": 404,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "updateCustomer",
+  "call": "client.customers.updateCustomer",
+  "cause": "No customer has that `id`",
+  "do": "Resolve the id with `readCustomerByReference`",
+  "notes": "knowledge/operations/customers.md#updatecustomer"
+ },
+ {
+  "status": 422,
+  "message": "\"Entity identifier kind: is not one of the allowed values.\"",
+  "patterns": [
+   "Entity identifier kind: is not one of the allowed values"
+  ],
+  "quoted": [
+   "Entity identifier kind: is not one of the allowed values."
+  ],
+  "operationId": "updateCustomer",
+  "call": "client.customers.updateCustomer",
+  "cause": "An unsupported `entity_identifier_kind`",
+  "do": "Send a supported kind with the value",
+  "notes": "knowledge/operations/customers.md#updatecustomer"
+ },
+ {
+  "status": 422,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "updateCustomer",
+  "call": "client.customers.updateCustomer",
+  "cause": "A missing or mismatched `vat_country`, a `gln`, `duns` or `lei` value in the wrong format, or a value sent with no kind beside a `vat_country` (messages not documented)",
+  "do": "Send kind and value together. Add `vat_country` only for `vat_eu` and `national_tax`, and check the value's format for its kind",
+  "notes": "knowledge/operations/customers.md#updatecustomer"
+ },
+ {
+  "status": 403,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "readSubscriptionEntitlements",
+  "call": "client.entitlements.readSubscriptionEntitlements",
+  "cause": "Not stated: the spec declares the status with no body example. Possibly the feature is not available on the site *(unconfirmed)*",
+  "do": "Check the site's feature access",
+  "notes": "knowledge/operations/entitlements.md#readsubscriptionentitlements"
+ },
+ {
+  "status": 422,
+  "message": "\"Key can't be blank\"",
+  "patterns": [
+   "Key can't be blank"
+  ],
+  "quoted": [
+   "Key can't be blank"
+  ],
+  "operationId": "createFeatureTemplate",
+  "call": "client.featureTemplates.createFeatureTemplate",
+  "cause": "Missing `key`",
+  "do": "Send it",
+  "notes": "knowledge/operations/feature-templates.md#createfeaturetemplate"
+ },
+ {
+  "status": 403,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createFeatureTemplate",
+  "call": "client.featureTemplates.createFeatureTemplate",
+  "cause": "Not stated: the spec declares the status with no body example *(unconfirmed)*",
+  "do": "Check the site's feature access",
+  "notes": "knowledge/operations/feature-templates.md#createfeaturetemplate"
+ },
+ {
+  "status": 404,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "archiveFeatureTemplate",
+  "call": "client.featureTemplates.archiveFeatureTemplate",
+  "cause": "No template has that `id`. An already archived template is a likely cause too *(inferred)*",
+  "do": "Check the id",
+  "notes": "knowledge/operations/feature-templates.md#archivefeaturetemplate"
+ },
+ {
+  "status": 403,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "archiveFeatureTemplate",
+  "call": "client.featureTemplates.archiveFeatureTemplate",
+  "cause": "Not stated: the spec declares the status with no body example *(unconfirmed)*",
+  "do": "Check the site's feature access",
+  "notes": "knowledge/operations/feature-templates.md#archivefeaturetemplate"
+ },
+ {
+  "status": 422,
+  "message": "invoice: can't be blank",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createInvoice",
+  "call": "client.invoices.createInvoice",
+  "cause": "The body has no `invoice` object. This is the only 422 the spec documents here",
+  "do": "Wrap the payload as `{\"invoice\": {...}}`",
+  "notes": "knowledge/operations/invoices.md#createinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"Line item not found.\"",
+  "patterns": [
+   "Line item not found"
+  ],
+  "quoted": [
+   "Line item not found."
+  ],
+  "operationId": "updateInvoice",
+  "call": "client.invoices.updateInvoice",
+  "cause": "A `uid` that is not on this invoice",
+  "do": "Read the invoice with `readInvoice` and use its line item `uid`s",
+  "notes": "knowledge/operations/invoices.md#updateinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"Billing address must include name.\"",
+  "patterns": [
+   "Billing address must include name"
+  ],
+  "quoted": [
+   "Billing address must include name."
+  ],
+  "operationId": "updateInvoice",
+  "call": "client.invoices.updateInvoice",
+  "cause": "An address sent without `first_name`",
+  "do": "Send `first_name` in every address you send",
+  "notes": "knowledge/operations/invoices.md#updateinvoice"
+ },
+ {
+  "status": 422,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "updateInvoice",
+  "call": "client.invoices.updateInvoice",
+  "cause": "The invoice is not an ad hoc `draft` (message not documented)",
+  "do": "Only a draft can be edited. For an issued invoice pick from decisions.md D16",
+  "notes": "knowledge/operations/invoices.md#updateinvoice"
+ },
+ {
+  "status": 404,
+  "message": "\"Invoice not found\"",
+  "patterns": [
+   "Invoice not found"
+  ],
+  "quoted": [
+   "Invoice not found"
+  ],
+  "operationId": "updateInvoice",
+  "call": "client.invoices.updateInvoice",
+  "cause": "The invoice does not belong to that subscription",
+  "do": "Check the `subscription_id` and `uid` pair",
+  "notes": "knowledge/operations/invoices.md#updateinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"Status must be draft.\"",
+  "patterns": [
+   "Status must be draft"
+  ],
+  "quoted": [
+   "Status must be draft."
+  ],
+  "operationId": "deleteInvoice",
+  "call": "client.invoices.deleteInvoice",
+  "cause": "The invoice is not a draft",
+  "do": "Use `voidInvoice` if its status allows (decisions.md D16)",
+  "notes": "knowledge/operations/invoices.md#deleteinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"Only adhoc invoices can be deleted.\"",
+  "patterns": [
+   "Only adhoc invoices can be deleted"
+  ],
+  "quoted": [
+   "Only adhoc invoices can be deleted."
+  ],
+  "operationId": "deleteInvoice",
+  "call": "client.invoices.deleteInvoice",
+  "cause": "The invoice has another role, such as `renewal` or `signup`",
+  "do": "It cannot be deleted. See decisions.md D16",
+  "notes": "knowledge/operations/invoices.md#deleteinvoice"
+ },
+ {
+  "status": 404,
+  "message": "\"Invoice not found\"",
+  "patterns": [
+   "Invoice not found"
+  ],
+  "quoted": [
+   "Invoice not found"
+  ],
+  "operationId": "deleteInvoice",
+  "call": "client.invoices.deleteInvoice",
+  "cause": "The invoice does not belong to that subscription. An invoice already deleted would answer the same way *(inferred)*",
+  "do": "Check the `subscription_id` and `uid` pair",
+  "notes": "knowledge/operations/invoices.md#deleteinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"Invoice must be open or in collections to apply payment\"",
+  "patterns": [
+   "Invoice must be open or in collections to apply payment"
+  ],
+  "quoted": [
+   "Invoice must be open or in collections to apply payment"
+  ],
+  "operationId": "recordPaymentForInvoice",
+  "call": "client.invoices.recordPaymentForInvoice",
+  "cause": "The invoice is not open: paid, voided, draft or canceled",
+  "do": "Use `reopenInvoice` first if it is `canceled`. Otherwise there is nothing to pay",
+  "notes": "knowledge/operations/invoices.md#recordpaymentforinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"Payment amount … exceeds due amount …\"",
+  "patterns": [
+   "exceeds due amount"
+  ],
+  "quoted": [
+   "Payment amount … exceeds due amount …"
+  ],
+  "operationId": "recordPaymentForInvoice",
+  "call": "client.invoices.recordPaymentForInvoice",
+  "cause": "Overpayment",
+  "do": "Cap at `due_amount`; overpay through `recordPaymentForSubscription`",
+  "notes": "knowledge/operations/invoices.md#recordpaymentforinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"Amount: is not a number.\"",
+  "patterns": [
+   "Amount: is not a number"
+  ],
+  "quoted": [
+   "Amount: is not a number."
+  ],
+  "operationId": "recordPaymentForInvoice",
+  "call": "client.invoices.recordPaymentForInvoice",
+  "cause": "`amount` missing or not numeric",
+  "do": "Send a decimal amount",
+  "notes": "knowledge/operations/invoices.md#recordpaymentforinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"Individual invoices may not be overpaid. To create a prepayment, add overage to the total amount.\"",
+  "patterns": [
+   "Individual invoices may not be overpaid. To create a prepayment, add overage to the total amount"
+  ],
+  "quoted": [
+   "Individual invoices may not be overpaid. To create a prepayment, add overage to the total amount."
+  ],
+  "operationId": "recordPaymentForMultipleInvoices",
+  "call": "client.invoices.recordPaymentForMultipleInvoices",
+  "cause": "One application is larger than its invoice's due amount",
+  "do": "Cap each application at the due amount and put the excess in the total `amount`",
+  "notes": "knowledge/operations/invoices.md#recordpaymentformultipleinvoices"
+ },
+ {
+  "status": 422,
+  "message": "\"Total amount must be higher or equal to invoices payment amount sum\"",
+  "patterns": [
+   "Total amount must be higher or equal to invoices payment amount sum"
+  ],
+  "quoted": [
+   "Total amount must be higher or equal to invoices payment amount sum"
+  ],
+  "operationId": "recordPaymentForMultipleInvoices",
+  "call": "client.invoices.recordPaymentForMultipleInvoices",
+  "cause": "The total `amount` is smaller than the sum of the applications",
+  "do": "Raise the total or lower the applications",
+  "notes": "knowledge/operations/invoices.md#recordpaymentformultipleinvoices"
+ },
+ {
+  "status": 422,
+  "message": "\"Paying consolidated invoices is forbidden\"",
+  "patterns": [
+   "Paying consolidated invoices is forbidden"
+  ],
+  "quoted": [
+   "Paying consolidated invoices is forbidden"
+  ],
+  "operationId": "recordPaymentForMultipleInvoices",
+  "call": "client.invoices.recordPaymentForMultipleInvoices",
+  "cause": "An `invoice_uid` names a consolidated invoice",
+  "do": "Take it out of `applications`",
+  "notes": "knowledge/operations/invoices.md#recordpaymentformultipleinvoices"
+ },
+ {
+  "status": 422,
+  "message": "\"Invoices belong to different subscriptions. Only invoices from same subscriptions are allowed when total amount exceeds invoices due amount.\"",
+  "patterns": [
+   "Invoices belong to different subscriptions. Only invoices from same subscriptions are allowed when total amount exceeds invoices due amount"
+  ],
+  "quoted": [
+   "Invoices belong to different subscriptions. Only invoices from same subscriptions are allowed when total amount exceeds invoices due amount."
+  ],
+  "operationId": "recordPaymentForMultipleInvoices",
+  "call": "client.invoices.recordPaymentForMultipleInvoices",
+  "cause": "An overpayment across subscriptions",
+  "do": "Send one request per subscription, or do not overpay",
+  "notes": "knowledge/operations/invoices.md#recordpaymentformultipleinvoices"
+ },
+ {
+  "status": 422,
+  "message": "\"Multiple applications associated to a single invoice, please aggregate and send as a single application per invoice.\"",
+  "patterns": [
+   "Multiple applications associated to a single invoice, please aggregate and send as a single application per invoice"
+  ],
+  "quoted": [
+   "Multiple applications associated to a single invoice, please aggregate and send as a single application per invoice."
+  ],
+  "operationId": "recordPaymentForMultipleInvoices",
+  "call": "client.invoices.recordPaymentForMultipleInvoices",
+  "cause": "Two rows for one invoice",
+  "do": "Merge them into one row",
+  "notes": "knowledge/operations/invoices.md#recordpaymentformultipleinvoices"
+ },
+ {
+  "status": 422,
+  "message": "\"Invoice must have an open balance\"",
+  "patterns": [
+   "Invoice must have an open balance"
+  ],
+  "quoted": [
+   "Invoice must have an open balance"
+  ],
+  "operationId": "recordPaymentForMultipleInvoices",
+  "call": "client.invoices.recordPaymentForMultipleInvoices",
+  "cause": "An invoice in the list owes nothing",
+  "do": "Take it out of `applications`",
+  "notes": "knowledge/operations/invoices.md#recordpaymentformultipleinvoices"
+ },
+ {
+  "status": 422,
+  "message": "\"Amount: must be greater than 0.\"",
+  "patterns": [
+   "Amount: must be greater than 0"
+  ],
+  "quoted": [
+   "Amount: must be greater than 0."
+  ],
+  "operationId": "refundInvoice",
+  "call": "client.invoices.refundInvoice",
+  "cause": "Zero or missing amount",
+  "do": "Send a positive decimal string",
+  "notes": "knowledge/operations/invoices.md#refundinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"Invoice status must be 'open', 'canceled', or 'pending' and non-consolidated to be voided.\"",
+  "patterns": [
+   "Invoice status must be 'open', 'canceled', or 'pending' and non-consolidated to be voided"
+  ],
+  "quoted": [
+   "Invoice status must be 'open', 'canceled', or 'pending' and non-consolidated to be voided."
+  ],
+  "operationId": "voidInvoice",
+  "call": "client.invoices.voidInvoice",
+  "cause": "Wrong status, or a consolidated `pending` invoice",
+  "do": "Pick the operation the status allows (decisions.md D16)",
+  "notes": "knowledge/operations/invoices.md#voidinvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"The invoice must be in canceled status to be reopened.\"",
+  "patterns": [
+   "The invoice must be in canceled status to be reopened"
+  ],
+  "quoted": [
+   "The invoice must be in canceled status to be reopened."
+  ],
+  "operationId": "reopenInvoice",
+  "call": "client.invoices.reopenInvoice",
+  "cause": "The invoice is not `canceled`",
+  "do": "Nothing to reopen. For another status pick from decisions.md D16",
+  "notes": "knowledge/operations/invoices.md#reopeninvoice"
+ },
+ {
+  "status": 422,
+  "message": "\"starting_quantity for an On/Off component can only be '1' or '0': …\"",
+  "patterns": [
+   "starting_quantity for an On/Off component can only be '1' or '0'"
+  ],
+  "quoted": [
+   "starting_quantity for an On/Off component can only be '1' or '0': …"
+  ],
+  "operationId": "createOffer",
+  "call": "client.offers.createOffer",
+  "cause": "An on/off component with a `starting_quantity` above 1. The message ends with the component id",
+  "do": "Send 0 or 1",
+  "notes": "knowledge/operations/offers.md#createoffer"
+ },
+ {
+  "status": 422,
+  "message": "\"Advanced Billing token not found\"",
+  "patterns": [
+   "Advanced Billing token not found"
+  ],
+  "quoted": [
+   "Advanced Billing token not found"
+  ],
+  "operationId": "createPaymentProfile",
+  "call": "client.paymentProfiles.createPaymentProfile",
+  "cause": "Maxio does not know the `chargify_token`. An expired or already used token is a likely cause *(inferred)*",
+  "do": "Tokenize again in the browser",
+  "notes": "knowledge/operations/payment-profiles.md#createpaymentprofile"
+ },
+ {
+  "status": 422,
+  "message": "with an `action_link`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createPaymentProfile",
+  "call": "client.paymentProfiles.createPaymentProfile",
+  "cause": "3-D Secure is required. This 422 is a step to complete, not a validation error",
+  "do": "Send the customer to the link (rules.md R13). `docs/models.md`, section \"Fields the spec does not declare\", says how to read it",
+  "notes": "knowledge/operations/payment-profiles.md#createpaymentprofile"
+ },
+ {
+  "status": 422,
+  "message": "\"Credit card expiration month: cannot be blank.\" \"Credit card expiration year: cannot be blank.\" \"Credit card number: cannot be blank.\"",
+  "patterns": [
+   "Credit card expiration month: cannot be blank",
+   "Credit card expiration year: cannot be blank",
+   "Credit card number: cannot be blank"
+  ],
+  "quoted": [
+   "Credit card expiration month: cannot be blank.",
+   "Credit card expiration year: cannot be blank.",
+   "Credit card number: cannot be blank."
+  ],
+  "operationId": "createPaymentProfile",
+  "call": "client.paymentProfiles.createPaymentProfile",
+  "cause": "The raw-card path is missing card fields",
+  "do": "Use a token, or send every card field",
+  "notes": "knowledge/operations/payment-profiles.md#createpaymentprofile"
+ },
+ {
+  "status": 404,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createPaymentProfile",
+  "call": "client.paymentProfiles.createPaymentProfile",
+  "cause": "Not explained: the spec declares the status with no body. An unknown `customer_id` is a likely cause *(inferred)*",
+  "do": "Resolve the customer first",
+  "notes": "knowledge/operations/payment-profiles.md#createpaymentprofile"
+ },
+ {
+  "status": 422,
+  "message": "\"This is already the current payment profile\"",
+  "patterns": [
+   "This is already the current payment profile"
+  ],
+  "quoted": [
+   "This is already the current payment profile"
+  ],
+  "operationId": "changeSubscriptionDefaultPaymentProfile",
+  "call": "client.paymentProfiles.changeSubscriptionDefaultPaymentProfile",
+  "cause": "The profile is already this subscription's default",
+  "do": "Nothing to change. Match this exact message before you treat it as done: any other 422 is a rejection (rules.md R13)",
+  "notes": "knowledge/operations/payment-profiles.md#changesubscriptiondefaultpaymentprofile"
+ },
+ {
+  "status": 404,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "changeSubscriptionDefaultPaymentProfile",
+  "call": "client.paymentProfiles.changeSubscriptionDefaultPaymentProfile",
+  "cause": "Unknown subscription or payment profile",
+  "do": "Check both ids",
+  "notes": "knowledge/operations/payment-profiles.md#changesubscriptiondefaultpaymentprofile"
+ },
+ {
+  "status": 422,
+  "message": "payment_profile: can't be blank",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "updatePaymentProfile",
+  "call": "client.paymentProfiles.updatePaymentProfile",
+  "cause": "The body has no `payment_profile` object. This is the only 422 the spec documents here",
+  "do": "Wrap the fields as `{\"payment_profile\": {...}}`",
+  "notes": "knowledge/operations/payment-profiles.md#updatepaymentprofile"
+ },
+ {
+  "status": 422,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "updatePaymentProfile",
+  "call": "client.paymentProfiles.updatePaymentProfile",
+  "cause": "Bank account fields sent to a card profile, or the reverse *(inferred: the spec forbids the mix and documents no message for it)*",
+  "do": "Create a new profile of the other type",
+  "notes": "knowledge/operations/payment-profiles.md#updatepaymentprofile"
+ },
+ {
+  "status": 422,
+  "message": "\"The payment profile is in use by one or more subscriptions and cannot be deleted\"",
+  "patterns": [
+   "The payment profile is in use by one or more subscriptions and cannot be deleted"
+  ],
+  "quoted": [
+   "The payment profile is in use by one or more subscriptions and cannot be deleted"
+  ],
+  "operationId": "deleteUnusedPaymentProfile",
+  "call": "client.paymentProfiles.deleteUnusedPaymentProfile",
+  "cause": "In use",
+  "do": "Use `deleteSubscriptionsPaymentProfile`, or change the default first",
+  "notes": "knowledge/operations/payment-profiles.md#deleteunusedpaymentprofile"
+ },
+ {
+  "status": 422,
+  "message": "\"You have tried to verify this bank account 10 times. …\"",
+  "patterns": [
+   "You have tried to verify this bank account 10 times"
+  ],
+  "quoted": [
+   "You have tried to verify this bank account 10 times. …"
+  ],
+  "operationId": "verifyBankAccount",
+  "call": "client.paymentProfiles.verifyBankAccount",
+  "cause": "Tries exhausted",
+  "do": "Stop. No request unblocks it: tell the merchant to contact Maxio",
+  "notes": "knowledge/operations/payment-profiles.md#verifybankaccount"
+ },
+ {
+  "status": 422,
+  "message": "\"API Handle: must be unique - that value has been taken.\"",
+  "patterns": [
+   "API Handle: must be unique - that value has been taken"
+  ],
+  "quoted": [
+   "API Handle: must be unique - that value has been taken."
+  ],
+  "operationId": "createProductFamily",
+  "call": "client.productFamilies.createProductFamily",
+  "cause": "A family with that handle exists",
+  "do": "Find it with `listProductFamilies` (match `handle`) and reuse it",
+  "notes": "knowledge/operations/product-families.md#createproductfamily"
+ },
+ {
+  "status": 404,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createProductFeature",
+  "call": "client.productFeatures.createProductFeature",
+  "cause": "Product or feature template not found. An archived template is a likely cause *(inferred)*",
+  "do": "Fix the ids, or restore the template with `restoreFeatureTemplate`",
+  "notes": "knowledge/operations/product-features.md#createproductfeature"
+ },
+ {
+  "status": 422,
+  "message": "price_point: can't be blank",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createProductPricePoint",
+  "call": "client.productPricePoints.createProductPricePoint",
+  "cause": "The body has no `price_point` object",
+  "do": "Wrap the fields as `{\"price_point\": {...}}`",
+  "notes": "knowledge/operations/product-price-points.md#createproductpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Recurring Interval: must be greater than or equal to 1.\"",
+  "patterns": [
+   "Recurring Interval: must be greater than or equal to 1"
+  ],
+  "quoted": [
+   "Recurring Interval: must be greater than or equal to 1."
+  ],
+  "operationId": "createProductPricePoint",
+  "call": "client.productPricePoints.createProductPricePoint",
+  "cause": "`interval` below 1 or fractional",
+  "do": "Send an integer of 1 or more",
+  "notes": "knowledge/operations/product-price-points.md#createproductpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Price: must be greater than or equal to 0.\"",
+  "patterns": [
+   "Price: must be greater than or equal to 0"
+  ],
+  "quoted": [
+   "Price: must be greater than or equal to 0."
+  ],
+  "operationId": "createProductPricePoint",
+  "call": "client.productPricePoints.createProductPricePoint",
+  "cause": "Negative price",
+  "do": "Send 0 or more",
+  "notes": "knowledge/operations/product-price-points.md#createproductpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Cannot archive the default price point.\"",
+  "patterns": [
+   "Cannot archive the default price point"
+  ],
+  "quoted": [
+   "Cannot archive the default price point."
+  ],
+  "operationId": "archiveProductPricePoint",
+  "call": "client.productPricePoints.archiveProductPricePoint",
+  "cause": "Target is the default",
+  "do": "Promote another price point first",
+  "notes": "knowledge/operations/product-price-points.md#archiveproductpricepoint"
+ },
+ {
+  "status": 422,
+  "message": "\"This product price point requires that prices are defined for: …\"",
+  "patterns": [
+   "This product price point requires that prices are defined for"
+  ],
+  "quoted": [
+   "This product price point requires that prices are defined for: …"
+  ],
+  "operationId": "createProductCurrencyPrices",
+  "call": "client.productPricePoints.createProductCurrencyPrices",
+  "cause": "A role the price point has is missing for the currency. The message lists the missing roles, such as `[baseline]`",
+  "do": "Send one row for each role the price point defines",
+  "notes": "knowledge/operations/product-price-points.md#createproductcurrencyprices"
+ },
+ {
+  "status": 422,
+  "message": "\"Auto Create Signup Page: is not allowed\"",
+  "patterns": [
+   "Auto Create Signup Page: is not allowed"
+  ],
+  "quoted": [
+   "Auto Create Signup Page: is not allowed"
+  ],
+  "operationId": "createProduct",
+  "call": "client.products.createProduct",
+  "cause": "`auto_create_signup_page` sent on a new-Catalog site",
+  "do": "Remove the field",
+  "notes": "knowledge/operations/products.md#createproduct"
+ },
+ {
+  "status": 422,
+  "message": "\"Interval unit: must be 'month' or 'day'.\"",
+  "patterns": [
+   "Interval unit: must be 'month' or 'day'"
+  ],
+  "quoted": [
+   "Interval unit: must be 'month' or 'day'."
+  ],
+  "operationId": "createProduct",
+  "call": "client.products.createProduct",
+  "cause": "Another unit, such as `year` (documented on `createProductPricePoint`; assumed here)",
+  "do": "For yearly billing send `interval: 12` with `interval_unit: \"month\"`",
+  "notes": "knowledge/operations/products.md#createproduct"
+ },
+ {
+  "status": 422,
+  "message": "\"Recurring Interval: must be greater than or equal to 1.\"",
+  "patterns": [
+   "Recurring Interval: must be greater than or equal to 1"
+  ],
+  "quoted": [
+   "Recurring Interval: must be greater than or equal to 1."
+  ],
+  "operationId": "createProduct",
+  "call": "client.products.createProduct",
+  "cause": "`interval` of 0 or a fraction (documented on `createProductPricePoint`; assumed here)",
+  "do": "Send an integer of 1 or more",
+  "notes": "knowledge/operations/products.md#createproduct"
+ },
+ {
+  "status": 422,
+  "message": "\"Name: cannot be blank.\"",
+  "patterns": [
+   "Name: cannot be blank"
+  ],
+  "quoted": [
+   "Name: cannot be blank."
+  ],
+  "operationId": "createProduct",
+  "call": "client.products.createProduct",
+  "cause": "Missing `name`",
+  "do": "Send it",
+  "notes": "knowledge/operations/products.md#createproduct"
+ },
+ {
+  "status": 422,
+  "message": "\"Name: cannot be blank.\"",
+  "patterns": [
+   "Name: cannot be blank"
+  ],
+  "quoted": [
+   "Name: cannot be blank."
+  ],
+  "operationId": "updateProduct",
+  "call": "client.products.updateProduct",
+  "cause": "`name` missing or empty",
+  "do": "Send the product's current `name`",
+  "notes": "knowledge/operations/products.md#updateproduct"
+ },
+ {
+  "status": 403,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "clearSite",
+  "call": "client.sites.clearSite",
+  "cause": "The site is in live mode [spec]",
+  "do": "Never clear a live site",
+  "notes": "knowledge/operations/sites.md#clearsite"
+ },
+ {
+  "status": 422,
+  "message": "\"Site data clearing is in progress. Please try later.\"",
+  "patterns": [
+   "Site data clearing is in progress. Please try later"
+  ],
+  "quoted": [
+   "Site data clearing is in progress. Please try later."
+  ],
+  "operationId": "clearSite",
+  "call": "client.sites.clearSite",
+  "cause": "Clearing has not finished. Every call to the site answers this until it has [docs]",
+  "do": "Wait, then poll a cheap read until it succeeds and the cleared lists are empty. Change nothing in the request",
+  "notes": "knowledge/operations/sites.md#clearsite"
+ },
+ {
+  "status": 422,
+  "message": "\"One or more allocation changes are required.\"",
+  "patterns": [
+   "One or more allocation changes are required"
+  ],
+  "quoted": [
+   "One or more allocation changes are required."
+  ],
+  "operationId": "allocateComponent",
+  "call": "client.subscriptionComponents.allocateComponent",
+  "cause": "The quantity sent equals the current one *(inferred from the message)*",
+  "do": "Skip the call: the component already has that quantity",
+  "notes": "knowledge/operations/subscription-components.md#allocatecomponent"
+ },
+ {
+  "status": 422,
+  "message": "\"Allocations can only be updated for quantity and on/off components.\"",
+  "patterns": [
+   "Allocations can only be updated for quantity and on/off components"
+  ],
+  "quoted": [
+   "Allocations can only be updated for quantity and on/off components."
+  ],
+  "operationId": "allocateComponent",
+  "call": "client.subscriptionComponents.allocateComponent",
+  "cause": "The component is metered or event-based (documented on `previewAllocations`; assumed here)",
+  "do": "Metered: `createUsage`. Event-based: `recordEvent` (D14)",
+  "notes": "knowledge/operations/subscription-components.md#allocatecomponent"
+ },
+ {
+  "status": 422,
+  "message": "with an `action_link`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "allocateComponent",
+  "call": "client.subscriptionComponents.allocateComponent",
+  "cause": "3-D Secure on the immediate charge (documented on `createSubscription`; assumed here)",
+  "do": "Send the customer to the link. Do not resend",
+  "notes": "knowledge/operations/subscription-components.md#allocatecomponent"
+ },
+ {
+  "status": 422,
+  "message": "\"Quantity: cannot be blank.\"",
+  "patterns": [
+   "Quantity: cannot be blank"
+  ],
+  "quoted": [
+   "Quantity: cannot be blank."
+  ],
+  "operationId": "allocateComponents",
+  "call": "client.subscriptionComponents.allocateComponents",
+  "cause": "An allocation has no `quantity`",
+  "do": "Send `quantity` in every allocation",
+  "notes": "knowledge/operations/subscription-components.md#allocatecomponents"
+ },
+ {
+  "status": 422,
+  "message": "\"invalid page: 0\"",
+  "patterns": [
+   "invalid page: 0"
+  ],
+  "quoted": [
+   "invalid page: 0"
+  ],
+  "operationId": "listAllocations",
+  "call": "client.subscriptionComponents.listAllocations",
+  "cause": "`page` starts at 1",
+  "do": "Send `page` 1 or higher",
+  "notes": "knowledge/operations/subscription-components.md#listallocations"
+ },
+ {
+  "status": 422,
+  "message": "\"Credit scheme must be one of credit, refund or none.\"",
+  "patterns": [
+   "Credit scheme must be one of credit, refund or none"
+  ],
+  "quoted": [
+   "Credit scheme must be one of credit, refund or none."
+  ],
+  "operationId": "deletePrepaidUsageAllocation",
+  "call": "client.subscriptionComponents.deletePrepaidUsageAllocation",
+  "cause": "`credit_scheme` holds another value",
+  "do": "Send `credit`, `refund` or `none`",
+  "notes": "knowledge/operations/subscription-components.md#deleteprepaidusageallocation"
+ },
+ {
+  "status": 422,
+  "message": "\"Price point: could not be found.\"",
+  "patterns": [
+   "Price point: could not be found"
+  ],
+  "quoted": [
+   "Price point: could not be found."
+  ],
+  "operationId": "createUsage",
+  "call": "client.subscriptionComponents.createUsage",
+  "cause": "`price_point_id` is not a price point of this component",
+  "do": "Send one of the component's price point ids. Whether a handle is accepted here is not stated *(unconfirmed)*",
+  "notes": "knowledge/operations/subscription-components.md#createusage"
+ },
+ {
+  "status": 409,
+  "message": "`DuplicatePrevention::DuplicateSubmissionError`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createUsage",
+  "call": "client.subscriptionComponents.createUsage",
+  "cause": "A report with this `uniqueness_token` already reached Maxio [docs]. Its outcome is unknown: a 409 never proves success",
+  "do": "Follow R11 with `listUsages` for the component and the day, `until_date` set to the next day. Found: done. Still not found once 120 seconds have passed since the first send: R11 step 4",
+  "notes": "knowledge/operations/subscription-components.md#createusage"
+ },
+ {
+  "status": 422,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "bulkRecordEvents",
+  "call": "client.subscriptionComponents.bulkRecordEvents",
+  "cause": "More than 1000 events in the request (message not documented)",
+  "do": "Split the batch and send the parts with the same tokens",
+  "notes": "knowledge/operations/subscription-components.md#bulkrecordevents"
+ },
+ {
+  "status": 422,
+  "message": "\"One or more subscriptions are not on automatic billing\"",
+  "patterns": [
+   "One or more subscriptions are not on automatic billing"
+  ],
+  "quoted": [
+   "One or more subscriptions are not on automatic billing"
+  ],
+  "operationId": "cancelSubscriptionsInGroup",
+  "call": "client.subscriptionGroupStatus.cancelSubscriptionsInGroup",
+  "cause": "A member's collection method does not allow a group cancel",
+  "do": "Cancel the members one by one with `cancelSubscription`",
+  "notes": "knowledge/operations/subscription-group-status.md#cancelsubscriptionsingroup"
+ },
+ {
+  "status": 422,
+  "message": "\"Subscriptions group is in a past due state\"",
+  "patterns": [
+   "Subscriptions group is in a past due state"
+  ],
+  "quoted": [
+   "Subscriptions group is in a past due state"
+  ],
+  "operationId": "initiateDelayedCancellationForGroup",
+  "call": "client.subscriptionGroupStatus.initiateDelayedCancellationForGroup",
+  "cause": "The group is `past_due`",
+  "do": "Recover payment first (D12), or cancel now with `cancelSubscriptionsInGroup`",
+  "notes": "knowledge/operations/subscription-group-status.md#initiatedelayedcancellationforgroup"
+ },
+ {
+  "status": 422,
+  "message": "\"Subscriptions group does not have a pending delayed cancellation\"",
+  "patterns": [
+   "Subscriptions group does not have a pending delayed cancellation"
+  ],
+  "quoted": [
+   "Subscriptions group does not have a pending delayed cancellation"
+  ],
+  "operationId": "cancelDelayedCancellationForGroup",
+  "call": "client.subscriptionGroupStatus.cancelDelayedCancellationForGroup",
+  "cause": "No delayed cancellation is scheduled for the group",
+  "do": "Nothing to undo; treat as done",
+  "notes": "knowledge/operations/subscription-group-status.md#canceldelayedcancellationforgroup"
+ },
+ {
+  "status": 422,
+  "message": "\"Must be inside the current billing period to resume this subscription group\"",
+  "patterns": [
+   "Must be inside the current billing period to resume this subscription group"
+  ],
+  "quoted": [
+   "Must be inside the current billing period to resume this subscription group"
+  ],
+  "operationId": "reactivateSubscriptionGroup",
+  "call": "client.subscriptionGroupStatus.reactivateSubscriptionGroup",
+  "cause": "`resume` was asked for after the primary's billing period had ended",
+  "do": "Decide with the user whether a new, charged period is acceptable. If so, send again without `resume`",
+  "notes": "knowledge/operations/subscription-group-status.md#reactivatesubscriptiongroup"
+ },
+ {
+  "status": 422,
+  "message": "with an `action_link`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "reactivateSubscriptionGroup",
+  "call": "client.subscriptionGroupStatus.reactivateSubscriptionGroup",
+  "cause": "3-D Secure is required [spec]. This is not a decline",
+  "do": "Send the customer to the link. Do not resend",
+  "notes": "knowledge/operations/subscription-group-status.md#reactivatesubscriptiongroup"
+ },
+ {
+  "status": 422,
+  "message": "\"No payment method was on file for the …\"",
+  "patterns": [
+   "No payment method was on file for the"
+  ],
+  "quoted": [
+   "No payment method was on file for the …"
+  ],
+  "operationId": "signupWithSubscriptionGroup",
+  "call": "client.subscriptionGroups.signupWithSubscriptionGroup",
+  "cause": "Reported under the failing item's `base` key: collection is `automatic` (sent, or the site default), money is due at signup and there is no payment source",
+  "do": "Decide by intent (R14). A payer who pays by card or bank needs a payment source. A group billed by invoice needs `remittance` or `invoice`. Never switch a card-paying group to an invoice method to clear this",
+  "notes": "knowledge/operations/subscription-groups.md#signupwithsubscriptiongroup"
+ },
+ {
+  "status": 422,
+  "message": "\"Chargify token not found\"",
+  "patterns": [
+   "Chargify token not found"
+  ],
+  "quoted": [
+   "Chargify token not found"
+  ],
+  "operationId": "signupWithSubscriptionGroup",
+  "call": "client.subscriptionGroups.signupWithSubscriptionGroup",
+  "cause": "Reported under the item's `payment_profile.chargify_token` key: the Maxio.js token is unknown or already used *(second cause inferred)*",
+  "do": "Tokenize again in the browser (R15), then send with a new `uniqueness_token`",
+  "notes": "knowledge/operations/subscription-groups.md#signupwithsubscriptiongroup"
+ },
+ {
+  "status": 422,
+  "message": "\"Product must be among the Products for this Site\"",
+  "patterns": [
+   "Product must be among the Products for this Site"
+  ],
+  "quoted": [
+   "Product must be among the Products for this Site"
+  ],
+  "operationId": "signupWithSubscriptionGroup",
+  "call": "client.subscriptionGroups.signupWithSubscriptionGroup",
+  "cause": "Reported under the item's `product` key: the product is not on this site",
+  "do": "Correct that item, then send with a new `uniqueness_token`",
+  "notes": "knowledge/operations/subscription-groups.md#signupwithsubscriptiongroup"
+ },
+ {
+  "status": 422,
+  "message": "\"Product price point must belong to product.\"",
+  "patterns": [
+   "Product price point must belong to product"
+  ],
+  "quoted": [
+   "Product price point must belong to product."
+  ],
+  "operationId": "signupWithSubscriptionGroup",
+  "call": "client.subscriptionGroups.signupWithSubscriptionGroup",
+  "cause": "Reported under the item's `product_price_point_id` key: the price point belongs to another product",
+  "do": "Correct that item, then send with a new `uniqueness_token`",
+  "notes": "knowledge/operations/subscription-groups.md#signupwithsubscriptiongroup"
+ },
+ {
+  "status": 409,
+  "message": "`DuplicatePrevention::DuplicateSubmissionError`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "signupWithSubscriptionGroup",
+  "call": "client.subscriptionGroups.signupWithSubscriptionGroup",
+  "cause": "A request with this `uniqueness_token` already reached Maxio [docs]. Its outcome is unknown: a 409 never proves success",
+  "do": "Follow R11 with `findSubscription` by each subscription's `reference`. Found: settle from what Maxio holds. None found once 120 seconds have passed since the first send: start again with a new token (R11 step 4)",
+  "notes": "knowledge/operations/subscription-groups.md#signupwithsubscriptiongroup"
+ },
+ {
+  "status": 422,
+  "message": "`not_found`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "updateSubscriptionGroupMembers",
+  "call": "client.subscriptionGroups.updateSubscriptionGroupMembers",
+  "cause": "Reported under `errors.members`: an id in `member_ids` is not a subscription the group can take *(inferred)*",
+  "do": "Check every id against the site before sending",
+  "notes": "knowledge/operations/subscription-groups.md#updatesubscriptiongroupmembers"
+ },
+ {
+  "status": 422,
+  "message": "with an `action_link`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createPrepayment",
+  "call": "client.subscriptionInvoiceAccount.createPrepayment",
+  "cause": "3-D Secure is required for a `credit_card_on_file` prepayment [spec]. This is not a decline",
+  "do": "Send the customer to the link. Do not resend",
+  "notes": "knowledge/operations/subscription-invoice-account.md#createprepayment"
+ },
+ {
+  "status": 422,
+  "message": "\"Refund amount exceeds prepayment amount\"",
+  "patterns": [
+   "Refund amount exceeds prepayment amount"
+  ],
+  "quoted": [
+   "Refund amount exceeds prepayment amount"
+  ],
+  "operationId": "refundPrepayment",
+  "call": "client.subscriptionInvoiceAccount.refundPrepayment",
+  "cause": "The amount is larger than what remains of the prepayment. Reported under `refund.amount_in_cents`",
+  "do": "Lower the amount",
+  "notes": "knowledge/operations/subscription-invoice-account.md#refundprepayment"
+ },
+ {
+  "status": 422,
+  "message": "\"No credit card was on file for the …\"",
+  "patterns": [
+   "No credit card was on file for the"
+  ],
+  "quoted": [
+   "No credit card was on file for the …"
+  ],
+  "operationId": "migrateSubscriptionProduct",
+  "call": "client.subscriptionProducts.migrateSubscriptionProduct",
+  "cause": "An upgrade charge is due and there is no payment method",
+  "do": "Add a payment method (D6), then migrate again",
+  "notes": "knowledge/operations/subscription-products.md#migratesubscriptionproduct"
+ },
+ {
+  "status": 422,
+  "message": "\"This subscription is not eligible for a prorated migration\"",
+  "patterns": [
+   "This subscription is not eligible for a prorated migration"
+  ],
+  "quoted": [
+   "This subscription is not eligible for a prorated migration"
+  ],
+  "operationId": "migrateSubscriptionProduct",
+  "call": "client.subscriptionProducts.migrateSubscriptionProduct",
+  "cause": "`preserve_period: true` cannot be honoured. Maxio's migrations page names one cause: the two plans have different billing intervals [docs]. Other causes are not documented",
+  "do": "Check the preview. Migrate without `preserve_period` only when a reset period and a full charge are what the user wants",
+  "notes": "knowledge/operations/subscription-products.md#migratesubscriptionproduct"
+ },
+ {
+  "status": 422,
+  "message": "Invalid Product",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "migrateSubscriptionProduct",
+  "call": "client.subscriptionProducts.migrateSubscriptionProduct",
+  "cause": "The target is not a product of the site, or it is the subscription's current product *(inferred)*",
+  "do": "Choose a different product or price point",
+  "notes": "knowledge/operations/subscription-products.md#migratesubscriptionproduct"
+ },
+ {
+  "status": 422,
+  "message": "with an `action_link`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "migrateSubscriptionProduct",
+  "call": "client.subscriptionProducts.migrateSubscriptionProduct",
+  "cause": "3-D Secure is required [spec]. This is not a decline",
+  "do": "Send the customer to the link. Do not resend",
+  "notes": "knowledge/operations/subscription-products.md#migratesubscriptionproduct"
+ },
+ {
+  "status": 422,
+  "message": "\"Subscription must be active\"",
+  "patterns": [
+   "Subscription must be active"
+  ],
+  "quoted": [
+   "Subscription must be active"
+  ],
+  "operationId": "previewSubscriptionProductMigration",
+  "call": "client.subscriptionProducts.previewSubscriptionProductMigration",
+  "cause": "The subscription is not in a state the preview accepts. Whether it accepts `trialing` is not stated *(unconfirmed)*",
+  "do": "Read `state`. `active`: check the request. `trialing`: the amounts cannot be previewed, and the plan change is not refused. Migrate and report that no amounts were previewed, unless the user asked to see them first (D13). Any other state: no plan change until the subscription is brought back (D12)",
+  "notes": "knowledge/operations/subscription-products.md#previewsubscriptionproductmigration"
+ },
+ {
+  "status": 422,
+  "message": "\"The subscription is already canceled\"",
+  "patterns": [
+   "The subscription is already canceled"
+  ],
+  "quoted": [
+   "The subscription is already canceled"
+  ],
+  "operationId": "cancelSubscription",
+  "call": "client.subscriptionStatus.cancelSubscription",
+  "cause": "Already canceled. This message arrives as a single `error` string, not in an `errors` list [spec]",
+  "do": "Treat as done; read the subscription back",
+  "notes": "knowledge/operations/subscription-status.md#cancelsubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"subscription must be an Object\"",
+  "patterns": [
+   "subscription must be an Object"
+  ],
+  "quoted": [
+   "subscription must be an Object"
+  ],
+  "operationId": "cancelSubscription",
+  "call": "client.subscriptionStatus.cancelSubscription",
+  "cause": "The body is not wrapped in `subscription`",
+  "do": "Send the options inside a `subscription` object",
+  "notes": "knowledge/operations/subscription-status.md#cancelsubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"reason_code size cannot be greater than 255\"",
+  "patterns": [
+   "reason_code size cannot be greater than 255"
+  ],
+  "quoted": [
+   "reason_code size cannot be greater than 255"
+  ],
+  "operationId": "cancelSubscription",
+  "call": "client.subscriptionStatus.cancelSubscription",
+  "cause": "Free text was sent as `reason_code`",
+  "do": "Send a code from `listReasonCodes`; put free text in `cancellation_message`",
+  "notes": "knowledge/operations/subscription-status.md#cancelsubscription"
+ },
+ {
+  "status": 422,
+  "message": "(message not documented)",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "initiateDelayedCancellation",
+  "call": "client.subscriptionStatus.initiateDelayedCancellation",
+  "cause": "The subscription is `past_due`. The spec states the rule but not the answer it gives (status not documented)",
+  "do": "Recover payment first (D12), or cancel now with `cancelSubscription`",
+  "notes": "knowledge/operations/subscription-status.md#initiatedelayedcancellation"
+ },
+ {
+  "status": 422,
+  "message": "\"The subscription is already canceled\"",
+  "patterns": [
+   "The subscription is already canceled"
+  ],
+  "quoted": [
+   "The subscription is already canceled"
+  ],
+  "operationId": "initiateDelayedCancellation",
+  "call": "client.subscriptionStatus.initiateDelayedCancellation",
+  "cause": "Already canceled",
+  "do": "Nothing to schedule",
+  "notes": "knowledge/operations/subscription-status.md#initiatedelayedcancellation"
+ },
+ {
+  "status": 422,
+  "message": "\"Cannot reactivate a subscription that is not marked …\"",
+  "patterns": [
+   "Cannot reactivate a subscription that is not marked"
+  ],
+  "quoted": [
+   "Cannot reactivate a subscription that is not marked …"
+  ],
+  "operationId": "reactivateSubscription",
+  "call": "client.subscriptionStatus.reactivateSubscription",
+  "cause": "Wrong state. The message goes on to list Canceled, Unpaid and Trial Ended",
+  "do": "`on_hold`: use `resumeSubscription`. `expired`: cancel it first, then reactivate [docs]. Any other state: there is nothing to reactivate",
+  "notes": "knowledge/operations/subscription-status.md#reactivatesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"Request was 'resume only', but this subscription cannot be resumed.\"",
+  "patterns": [
+   "Request was 'resume only', but this subscription cannot be resumed"
+  ],
+  "quoted": [
+   "Request was 'resume only', but this subscription cannot be resumed."
+  ],
+  "operationId": "reactivateSubscription",
+  "call": "client.subscriptionStatus.reactivateSubscription",
+  "cause": "`require_resume` was sent after the billing period it was canceled in had ended. Nothing changed",
+  "do": "Decide with the user whether a new, charged period is acceptable. If so, reactivate without `resume`",
+  "notes": "knowledge/operations/subscription-status.md#reactivatesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"No payment method was on file for the …\"",
+  "patterns": [
+   "No payment method was on file for the"
+  ],
+  "quoted": [
+   "No payment method was on file for the …"
+  ],
+  "operationId": "reactivateSubscription",
+  "call": "client.subscriptionStatus.reactivateSubscription",
+  "cause": "No payment profile is on file for the amount due at reactivation [announcement]",
+  "do": "Add a payment method (D6), then reactivate again on purpose",
+  "notes": "knowledge/operations/subscription-status.md#reactivatesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"The credit card on file could not be charged.\"",
+  "patterns": [
+   "The credit card on file could not be charged"
+  ],
+  "quoted": [
+   "The credit card on file could not be charged."
+  ],
+  "operationId": "reactivateSubscription",
+  "call": "client.subscriptionStatus.reactivateSubscription",
+  "cause": "The payment was declined. Since 2021-10 the gateway's own decline text is returned instead [announcement]; the spec still shows this text",
+  "do": "Get a working payment method (D6), then reactivate again on purpose. Never from an automatic retry (R11)",
+  "notes": "knowledge/operations/subscription-status.md#reactivatesubscription"
+ },
+ {
+  "status": 422,
+  "message": "with an `action_link`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "reactivateSubscription",
+  "call": "client.subscriptionStatus.reactivateSubscription",
+  "cause": "3-D Secure is required [spec]. This is not a decline",
+  "do": "Send the customer to the link. Do not resend",
+  "notes": "knowledge/operations/subscription-status.md#reactivatesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"This subscription is not eligible to be put on hold.\"",
+  "patterns": [
+   "This subscription is not eligible to be put on hold"
+  ],
+  "quoted": [
+   "This subscription is not eligible to be put on hold."
+  ],
+  "operationId": "pauseSubscription",
+  "call": "client.subscriptionStatus.pauseSubscription",
+  "cause": "The next billing date is within 24 hours [spec], or the subscription cannot be held for another reason *(inferred)*",
+  "do": "Wait until after the renewal, then pause",
+  "notes": "knowledge/operations/subscription-status.md#pausesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"Automatic resume date: must be at least 24 hours in the future.\"",
+  "patterns": [
+   "Automatic resume date: must be at least 24 hours in the future"
+  ],
+  "quoted": [
+   "Automatic resume date: must be at least 24 hours in the future."
+  ],
+  "operationId": "pauseSubscription",
+  "call": "client.subscriptionStatus.pauseSubscription",
+  "cause": "`automatically_resume_at` is too soon (documented on `updateAutomaticSubscriptionResumption`; assumed here)",
+  "do": "Send a later date, or none",
+  "notes": "knowledge/operations/subscription-status.md#pausesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"Subscription is not currently on hold.\"",
+  "patterns": [
+   "Subscription is not currently on hold"
+  ],
+  "quoted": [
+   "Subscription is not currently on hold."
+  ],
+  "operationId": "updateAutomaticSubscriptionResumption",
+  "call": "client.subscriptionStatus.updateAutomaticSubscriptionResumption",
+  "cause": "The state is not `on_hold`",
+  "do": "Nothing to change. Use `pauseSubscription` to start a hold",
+  "notes": "knowledge/operations/subscription-status.md#updateautomaticsubscriptionresumption"
+ },
+ {
+  "status": 422,
+  "message": "\"Automatic resume date: must be at least 24 hours in the future.\"",
+  "patterns": [
+   "Automatic resume date: must be at least 24 hours in the future"
+  ],
+  "quoted": [
+   "Automatic resume date: must be at least 24 hours in the future."
+  ],
+  "operationId": "updateAutomaticSubscriptionResumption",
+  "call": "client.subscriptionStatus.updateAutomaticSubscriptionResumption",
+  "cause": "The date is less than 24 hours away",
+  "do": "Send a later date, or `null`",
+  "notes": "knowledge/operations/subscription-status.md#updateautomaticsubscriptionresumption"
+ },
+ {
+  "status": 422,
+  "message": "\"Only subscriptions that are on hold can be resumed.\"",
+  "patterns": [
+   "Only subscriptions that are on hold can be resumed"
+  ],
+  "quoted": [
+   "Only subscriptions that are on hold can be resumed."
+  ],
+  "operationId": "resumeSubscription",
+  "call": "client.subscriptionStatus.resumeSubscription",
+  "cause": "The state is not `on_hold`",
+  "do": "For `canceled` or `trial_ended` use `reactivateSubscription`. Other states: D12",
+  "notes": "knowledge/operations/subscription-status.md#resumesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"base: subscription retry was unsuccessful\"",
+  "patterns": [
+   "base: subscription retry was unsuccessful"
+  ],
+  "quoted": [
+   "base: subscription retry was unsuccessful"
+  ],
+  "operationId": "retrySubscription",
+  "call": "client.subscriptionStatus.retrySubscription",
+  "cause": "The payment was declined again, or the subscription was not `past_due` *(second cause inferred)*",
+  "do": "Get a new payment method and collect through the subscription (D6, D12). Do not loop",
+  "notes": "knowledge/operations/subscription-status.md#retrysubscription"
+ },
+ {
+  "status": 422,
+  "message": "with an `action_link`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "retrySubscription",
+  "call": "client.subscriptionStatus.retrySubscription",
+  "cause": "3-D Secure is required [spec]. This is not a decline",
+  "do": "Send the customer to the link. Do not resend",
+  "notes": "knowledge/operations/subscription-status.md#retrysubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"This subscription is not eligible to have its dunning canceled.\"",
+  "patterns": [
+   "This subscription is not eligible to have its dunning canceled"
+  ],
+  "quoted": [
+   "This subscription is not eligible to have its dunning canceled."
+  ],
+  "operationId": "cancelDunning",
+  "call": "client.subscriptionStatus.cancelDunning",
+  "cause": "The subscription is not in dunning",
+  "do": "Nothing to cancel",
+  "notes": "knowledge/operations/subscription-status.md#canceldunning"
+ },
+ {
+  "status": 422,
+  "message": "\"No payment method was on file for the …\"",
+  "patterns": [
+   "No payment method was on file for the"
+  ],
+  "quoted": [
+   "No payment method was on file for the …"
+  ],
+  "operationId": "createSubscription",
+  "call": "client.subscriptions.createSubscription",
+  "cause": "Collection is `automatic` (sent, or the site default), money is due at signup and there is no payment source (documented on `signupWithSubscriptionGroup`; seen here [observed])",
+  "do": "Decide by intent (R14). A customer who pays by card or bank needs a payment source. A customer billed by invoice needs `remittance` or `invoice`. Never switch a card-paying plan to an invoice method to clear this",
+  "notes": "knowledge/operations/subscriptions.md#createsubscription"
+ },
+ {
+  "status": 422,
+  "message": "with an `action_link`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createSubscription",
+  "call": "client.subscriptions.createSubscription",
+  "cause": "3-D Secure is required [spec]. This is not a decline",
+  "do": "Send the customer to the link, then settle with `findSubscription`. Do not resend",
+  "notes": "knowledge/operations/subscriptions.md#createsubscription"
+ },
+ {
+  "status": 422,
+  "message": "(the gateway's decline text; not documented)",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createSubscription",
+  "call": "client.subscriptions.createSubscription",
+  "cause": "The card was declined at the first charge. No subscription was created [spec]",
+  "do": "Ask for another payment method and send again with a new `uniqueness_token`. `signup_failure` fires for gateway failures, not for validation errors [docs]",
+  "notes": "knowledge/operations/subscriptions.md#createsubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"Bank routing number: cannot be blank.\"",
+  "patterns": [
+   "Bank routing number: cannot be blank"
+  ],
+  "quoted": [
+   "Bank routing number: cannot be blank."
+  ],
+  "operationId": "createSubscription",
+  "call": "client.subscriptions.createSubscription",
+  "cause": "Raw bank fields were sent and are incomplete. The spec shows \"Bank account number: cannot be blank.\" beside it",
+  "do": "Send only a Maxio.js `chargify_token` in `bank_account_attributes` (R15, D2). Raw bank fields are for a merchant that handles bank details itself",
+  "notes": "knowledge/operations/subscriptions.md#createsubscription"
+ },
+ {
+  "status": 409,
+  "message": "`DuplicatePrevention::DuplicateSubmissionError`",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createSubscription",
+  "call": "client.subscriptions.createSubscription",
+  "cause": "A request with this `uniqueness_token` already reached Maxio [docs]. Its outcome is unknown: a 409 never proves success",
+  "do": "Follow R11 with `findSubscription` by your reference. Found: settle from what Maxio holds. Still not found once 120 seconds have passed since the first send: start again with a new token (R11 step 4)",
+  "notes": "knowledge/operations/subscriptions.md#createsubscription"
+ },
+ {
+  "status": 429,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "createSubscription",
+  "call": "client.subscriptions.createSubscription",
+  "cause": "Too many requests in flight for the site, or throttling (documented for the whole API in error-handling, not on this operation)",
+  "do": "Pause for minutes and lower concurrency (R10). Then send the request again with the same `uniqueness_token`, never a new one (R12)",
+  "notes": "knowledge/operations/subscriptions.md#createsubscription"
+ },
+ {
+  "status": 404,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "findSubscription",
+  "call": "client.subscriptions.findSubscription",
+  "cause": "No subscription holds that reference. This is the normal \"not there\" answer. A create sent less than 120 seconds ago may still be running",
+  "do": "Before a first create: go on and create. After a create with an unknown outcome it means only \"not there yet\": follow R11, whose step 4 this lookup can settle",
+  "notes": "knowledge/operations/subscriptions.md#findsubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"Payment collection method cannot be set to 'invoice' when the subscription is past due\"",
+  "patterns": [
+   "Payment collection method cannot be set to 'invoice' when the subscription is past due"
+  ],
+  "quoted": [
+   "Payment collection method cannot be set to 'invoice' when the subscription is past due"
+  ],
+  "operationId": "updateSubscription",
+  "call": "client.subscriptions.updateSubscription",
+  "cause": "Changing the collection method to `invoice` while the subscription is `past_due`",
+  "do": "Collect the balance first (D12)",
+  "notes": "knowledge/operations/subscriptions.md#updatesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"'expires_at' cannot be set for subscriptions on calendar billing\"",
+  "patterns": [
+   "'expires_at' cannot be set for subscriptions on calendar billing"
+  ],
+  "quoted": [
+   "'expires_at' cannot be set for subscriptions on calendar billing"
+  ],
+  "operationId": "updateSubscription",
+  "call": "client.subscriptions.updateSubscription",
+  "cause": "`expires_at` sent for a subscription on calendar billing",
+  "do": "Do not set it",
+  "notes": "knowledge/operations/subscriptions.md#updatesubscription"
+ },
+ {
+  "status": 400,
+  "message": "\"Purchase Declined. The subscription is now in the …\"",
+  "patterns": [
+   "Purchase Declined. The subscription is now in the"
+  ],
+  "quoted": [
+   "Purchase Declined. The subscription is now in the …"
+  ],
+  "operationId": "activateSubscription",
+  "call": "client.subscriptions.activateSubscription",
+  "cause": "The payment failed and the activation was reverted: the message ends with the state the subscription is back in (the spec shows `awaiting_signup`). It arrives under `errors.base`",
+  "do": "Fix the payment method, then call again on purpose. Never from an automatic retry (R11)",
+  "notes": "knowledge/operations/subscriptions.md#activatesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"Current period starts at: must be a valid date/time\"",
+  "patterns": [
+   "Current period starts at: must be a valid date/time"
+  ],
+  "quoted": [
+   "Current period starts at: must be a valid date/time"
+  ],
+  "operationId": "overrideSubscription",
+  "call": "client.subscriptions.overrideSubscription",
+  "cause": "`current_period_starts_at` is not a date-time. The message arrives as a single `error` string",
+  "do": "Send an ISO 8601 date-time that lies in the past",
+  "notes": "knowledge/operations/subscriptions.md#overridesubscription"
+ },
+ {
+  "status": 400,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "overrideSubscription",
+  "call": "client.subscriptions.overrideSubscription",
+  "cause": "A field this call does not accept was sent [spec]",
+  "do": "Send only the fields the contract lists for this call",
+  "notes": "knowledge/operations/subscriptions.md#overridesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"That coupon is not stackable\"",
+  "patterns": [
+   "That coupon is not stackable"
+  ],
+  "quoted": [
+   "That coupon is not stackable"
+  ],
+  "operationId": "applyCouponsToSubscription",
+  "call": "client.subscriptions.applyCouponsToSubscription",
+  "cause": "A code in the request cannot be combined with another coupon. The message starts with the code",
+  "do": "Remove one of the codes, or use stackable coupons",
+  "notes": "knowledge/operations/subscriptions.md#applycouponstosubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"Coupon code could not be found.\"",
+  "patterns": [
+   "Coupon code could not be found"
+  ],
+  "quoted": [
+   "Coupon code could not be found."
+  ],
+  "operationId": "applyCouponsToSubscription",
+  "call": "client.subscriptions.applyCouponsToSubscription",
+  "cause": "A code in the request does not exist. The message starts with the code",
+  "do": "Check the code first with `validateCoupon` (D18)",
+  "notes": "knowledge/operations/subscriptions.md#applycouponstosubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"Coupon Codes: Subscription already has at least one non-stackable coupon.\"",
+  "patterns": [
+   "Coupon Codes: Subscription already has at least one non-stackable coupon"
+  ],
+  "quoted": [
+   "Coupon Codes: Subscription already has at least one non-stackable coupon."
+  ],
+  "operationId": "applyCouponsToSubscription",
+  "call": "client.subscriptions.applyCouponsToSubscription",
+  "cause": "A coupon already on the subscription blocks any other",
+  "do": "Leave the subscription as it is, or remove the existing coupon first with `removeCouponFromSubscription`",
+  "notes": "knowledge/operations/subscriptions.md#applycouponstosubscription"
+ },
+ {
+  "status": 400,
+  "message": "",
+  "patterns": [],
+  "quoted": [],
+  "operationId": "purgeSubscription",
+  "call": "client.subscriptions.purgeSubscription",
+  "cause": "Wrong `ack`, or the site is not in test mode *(inferred; the spec gives the status with no message)*",
+  "do": "Check the customer id and that `readSite` returns `test: true`",
+  "notes": "knowledge/operations/subscriptions.md#purgesubscription"
+ },
+ {
+  "status": 422,
+  "message": "\"URL: invalid, only http and https supported\"",
+  "patterns": [
+   "URL: invalid, only http and https supported"
+  ],
+  "quoted": [
+   "URL: invalid, only http and https supported"
+  ],
+  "operationId": "createEndpoint",
+  "call": "client.webhooks.createEndpoint",
+  "cause": "The URL is not an http or https URL",
+  "do": "Send a public http(s) URL on port 80 or 443",
+  "notes": "knowledge/operations/webhooks.md#createendpoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Event key is not valid\"",
+  "patterns": [
+   "Event key is not valid"
+  ],
+  "quoted": [
+   "Event key is not valid"
+  ],
+  "operationId": "createEndpoint",
+  "call": "client.webhooks.createEndpoint",
+  "cause": "A key in `webhook_subscriptions` is not a known event (documented on `updateEndpoint`; assumed here). The message ends with the key",
+  "do": "Use only the keys the contract lists",
+  "notes": "knowledge/operations/webhooks.md#createendpoint"
+ },
+ {
+  "status": 422,
+  "message": "\"Event key is not valid\"",
+  "patterns": [
+   "Event key is not valid"
+  ],
+  "quoted": [
+   "Event key is not valid"
+  ],
+  "operationId": "updateEndpoint",
+  "call": "client.webhooks.updateEndpoint",
+  "cause": "A key in `webhook_subscriptions` is not a known event. The message ends with the key",
+  "do": "Use only the keys the contract lists",
+  "notes": "knowledge/operations/webhooks.md#updateendpoint"
+ }
+]

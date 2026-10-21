@@ -1,0 +1,12 @@
+{
+  "name": "maxio-advanced-billing",
+  "displayName": "Maxio Advanced Billing",
+  "version": "0.5.0",
+  "description": "Integrate Maxio Advanced Billing with the APIMatic-generated SDK in C#/.NET, Python or TypeScript. Each bundled SDK folder ships its own contract map, Maxio business rules, usage docs and recipes; the plugin adds one router skill, hooks that deliver the rules at the moment they apply, and a Cursor rule.",
+  "author": {
+    "name": "APIMatic"
+  },
+  "skills": [
+    "./skills"
+  ]
+}
