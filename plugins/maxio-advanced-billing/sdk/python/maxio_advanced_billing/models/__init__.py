@@ -1,0 +1,2451 @@
+from . import enums, unions
+from .account_balance import AccountBalance, AccountBalanceDict
+from .account_balances import AccountBalances, AccountBalancesDict
+from .ach_agreement import AchAgreement, AchAgreementDict
+from .activate_event_based_component import ActivateEventBasedComponent, ActivateEventBasedComponentDict
+from .activate_subscription_request import ActivateSubscriptionRequest, ActivateSubscriptionRequestDict
+from .active_wallets import ActiveWallets, ActiveWalletsDict
+from .add_coupons_request import AddCouponsRequest, AddCouponsRequestDict
+from .add_subscription_to_a_group import AddSubscriptionToAGroup, AddSubscriptionToAGroupDict
+from .address_change import AddressChange, AddressChangeDict
+from .adjustment import Adjustment, AdjustmentDict
+from .aggregated_entitlement import AggregatedEntitlement, AggregatedEntitlementDict
+from .aggregated_entitlement_periodicity import AggregatedEntitlementPeriodicity, AggregatedEntitlementPeriodicityDict
+from .aggregated_entitlements_response import AggregatedEntitlementsResponse, AggregatedEntitlementsResponseDict
+from .agreement_acceptance import AgreementAcceptance, AgreementAcceptanceDict
+from .allocate_components import AllocateComponents, AllocateComponentsDict
+from .allocation import Allocation, AllocationDict
+from .allocation_expiration_date import AllocationExpirationDate, AllocationExpirationDateDict
+from .allocation_preview import AllocationPreview, AllocationPreviewDict
+from .allocation_preview_item import AllocationPreviewItem, AllocationPreviewItemDict
+from .allocation_preview_line_item import AllocationPreviewLineItem, AllocationPreviewLineItemDict
+from .allocation_preview_response import AllocationPreviewResponse, AllocationPreviewResponseDict
+from .allocation_response import AllocationResponse, AllocationResponseDict
+from .allocation_settings import AllocationSettings, AllocationSettingsDict
+from .apple_pay_payment_profile import ApplePayPaymentProfile, ApplePayPaymentProfileDict
+from .applied_credit_note_data import AppliedCreditNoteData, AppliedCreditNoteDataDict
+from .apply_credit_note_event import ApplyCreditNoteEvent, ApplyCreditNoteEventDict
+from .apply_credit_note_event_data import ApplyCreditNoteEventData, ApplyCreditNoteEventDataDict
+from .apply_debit_note_event import ApplyDebitNoteEvent, ApplyDebitNoteEventDict
+from .apply_debit_note_event_data import ApplyDebitNoteEventData, ApplyDebitNoteEventDataDict
+from .apply_payment_event import ApplyPaymentEvent, ApplyPaymentEventDict
+from .apply_payment_event_data import ApplyPaymentEventData, ApplyPaymentEventDataDict
+from .attribute_error_model import AttributeErrorModel, AttributeErrorModelDict
+from .auto_resume import AutoResume, AutoResumeDict
+from .available_actions import AvailableActions, AvailableActionsDict
+from .backport_invoice_event import BackportInvoiceEvent, BackportInvoiceEventDict
+from .bank_account_attributes import BankAccountAttributes, BankAccountAttributesDict
+from .bank_account_payment_profile import BankAccountPaymentProfile, BankAccountPaymentProfileDict
+from .bank_account_response import BankAccountResponse, BankAccountResponseDict
+from .bank_account_verification import BankAccountVerification, BankAccountVerificationDict
+from .bank_account_verification_request import BankAccountVerificationRequest, BankAccountVerificationRequestDict
+from .base_refund_error import BaseRefundError, BaseRefundErrorDict
+from .base_string_error import BaseStringError, BaseStringErrorDict
+from .batch_job import BatchJob, BatchJobDict
+from .batch_job_response import BatchJobResponse, BatchJobResponseDict
+from .billing_manifest import BillingManifest, BillingManifestDict
+from .billing_manifest_item import BillingManifestItem, BillingManifestItemDict
+from .billing_schedule import BillingSchedule, BillingScheduleDict
+from .breakouts import Breakouts, BreakoutsDict
+from .bulk_components_price_point_assignment import (
+    BulkComponentsPricePointAssignment,
+    BulkComponentsPricePointAssignmentDict,
+)
+from .bulk_create_product_price_points_request import (
+    BulkCreateProductPricePointsRequest,
+    BulkCreateProductPricePointsRequestDict,
+)
+from .bulk_create_product_price_points_response import (
+    BulkCreateProductPricePointsResponse,
+    BulkCreateProductPricePointsResponseDict,
+)
+from .bulk_create_segments import BulkCreateSegments, BulkCreateSegmentsDict
+from .bulk_update_segments import BulkUpdateSegments, BulkUpdateSegmentsDict
+from .bulk_update_segments_item import BulkUpdateSegmentsItem, BulkUpdateSegmentsItemDict
+from .calendar_billing import CalendarBilling, CalendarBillingDict
+from .cancel_grouped_subscriptions_request import (
+    CancelGroupedSubscriptionsRequest,
+    CancelGroupedSubscriptionsRequestDict,
+)
+from .cancellation_options import CancellationOptions, CancellationOptionsDict
+from .cancellation_request import CancellationRequest, CancellationRequestDict
+from .change_chargeback_status_event import ChangeChargebackStatusEvent, ChangeChargebackStatusEventDict
+from .change_chargeback_status_event_data import ChangeChargebackStatusEventData, ChangeChargebackStatusEventDataDict
+from .change_invoice_collection_method_event import (
+    ChangeInvoiceCollectionMethodEvent,
+    ChangeInvoiceCollectionMethodEventDict,
+)
+from .change_invoice_collection_method_event_data import (
+    ChangeInvoiceCollectionMethodEventData,
+    ChangeInvoiceCollectionMethodEventDataDict,
+)
+from .change_invoice_status_event import ChangeInvoiceStatusEvent, ChangeInvoiceStatusEventDict
+from .change_invoice_status_event_data import ChangeInvoiceStatusEventData, ChangeInvoiceStatusEventDataDict
+from .chargify_ebb import ChargifyEbb, ChargifyEbbDict
+from .chjs_tokenization_failure import ChjsTokenizationFailure, ChjsTokenizationFailureDict
+from .chjs_tokenization_success import ChjsTokenizationSuccess, ChjsTokenizationSuccessDict
+from .clone_component_price_point import CloneComponentPricePoint, CloneComponentPricePointDict
+from .clone_component_price_point_request import CloneComponentPricePointRequest, CloneComponentPricePointRequestDict
+from .component import Component, ComponentDict
+from .component_allocation_change import ComponentAllocationChange, ComponentAllocationChangeDict
+from .component_allocation_error import ComponentAllocationError, ComponentAllocationErrorDict
+from .component_allocation_error1 import ComponentAllocationError1, ComponentAllocationError1Dict
+from .component_allocation_error_item import ComponentAllocationErrorItem, ComponentAllocationErrorItemDict
+from .component_cost_data import ComponentCostData, ComponentCostDataDict
+from .component_cost_data_rate_tier import ComponentCostDataRateTier, ComponentCostDataRateTierDict
+from .component_currency_price import ComponentCurrencyPrice, ComponentCurrencyPriceDict
+from .component_currency_prices_response import ComponentCurrencyPricesResponse, ComponentCurrencyPricesResponseDict
+from .component_custom_price import ComponentCustomPrice, ComponentCustomPriceDict
+from .component_price import ComponentPrice, ComponentPriceDict
+from .component_price_point import ComponentPricePoint, ComponentPricePointDict
+from .component_price_point_assignment import ComponentPricePointAssignment, ComponentPricePointAssignmentDict
+from .component_price_point_currency_overage_response import (
+    ComponentPricePointCurrencyOverageResponse,
+    ComponentPricePointCurrencyOverageResponseDict,
+)
+from .component_price_point_error import ComponentPricePointError, ComponentPricePointErrorDict
+from .component_price_point_error1 import ComponentPricePointError1, ComponentPricePointError1Dict
+from .component_price_point_error_item import ComponentPricePointErrorItem, ComponentPricePointErrorItemDict
+from .component_price_point_item import ComponentPricePointItem, ComponentPricePointItemDict
+from .component_price_point_response import ComponentPricePointResponse, ComponentPricePointResponseDict
+from .component_price_points_response import ComponentPricePointsResponse, ComponentPricePointsResponseDict
+from .component_response import ComponentResponse, ComponentResponseDict
+from .consolidated_invoice import ConsolidatedInvoice, ConsolidatedInvoiceDict
+from .contract import Contract, ContractDict
+from .count_response import CountResponse, CountResponseDict
+from .coupon import Coupon, CouponDict
+from .coupon_currency import CouponCurrency, CouponCurrencyDict
+from .coupon_currency_request import CouponCurrencyRequest, CouponCurrencyRequestDict
+from .coupon_currency_response import CouponCurrencyResponse, CouponCurrencyResponseDict
+from .coupon_payload import CouponPayload, CouponPayloadDict
+from .coupon_request import CouponRequest, CouponRequestDict
+from .coupon_response import CouponResponse, CouponResponseDict
+from .coupon_restriction import CouponRestriction, CouponRestrictionDict
+from .coupon_subcodes import CouponSubcodes, CouponSubcodesDict
+from .coupon_subcodes_response import CouponSubcodesResponse, CouponSubcodesResponseDict
+from .coupon_usage import CouponUsage, CouponUsageDict
+from .create_allocation import CreateAllocation, CreateAllocationDict
+from .create_allocation_request import CreateAllocationRequest, CreateAllocationRequestDict
+from .create_component_price_point import CreateComponentPricePoint, CreateComponentPricePointDict
+from .create_component_price_point_request import CreateComponentPricePointRequest, CreateComponentPricePointRequestDict
+from .create_component_price_points_request import (
+    CreateComponentPricePointsRequest,
+    CreateComponentPricePointsRequestDict,
+)
+from .create_credit_note_event import CreateCreditNoteEvent, CreateCreditNoteEventDict
+from .create_currency_price import CreateCurrencyPrice, CreateCurrencyPriceDict
+from .create_currency_prices_request import CreateCurrencyPricesRequest, CreateCurrencyPricesRequestDict
+from .create_customer import CreateCustomer, CreateCustomerDict
+from .create_customer_request import CreateCustomerRequest, CreateCustomerRequestDict
+from .create_debit_note_event import CreateDebitNoteEvent, CreateDebitNoteEventDict
+from .create_ebb_component import CreateEbbComponent, CreateEbbComponentDict
+from .create_feature_catalog_item_request import CreateFeatureCatalogItemRequest, CreateFeatureCatalogItemRequestDict
+from .create_feature_template_request import CreateFeatureTemplateRequest, CreateFeatureTemplateRequestDict
+from .create_invoice import CreateInvoice, CreateInvoiceDict
+from .create_invoice_address import CreateInvoiceAddress, CreateInvoiceAddressDict
+from .create_invoice_coupon import CreateInvoiceCoupon, CreateInvoiceCouponDict
+from .create_invoice_item import CreateInvoiceItem, CreateInvoiceItemDict
+from .create_invoice_payment import CreateInvoicePayment, CreateInvoicePaymentDict
+from .create_invoice_payment_application import CreateInvoicePaymentApplication, CreateInvoicePaymentApplicationDict
+from .create_invoice_payment_request import CreateInvoicePaymentRequest, CreateInvoicePaymentRequestDict
+from .create_invoice_request import CreateInvoiceRequest, CreateInvoiceRequestDict
+from .create_metadata import CreateMetadata, CreateMetadataDict
+from .create_metadata_request import CreateMetadataRequest, CreateMetadataRequestDict
+from .create_metafield import CreateMetafield, CreateMetafieldDict
+from .create_metafields_request import CreateMetafieldsRequest, CreateMetafieldsRequestDict
+from .create_metered_component import CreateMeteredComponent, CreateMeteredComponentDict
+from .create_multi_invoice_payment import CreateMultiInvoicePayment, CreateMultiInvoicePaymentDict
+from .create_multi_invoice_payment_request import CreateMultiInvoicePaymentRequest, CreateMultiInvoicePaymentRequestDict
+from .create_offer import CreateOffer, CreateOfferDict
+from .create_offer_component import CreateOfferComponent, CreateOfferComponentDict
+from .create_offer_request import CreateOfferRequest, CreateOfferRequestDict
+from .create_on_off_component import CreateOnOffComponent, CreateOnOffComponentDict
+from .create_or_update_endpoint import CreateOrUpdateEndpoint, CreateOrUpdateEndpointDict
+from .create_or_update_endpoint_request import CreateOrUpdateEndpointRequest, CreateOrUpdateEndpointRequestDict
+from .create_or_update_product import CreateOrUpdateProduct, CreateOrUpdateProductDict
+from .create_or_update_product_request import CreateOrUpdateProductRequest, CreateOrUpdateProductRequestDict
+from .create_or_update_segment_price import CreateOrUpdateSegmentPrice, CreateOrUpdateSegmentPriceDict
+from .create_payment import CreatePayment, CreatePaymentDict
+from .create_payment_profile import CreatePaymentProfile, CreatePaymentProfileDict
+from .create_payment_profile_request import CreatePaymentProfileRequest, CreatePaymentProfileRequestDict
+from .create_prepaid_component import CreatePrepaidComponent, CreatePrepaidComponentDict
+from .create_prepaid_usage_component_price_point import (
+    CreatePrepaidUsageComponentPricePoint,
+    CreatePrepaidUsageComponentPricePointDict,
+)
+from .create_prepayment import CreatePrepayment, CreatePrepaymentDict
+from .create_prepayment_request import CreatePrepaymentRequest, CreatePrepaymentRequestDict
+from .create_prepayment_response import CreatePrepaymentResponse, CreatePrepaymentResponseDict
+from .create_product_currency_price import CreateProductCurrencyPrice, CreateProductCurrencyPriceDict
+from .create_product_currency_prices_request import (
+    CreateProductCurrencyPricesRequest,
+    CreateProductCurrencyPricesRequestDict,
+)
+from .create_product_family import CreateProductFamily, CreateProductFamilyDict
+from .create_product_family_request import CreateProductFamilyRequest, CreateProductFamilyRequestDict
+from .create_product_price_point import CreateProductPricePoint, CreateProductPricePointDict
+from .create_product_price_point_request import CreateProductPricePointRequest, CreateProductPricePointRequestDict
+from .create_quantity_based_component import CreateQuantityBasedComponent, CreateQuantityBasedComponentDict
+from .create_reason_code import CreateReasonCode, CreateReasonCodeDict
+from .create_reason_code_request import CreateReasonCodeRequest, CreateReasonCodeRequestDict
+from .create_segment import CreateSegment, CreateSegmentDict
+from .create_segment_request import CreateSegmentRequest, CreateSegmentRequestDict
+from .create_subscription import CreateSubscription, CreateSubscriptionDict
+from .create_subscription_component import CreateSubscriptionComponent, CreateSubscriptionComponentDict
+from .create_subscription_group import CreateSubscriptionGroup, CreateSubscriptionGroupDict
+from .create_subscription_group_request import CreateSubscriptionGroupRequest, CreateSubscriptionGroupRequestDict
+from .create_subscription_request import CreateSubscriptionRequest, CreateSubscriptionRequestDict
+from .create_usage import CreateUsage, CreateUsageDict
+from .create_usage_request import CreateUsageRequest, CreateUsageRequestDict
+from .create_wallet_adjustment_request import CreateWalletAdjustmentRequest, CreateWalletAdjustmentRequestDict
+from .create_wallet_product_request import CreateWalletProductRequest, CreateWalletProductRequestDict
+from .create_wallet_purchase_request import CreateWalletPurchaseRequest, CreateWalletPurchaseRequestDict
+from .create_wallet_request import CreateWalletRequest, CreateWalletRequestDict
+from .create_wallet_transaction_request import CreateWalletTransactionRequest, CreateWalletTransactionRequestDict
+from .created_prepayment import CreatedPrepayment, CreatedPrepaymentDict
+from .credit_account_balance_changed import CreditAccountBalanceChanged, CreditAccountBalanceChangedDict
+from .credit_card_attributes import CreditCardAttributes, CreditCardAttributesDict
+from .credit_card_payment_profile import CreditCardPaymentProfile, CreditCardPaymentProfileDict
+from .credit_note import CreditNote, CreditNoteDict
+from .credit_note_application import CreditNoteApplication, CreditNoteApplicationDict
+from .credit_note_line_item import CreditNoteLineItem, CreditNoteLineItemDict
+from .credit_scheme_request import CreditSchemeRequest, CreditSchemeRequestDict
+from .currency_overage_prices import CurrencyOveragePrices, CurrencyOveragePricesDict
+from .currency_price import CurrencyPrice, CurrencyPriceDict
+from .currency_prices_response import CurrencyPricesResponse, CurrencyPricesResponseDict
+from .custom_field_value_change import CustomFieldValueChange, CustomFieldValueChangeDict
+from .customer import Customer, CustomerDict
+from .customer_attributes import CustomerAttributes, CustomerAttributesDict
+from .customer_change import CustomerChange, CustomerChangeDict
+from .customer_changes_preview_response import CustomerChangesPreviewResponse, CustomerChangesPreviewResponseDict
+from .customer_custom_fields_change import CustomerCustomFieldsChange, CustomerCustomFieldsChangeDict
+from .customer_error import CustomerError, CustomerErrorDict
+from .customer_error_response import CustomerErrorResponse, CustomerErrorResponseDict
+from .customer_error_response1 import CustomerErrorResponse1, CustomerErrorResponse1Dict
+from .customer_payer_change import CustomerPayerChange, CustomerPayerChangeDict
+from .customer_response import CustomerResponse, CustomerResponseDict
+from .debit_note import DebitNote, DebitNoteDict
+from .deduct_service_credit import DeductServiceCredit, DeductServiceCreditDict
+from .deduct_service_credit_request import DeductServiceCreditRequest, DeductServiceCreditRequestDict
+from .delayed_cancellation_response import DelayedCancellationResponse, DelayedCancellationResponseDict
+from .delete_subscription_group_response import DeleteSubscriptionGroupResponse, DeleteSubscriptionGroupResponseDict
+from .deliver_proforma_invoice_request import DeliverProformaInvoiceRequest, DeliverProformaInvoiceRequestDict
+from .dunner_data import DunnerData, DunnerDataDict
+from .dunning_step_data import DunningStepData, DunningStepDataDict
+from .dunning_step_reached import DunningStepReached, DunningStepReachedDict
+from .ebb_component import EbbComponent, EbbComponentDict
+from .ebb_event import EbbEvent, EbbEventDict
+from .enable_webhooks_request import EnableWebhooksRequest, EnableWebhooksRequestDict
+from .enable_webhooks_response import EnableWebhooksResponse, EnableWebhooksResponseDict
+from .endpoint import Endpoint, EndpointDict
+from .endpoint_response import EndpointResponse, EndpointResponseDict
+from .error_array_map_response import ErrorArrayMapResponse, ErrorArrayMapResponseDict
+from .error_array_map_response1 import ErrorArrayMapResponse1, ErrorArrayMapResponse1Dict
+from .error_list_response import ErrorListResponse, ErrorListResponseDict
+from .error_list_response1 import ErrorListResponse1, ErrorListResponse1Dict
+from .error_string_map_response import ErrorStringMapResponse, ErrorStringMapResponseDict
+from .error_string_map_response1 import ErrorStringMapResponse1, ErrorStringMapResponse1Dict
+from .errors_model import ErrorsModel, ErrorsModelDict
+from .event import Event, EventDict
+from .event_based_billing_list_segments_errors import (
+    EventBasedBillingListSegmentsErrors,
+    EventBasedBillingListSegmentsErrorsDict,
+)
+from .event_based_billing_list_segments_errors1 import (
+    EventBasedBillingListSegmentsErrors1,
+    EventBasedBillingListSegmentsErrors1Dict,
+)
+from .event_based_billing_segment import EventBasedBillingSegment, EventBasedBillingSegmentDict
+from .event_based_billing_segment1 import EventBasedBillingSegment1, EventBasedBillingSegment1Dict
+from .event_based_billing_segment_error import EventBasedBillingSegmentError, EventBasedBillingSegmentErrorDict
+from .event_based_billing_segment_errors import EventBasedBillingSegmentErrors, EventBasedBillingSegmentErrorsDict
+from .event_based_billing_segment_errors1 import EventBasedBillingSegmentErrors1, EventBasedBillingSegmentErrors1Dict
+from .event_response import EventResponse, EventResponseDict
+from .failed_payment_event import FailedPaymentEvent, FailedPaymentEventDict
+from .failed_payment_event_data import FailedPaymentEventData, FailedPaymentEventDataDict
+from .feature import Feature, FeatureDict
+from .feature1 import Feature1, Feature1Dict
+from .feature2 import Feature2, Feature2Dict
+from .feature3 import Feature3, Feature3Dict
+from .feature_catalog_item import FeatureCatalogItem, FeatureCatalogItemDict
+from .feature_catalog_item_response import FeatureCatalogItemResponse, FeatureCatalogItemResponseDict
+from .feature_catalog_items_list_response import FeatureCatalogItemsListResponse, FeatureCatalogItemsListResponseDict
+from .feature_template import FeatureTemplate, FeatureTemplateDict
+from .feature_template_response import FeatureTemplateResponse, FeatureTemplateResponseDict
+from .feature_templates_list_response import FeatureTemplatesListResponse, FeatureTemplatesListResponseDict
+from .full_subscription_group_response import FullSubscriptionGroupResponse, FullSubscriptionGroupResponseDict
+from .get_one_time_token_bank_account_payment_profile import (
+    GetOneTimeTokenBankAccountPaymentProfile,
+    GetOneTimeTokenBankAccountPaymentProfileDict,
+)
+from .get_one_time_token_payment_profile import GetOneTimeTokenPaymentProfile, GetOneTimeTokenPaymentProfileDict
+from .get_one_time_token_request import GetOneTimeTokenRequest, GetOneTimeTokenRequestDict
+from .group_billing import GroupBilling, GroupBillingDict
+from .group_settings import GroupSettings, GroupSettingsDict
+from .group_target import GroupTarget, GroupTargetDict
+from .historic_usage import HistoricUsage, HistoricUsageDict
+from .invoice import Invoice, InvoiceDict
+from .invoice_address import InvoiceAddress, InvoiceAddressDict
+from .invoice_avatax_details import InvoiceAvataxDetails, InvoiceAvataxDetailsDict
+from .invoice_balance_item import InvoiceBalanceItem, InvoiceBalanceItemDict
+from .invoice_credit import InvoiceCredit, InvoiceCreditDict
+from .invoice_custom_field import InvoiceCustomField, InvoiceCustomFieldDict
+from .invoice_customer import InvoiceCustomer, InvoiceCustomerDict
+from .invoice_debit import InvoiceDebit, InvoiceDebitDict
+from .invoice_discount import InvoiceDiscount, InvoiceDiscountDict
+from .invoice_discount_breakout import InvoiceDiscountBreakout, InvoiceDiscountBreakoutDict
+from .invoice_display_settings import InvoiceDisplaySettings, InvoiceDisplaySettingsDict
+from .invoice_issued import InvoiceIssued, InvoiceIssuedDict
+from .invoice_line_item import InvoiceLineItem, InvoiceLineItemDict
+from .invoice_line_item_component_cost_data import (
+    InvoiceLineItemComponentCostData,
+    InvoiceLineItemComponentCostDataDict,
+)
+from .invoice_line_item_event_data import InvoiceLineItemEventData, InvoiceLineItemEventDataDict
+from .invoice_line_item_pricing_detail import InvoiceLineItemPricingDetail, InvoiceLineItemPricingDetailDict
+from .invoice_payer import InvoicePayer, InvoicePayerDict
+from .invoice_payer_change import InvoicePayerChange, InvoicePayerChangeDict
+from .invoice_payment import InvoicePayment, InvoicePaymentDict
+from .invoice_payment_application import InvoicePaymentApplication, InvoicePaymentApplicationDict
+from .invoice_payment_method import InvoicePaymentMethod, InvoicePaymentMethodDict
+from .invoice_pre_payment import InvoicePrePayment, InvoicePrePaymentDict
+from .invoice_previous_balance import InvoicePreviousBalance, InvoicePreviousBalanceDict
+from .invoice_refund import InvoiceRefund, InvoiceRefundDict
+from .invoice_response import InvoiceResponse, InvoiceResponseDict
+from .invoice_seller import InvoiceSeller, InvoiceSellerDict
+from .invoice_tax import InvoiceTax, InvoiceTaxDict
+from .invoice_tax_breakout import InvoiceTaxBreakout, InvoiceTaxBreakoutDict
+from .invoice_tax_component_breakout import InvoiceTaxComponentBreakout, InvoiceTaxComponentBreakoutDict
+from .issue_advance_invoice_request import IssueAdvanceInvoiceRequest, IssueAdvanceInvoiceRequestDict
+from .issue_invoice_event import IssueInvoiceEvent, IssueInvoiceEventDict
+from .issue_invoice_event_data import IssueInvoiceEventData, IssueInvoiceEventDataDict
+from .issue_invoice_request import IssueInvoiceRequest, IssueInvoiceRequestDict
+from .issue_service_credit import IssueServiceCredit, IssueServiceCreditDict
+from .issue_service_credit_request import IssueServiceCreditRequest, IssueServiceCreditRequestDict
+from .item_price_point_changed import ItemPricePointChanged, ItemPricePointChangedDict
+from .item_price_point_data import ItemPricePointData, ItemPricePointDataDict
+from .list_components_filter import ListComponentsFilter, ListComponentsFilterDict
+from .list_components_price_points_response import (
+    ListComponentsPricePointsResponse,
+    ListComponentsPricePointsResponseDict,
+)
+from .list_coupons_filter import ListCouponsFilter, ListCouponsFilterDict
+from .list_credit_notes_response import ListCreditNotesResponse, ListCreditNotesResponseDict
+from .list_invoice_events_response import ListInvoiceEventsResponse, ListInvoiceEventsResponseDict
+from .list_invoices_response import ListInvoicesResponse, ListInvoicesResponseDict
+from .list_metafields_response import ListMetafieldsResponse, ListMetafieldsResponseDict
+from .list_mrr_filter import ListMrrFilter, ListMrrFilterDict
+from .list_mrr_response import ListMrrResponse, ListMrrResponseDict
+from .list_mrr_response_result import ListMrrResponseResult, ListMrrResponseResultDict
+from .list_offers_response import ListOffersResponse, ListOffersResponseDict
+from .list_prepayments_filter import ListPrepaymentsFilter, ListPrepaymentsFilterDict
+from .list_price_points_filter import ListPricePointsFilter, ListPricePointsFilterDict
+from .list_product_price_points_response import ListProductPricePointsResponse, ListProductPricePointsResponseDict
+from .list_products_filter import ListProductsFilter, ListProductsFilterDict
+from .list_proforma_invoices_meta import ListProformaInvoicesMeta, ListProformaInvoicesMetaDict
+from .list_proforma_invoices_response import ListProformaInvoicesResponse, ListProformaInvoicesResponseDict
+from .list_public_keys_meta import ListPublicKeysMeta, ListPublicKeysMetaDict
+from .list_public_keys_response import ListPublicKeysResponse, ListPublicKeysResponseDict
+from .list_sale_rep_item import ListSaleRepItem, ListSaleRepItemDict
+from .list_segments_filter import ListSegmentsFilter, ListSegmentsFilterDict
+from .list_segments_response import ListSegmentsResponse, ListSegmentsResponseDict
+from .list_service_credits_response import ListServiceCreditsResponse, ListServiceCreditsResponseDict
+from .list_subscription_components_filter import ListSubscriptionComponentsFilter, ListSubscriptionComponentsFilterDict
+from .list_subscription_components_for_site_filter import (
+    ListSubscriptionComponentsForSiteFilter,
+    ListSubscriptionComponentsForSiteFilterDict,
+)
+from .list_subscription_components_response import (
+    ListSubscriptionComponentsResponse,
+    ListSubscriptionComponentsResponseDict,
+)
+from .list_subscription_group_prepayment import ListSubscriptionGroupPrepayment, ListSubscriptionGroupPrepaymentDict
+from .list_subscription_group_prepayment_item import (
+    ListSubscriptionGroupPrepaymentItem,
+    ListSubscriptionGroupPrepaymentItemDict,
+)
+from .list_subscription_group_prepayment_response import (
+    ListSubscriptionGroupPrepaymentResponse,
+    ListSubscriptionGroupPrepaymentResponseDict,
+)
+from .list_subscription_groups_item import ListSubscriptionGroupsItem, ListSubscriptionGroupsItemDict
+from .list_subscription_groups_meta import ListSubscriptionGroupsMeta, ListSubscriptionGroupsMetaDict
+from .list_subscription_groups_response import ListSubscriptionGroupsResponse, ListSubscriptionGroupsResponseDict
+from .metadata import Metadata, MetadataDict
+from .metafield import Metafield, MetafieldDict
+from .metafield_scope import MetafieldScope, MetafieldScopeDict
+from .meter import Meter, MeterDict
+from .metered_component import MeteredComponent, MeteredComponentDict
+from .metered_usage import MeteredUsage, MeteredUsageDict
+from .movement import Movement, MovementDict
+from .movement_line_item import MovementLineItem, MovementLineItemDict
+from .mrr import Mrr, MrrDict
+from .mrr_movement import MrrMovement, MrrMovementDict
+from .mrr_response import MrrResponse, MrrResponseDict
+from .multi_invoice_payment import MultiInvoicePayment, MultiInvoicePaymentDict
+from .multi_invoice_payment_response import MultiInvoicePaymentResponse, MultiInvoicePaymentResponseDict
+from .nested_subscription_group import NestedSubscriptionGroup, NestedSubscriptionGroupDict
+from .net_terms import NetTerms, NetTermsDict
+from .offer import Offer, OfferDict
+from .offer_discount import OfferDiscount, OfferDiscountDict
+from .offer_item import OfferItem, OfferItemDict
+from .offer_response import OfferResponse, OfferResponseDict
+from .offer_signup_page import OfferSignupPage, OfferSignupPageDict
+from .ok_response import OkResponse, OkResponseDict
+from .on_off_component import OnOffComponent, OnOffComponentDict
+from .organization_address import OrganizationAddress, OrganizationAddressDict
+from .origin_invoice import OriginInvoice, OriginInvoiceDict
+from .overage_pricing import OveragePricing, OveragePricingDict
+from .override_subscription import OverrideSubscription, OverrideSubscriptionDict
+from .override_subscription_request import OverrideSubscriptionRequest, OverrideSubscriptionRequestDict
+from .paginated_metadata import PaginatedMetadata, PaginatedMetadataDict
+from .paid_invoice import PaidInvoice, PaidInvoiceDict
+from .pause_request import PauseRequest, PauseRequestDict
+from .payer_attributes import PayerAttributes, PayerAttributesDict
+from .payer_error import PayerError, PayerErrorDict
+from .payment_collection_method_changed import PaymentCollectionMethodChanged, PaymentCollectionMethodChangedDict
+from .payment_for_allocation import PaymentForAllocation, PaymentForAllocationDict
+from .payment_method_apple_pay import PaymentMethodApplePay, PaymentMethodApplePayDict
+from .payment_method_bank_account import PaymentMethodBankAccount, PaymentMethodBankAccountDict
+from .payment_method_credit_card import PaymentMethodCreditCard, PaymentMethodCreditCardDict
+from .payment_method_external import PaymentMethodExternal, PaymentMethodExternalDict
+from .payment_method_paypal import PaymentMethodPaypal, PaymentMethodPaypalDict
+from .payment_profile_attributes import PaymentProfileAttributes, PaymentProfileAttributesDict
+from .payment_profile_params import PaymentProfileParams, PaymentProfileParamsDict
+from .payment_profile_response import PaymentProfileResponse, PaymentProfileResponseDict
+from .payment_related_events import PaymentRelatedEvents, PaymentRelatedEventsDict
+from .paypal_payment_profile import PaypalPaymentProfile, PaypalPaymentProfileDict
+from .pending_cancellation_change import PendingCancellationChange, PendingCancellationChangeDict
+from .portal_management_link import PortalManagementLink, PortalManagementLinkDict
+from .prepaid_configuration import PrepaidConfiguration, PrepaidConfigurationDict
+from .prepaid_configuration_response import PrepaidConfigurationResponse, PrepaidConfigurationResponseDict
+from .prepaid_product_price_point_filter import PrepaidProductPricePointFilter, PrepaidProductPricePointFilterDict
+from .prepaid_subscription_balance_changed import (
+    PrepaidSubscriptionBalanceChanged,
+    PrepaidSubscriptionBalanceChangedDict,
+)
+from .prepaid_usage import PrepaidUsage, PrepaidUsageDict
+from .prepaid_usage_allocation_detail import PrepaidUsageAllocationDetail, PrepaidUsageAllocationDetailDict
+from .prepaid_usage_component import PrepaidUsageComponent, PrepaidUsageComponentDict
+from .prepayment import Prepayment, PrepaymentDict
+from .prepayment_account_balance_changed import PrepaymentAccountBalanceChanged, PrepaymentAccountBalanceChangedDict
+from .prepayment_aggregated_error import PrepaymentAggregatedError, PrepaymentAggregatedErrorDict
+from .prepayment_response import PrepaymentResponse, PrepaymentResponseDict
+from .prepayments_response import PrepaymentsResponse, PrepaymentsResponseDict
+from .preview_allocations_request import PreviewAllocationsRequest, PreviewAllocationsRequestDict
+from .price import Price, PriceDict
+from .price1 import Price1, Price1Dict
+from .product import Product, ProductDict
+from .product_family import ProductFamily, ProductFamilyDict
+from .product_family_response import ProductFamilyResponse, ProductFamilyResponseDict
+from .product_price_point import ProductPricePoint, ProductPricePointDict
+from .product_price_point_error_response import ProductPricePointErrorResponse, ProductPricePointErrorResponseDict
+from .product_price_point_error_response1 import ProductPricePointErrorResponse1, ProductPricePointErrorResponse1Dict
+from .product_price_point_errors import ProductPricePointErrors, ProductPricePointErrorsDict
+from .product_price_point_response import ProductPricePointResponse, ProductPricePointResponseDict
+from .product_response import ProductResponse, ProductResponseDict
+from .proforma_bad_request_error_response import ProformaBadRequestErrorResponse, ProformaBadRequestErrorResponseDict
+from .proforma_bad_request_error_response1 import ProformaBadRequestErrorResponse1, ProformaBadRequestErrorResponse1Dict
+from .proforma_error import ProformaError, ProformaErrorDict
+from .proforma_invoice import ProformaInvoice, ProformaInvoiceDict
+from .proforma_invoice_credit import ProformaInvoiceCredit, ProformaInvoiceCreditDict
+from .proforma_invoice_discount import ProformaInvoiceDiscount, ProformaInvoiceDiscountDict
+from .proforma_invoice_issued import ProformaInvoiceIssued, ProformaInvoiceIssuedDict
+from .proforma_invoice_payment import ProformaInvoicePayment, ProformaInvoicePaymentDict
+from .proforma_invoice_tax import ProformaInvoiceTax, ProformaInvoiceTaxDict
+from .proration import Proration, ProrationDict
+from .public_key import PublicKey, PublicKeyDict
+from .public_signup_page import PublicSignupPage, PublicSignupPageDict
+from .purchase import Purchase, PurchaseDict
+from .quantity_based_component import QuantityBasedComponent, QuantityBasedComponentDict
+from .reactivate_subscription_group_request import (
+    ReactivateSubscriptionGroupRequest,
+    ReactivateSubscriptionGroupRequestDict,
+)
+from .reactivate_subscription_group_response import (
+    ReactivateSubscriptionGroupResponse,
+    ReactivateSubscriptionGroupResponseDict,
+)
+from .reactivate_subscription_request import ReactivateSubscriptionRequest, ReactivateSubscriptionRequestDict
+from .reactivation_billing import ReactivationBilling, ReactivationBillingDict
+from .reason_code import ReasonCode, ReasonCodeDict
+from .reason_code_response import ReasonCodeResponse, ReasonCodeResponseDict
+from .record_payment_request import RecordPaymentRequest, RecordPaymentRequestDict
+from .record_payment_response import RecordPaymentResponse, RecordPaymentResponseDict
+from .referral_code import ReferralCode, ReferralCodeDict
+from .referral_validation_response import ReferralValidationResponse, ReferralValidationResponseDict
+from .refund_consolidated_invoice import RefundConsolidatedInvoice, RefundConsolidatedInvoiceDict
+from .refund_invoice import RefundInvoice, RefundInvoiceDict
+from .refund_invoice_event import RefundInvoiceEvent, RefundInvoiceEventDict
+from .refund_invoice_event_data import RefundInvoiceEventData, RefundInvoiceEventDataDict
+from .refund_invoice_request import RefundInvoiceRequest, RefundInvoiceRequestDict
+from .refund_prepayment import RefundPrepayment, RefundPrepaymentDict
+from .refund_prepayment_aggregated_error import RefundPrepaymentAggregatedError, RefundPrepaymentAggregatedErrorDict
+from .refund_prepayment_aggregated_errors_response import (
+    RefundPrepaymentAggregatedErrorsResponse,
+    RefundPrepaymentAggregatedErrorsResponseDict,
+)
+from .refund_prepayment_base_errors_response import (
+    RefundPrepaymentBaseErrorsResponse,
+    RefundPrepaymentBaseErrorsResponseDict,
+)
+from .refund_prepayment_base_errors_response1 import (
+    RefundPrepaymentBaseErrorsResponse1,
+    RefundPrepaymentBaseErrorsResponse1Dict,
+)
+from .refund_prepayment_base_refund_error import RefundPrepaymentBaseRefundError, RefundPrepaymentBaseRefundErrorDict
+from .refund_prepayment_request import RefundPrepaymentRequest, RefundPrepaymentRequestDict
+from .refund_success import RefundSuccess, RefundSuccessDict
+from .register import Register, RegisterDict
+from .remove_payment_event import RemovePaymentEvent, RemovePaymentEventDict
+from .remove_payment_event_data import RemovePaymentEventData, RemovePaymentEventDataDict
+from .renewal_preview import RenewalPreview, RenewalPreviewDict
+from .renewal_preview_component import RenewalPreviewComponent, RenewalPreviewComponentDict
+from .renewal_preview_line_item import RenewalPreviewLineItem, RenewalPreviewLineItemDict
+from .renewal_preview_request import RenewalPreviewRequest, RenewalPreviewRequestDict
+from .renewal_preview_response import RenewalPreviewResponse, RenewalPreviewResponseDict
+from .replay_webhooks_request import ReplayWebhooksRequest, ReplayWebhooksRequestDict
+from .replay_webhooks_response import ReplayWebhooksResponse, ReplayWebhooksResponseDict
+from .resent_invitation import ResentInvitation, ResentInvitationDict
+from .resume_options import ResumeOptions, ResumeOptionsDict
+from .revoked_invitation import RevokedInvitation, RevokedInvitationDict
+from .sale_rep import SaleRep, SaleRepDict
+from .sale_rep_item_mrr import SaleRepItemMrr, SaleRepItemMrrDict
+from .sale_rep_settings import SaleRepSettings, SaleRepSettingsDict
+from .sale_rep_subscription import SaleRepSubscription, SaleRepSubscriptionDict
+from .scheduled_renewal_component_custom_price import (
+    ScheduledRenewalComponentCustomPrice,
+    ScheduledRenewalComponentCustomPriceDict,
+)
+from .scheduled_renewal_configuration import ScheduledRenewalConfiguration, ScheduledRenewalConfigurationDict
+from .scheduled_renewal_configuration_item import (
+    ScheduledRenewalConfigurationItem,
+    ScheduledRenewalConfigurationItemDict,
+)
+from .scheduled_renewal_configuration_item_request import (
+    ScheduledRenewalConfigurationItemRequest,
+    ScheduledRenewalConfigurationItemRequestDict,
+)
+from .scheduled_renewal_configuration_item_response import (
+    ScheduledRenewalConfigurationItemResponse,
+    ScheduledRenewalConfigurationItemResponseDict,
+)
+from .scheduled_renewal_configuration_request import (
+    ScheduledRenewalConfigurationRequest,
+    ScheduledRenewalConfigurationRequestDict,
+)
+from .scheduled_renewal_configuration_request_body import (
+    ScheduledRenewalConfigurationRequestBody,
+    ScheduledRenewalConfigurationRequestBodyDict,
+)
+from .scheduled_renewal_configuration_response import (
+    ScheduledRenewalConfigurationResponse,
+    ScheduledRenewalConfigurationResponseDict,
+)
+from .scheduled_renewal_configurations_response import (
+    ScheduledRenewalConfigurationsResponse,
+    ScheduledRenewalConfigurationsResponseDict,
+)
+from .scheduled_renewal_item_request_body_component import (
+    ScheduledRenewalItemRequestBodyComponent,
+    ScheduledRenewalItemRequestBodyComponentDict,
+)
+from .scheduled_renewal_item_request_body_product import (
+    ScheduledRenewalItemRequestBodyProduct,
+    ScheduledRenewalItemRequestBodyProductDict,
+)
+from .scheduled_renewal_lock_in_request import ScheduledRenewalLockInRequest, ScheduledRenewalLockInRequestDict
+from .scheduled_renewal_product_price_point import (
+    ScheduledRenewalProductPricePoint,
+    ScheduledRenewalProductPricePointDict,
+)
+from .scheduled_renewal_update_request import ScheduledRenewalUpdateRequest, ScheduledRenewalUpdateRequestDict
+from .segment import Segment, SegmentDict
+from .segment_price import SegmentPrice, SegmentPriceDict
+from .segment_response import SegmentResponse, SegmentResponseDict
+from .send_email import SendEmail, SendEmailDict
+from .send_invoice_request import SendInvoiceRequest, SendInvoiceRequestDict
+from .service_credit import ServiceCredit, ServiceCreditDict
+from .service_credit1 import ServiceCredit1, ServiceCredit1Dict
+from .service_credit_response import ServiceCreditResponse, ServiceCreditResponseDict
+from .signup_proforma_preview import SignupProformaPreview, SignupProformaPreviewDict
+from .signup_proforma_preview_response import SignupProformaPreviewResponse, SignupProformaPreviewResponseDict
+from .single_error_response import SingleErrorResponse, SingleErrorResponseDict
+from .single_error_response1 import SingleErrorResponse1, SingleErrorResponse1Dict
+from .single_string_error_response import SingleStringErrorResponse, SingleStringErrorResponseDict
+from .single_string_error_response1 import SingleStringErrorResponse1, SingleStringErrorResponse1Dict
+from .site import Site, SiteDict
+from .site_response import SiteResponse, SiteResponseDict
+from .site_statistics import SiteStatistics, SiteStatisticsDict
+from .site_summary import SiteSummary, SiteSummaryDict
+from .subscription import Subscription, SubscriptionDict
+from .subscription_add_coupon_error import SubscriptionAddCouponError, SubscriptionAddCouponErrorDict
+from .subscription_add_coupon_error1 import SubscriptionAddCouponError1, SubscriptionAddCouponError1Dict
+from .subscription_component import SubscriptionComponent, SubscriptionComponentDict
+from .subscription_component_allocation_error import (
+    SubscriptionComponentAllocationError,
+    SubscriptionComponentAllocationErrorDict,
+)
+from .subscription_component_allocation_error1 import (
+    SubscriptionComponentAllocationError1,
+    SubscriptionComponentAllocationError1Dict,
+)
+from .subscription_component_allocation_error_item import (
+    SubscriptionComponentAllocationErrorItem,
+    SubscriptionComponentAllocationErrorItemDict,
+)
+from .subscription_component_response import SubscriptionComponentResponse, SubscriptionComponentResponseDict
+from .subscription_component_subscription import (
+    SubscriptionComponentSubscription,
+    SubscriptionComponentSubscriptionDict,
+)
+from .subscription_custom_price import SubscriptionCustomPrice, SubscriptionCustomPriceDict
+from .subscription_filter import SubscriptionFilter, SubscriptionFilterDict
+from .subscription_group import SubscriptionGroup, SubscriptionGroupDict
+from .subscription_group_balances import SubscriptionGroupBalances, SubscriptionGroupBalancesDict
+from .subscription_group_bank_account import SubscriptionGroupBankAccount, SubscriptionGroupBankAccountDict
+from .subscription_group_component_custom_price import (
+    SubscriptionGroupComponentCustomPrice,
+    SubscriptionGroupComponentCustomPriceDict,
+)
+from .subscription_group_create_error_response import (
+    SubscriptionGroupCreateErrorResponse,
+    SubscriptionGroupCreateErrorResponseDict,
+)
+from .subscription_group_create_error_response1 import (
+    SubscriptionGroupCreateErrorResponse1,
+    SubscriptionGroupCreateErrorResponse1Dict,
+)
+from .subscription_group_credit_card import SubscriptionGroupCreditCard, SubscriptionGroupCreditCardDict
+from .subscription_group_customer import SubscriptionGroupCustomer, SubscriptionGroupCustomerDict
+from .subscription_group_item import SubscriptionGroupItem, SubscriptionGroupItemDict
+from .subscription_group_members_array_error import (
+    SubscriptionGroupMembersArrayError,
+    SubscriptionGroupMembersArrayErrorDict,
+)
+from .subscription_group_payment_profile import SubscriptionGroupPaymentProfile, SubscriptionGroupPaymentProfileDict
+from .subscription_group_prepayment import SubscriptionGroupPrepayment, SubscriptionGroupPrepaymentDict
+from .subscription_group_prepayment_request import (
+    SubscriptionGroupPrepaymentRequest,
+    SubscriptionGroupPrepaymentRequestDict,
+)
+from .subscription_group_prepayment_response import (
+    SubscriptionGroupPrepaymentResponse,
+    SubscriptionGroupPrepaymentResponseDict,
+)
+from .subscription_group_response import SubscriptionGroupResponse, SubscriptionGroupResponseDict
+from .subscription_group_signup import SubscriptionGroupSignup, SubscriptionGroupSignupDict
+from .subscription_group_signup_component import SubscriptionGroupSignupComponent, SubscriptionGroupSignupComponentDict
+from .subscription_group_signup_error import SubscriptionGroupSignupError, SubscriptionGroupSignupErrorDict
+from .subscription_group_signup_error_response import (
+    SubscriptionGroupSignupErrorResponse,
+    SubscriptionGroupSignupErrorResponseDict,
+)
+from .subscription_group_signup_error_response1 import (
+    SubscriptionGroupSignupErrorResponse1,
+    SubscriptionGroupSignupErrorResponse1Dict,
+)
+from .subscription_group_signup_event_data import SubscriptionGroupSignupEventData, SubscriptionGroupSignupEventDataDict
+from .subscription_group_signup_failure_data import (
+    SubscriptionGroupSignupFailureData,
+    SubscriptionGroupSignupFailureDataDict,
+)
+from .subscription_group_signup_item import SubscriptionGroupSignupItem, SubscriptionGroupSignupItemDict
+from .subscription_group_signup_request import SubscriptionGroupSignupRequest, SubscriptionGroupSignupRequestDict
+from .subscription_group_signup_response import SubscriptionGroupSignupResponse, SubscriptionGroupSignupResponseDict
+from .subscription_group_single_error import SubscriptionGroupSingleError, SubscriptionGroupSingleErrorDict
+from .subscription_group_subscription_error import (
+    SubscriptionGroupSubscriptionError,
+    SubscriptionGroupSubscriptionErrorDict,
+)
+from .subscription_group_update_error import SubscriptionGroupUpdateError, SubscriptionGroupUpdateErrorDict
+from .subscription_group_update_error_response import (
+    SubscriptionGroupUpdateErrorResponse,
+    SubscriptionGroupUpdateErrorResponseDict,
+)
+from .subscription_group_update_error_response1 import (
+    SubscriptionGroupUpdateErrorResponse1,
+    SubscriptionGroupUpdateErrorResponse1Dict,
+)
+from .subscription_included_coupon import SubscriptionIncludedCoupon, SubscriptionIncludedCouponDict
+from .subscription_migration_preview import SubscriptionMigrationPreview, SubscriptionMigrationPreviewDict
+from .subscription_migration_preview_options import (
+    SubscriptionMigrationPreviewOptions,
+    SubscriptionMigrationPreviewOptionsDict,
+)
+from .subscription_migration_preview_request import (
+    SubscriptionMigrationPreviewRequest,
+    SubscriptionMigrationPreviewRequestDict,
+)
+from .subscription_migration_preview_response import (
+    SubscriptionMigrationPreviewResponse,
+    SubscriptionMigrationPreviewResponseDict,
+)
+from .subscription_mrr import SubscriptionMrr, SubscriptionMrrDict
+from .subscription_mrr_breakout import SubscriptionMrrBreakout, SubscriptionMrrBreakoutDict
+from .subscription_mrr_response import SubscriptionMrrResponse, SubscriptionMrrResponseDict
+from .subscription_note import SubscriptionNote, SubscriptionNoteDict
+from .subscription_note_response import SubscriptionNoteResponse, SubscriptionNoteResponseDict
+from .subscription_preview import SubscriptionPreview, SubscriptionPreviewDict
+from .subscription_preview_response import SubscriptionPreviewResponse, SubscriptionPreviewResponseDict
+from .subscription_product_change import SubscriptionProductChange, SubscriptionProductChangeDict
+from .subscription_product_migration import SubscriptionProductMigration, SubscriptionProductMigrationDict
+from .subscription_product_migration_request import (
+    SubscriptionProductMigrationRequest,
+    SubscriptionProductMigrationRequestDict,
+)
+from .subscription_remove_coupon_errors import SubscriptionRemoveCouponErrors, SubscriptionRemoveCouponErrorsDict
+from .subscription_remove_coupon_errors1 import SubscriptionRemoveCouponErrors1, SubscriptionRemoveCouponErrors1Dict
+from .subscription_response import SubscriptionResponse, SubscriptionResponseDict
+from .subscription_response_error import SubscriptionResponseError, SubscriptionResponseErrorDict
+from .subscription_state_change import SubscriptionStateChange, SubscriptionStateChangeDict
+from .subscriptions_mrr_error_response import SubscriptionsMrrErrorResponse, SubscriptionsMrrErrorResponseDict
+from .subscriptions_mrr_error_response1 import SubscriptionsMrrErrorResponse1, SubscriptionsMrrErrorResponse1Dict
+from .tax_configuration import TaxConfiguration, TaxConfigurationDict
+from .tokenized_payment_profile import TokenizedPaymentProfile, TokenizedPaymentProfileDict
+from .too_many_management_link_requests import TooManyManagementLinkRequests, TooManyManagementLinkRequestsDict
+from .too_many_management_link_requests_error import (
+    TooManyManagementLinkRequestsError,
+    TooManyManagementLinkRequestsErrorDict,
+)
+from .too_many_management_link_requests_error1 import (
+    TooManyManagementLinkRequestsError1,
+    TooManyManagementLinkRequestsError1Dict,
+)
+from .unions import (
+    AllocatedQuantity,
+    AllocatedQuantity1,
+    AllocatedQuantity1Dict,
+    AllocatedQuantity2,
+    AllocatedQuantity2Dict,
+    AllocatedQuantity3,
+    AllocatedQuantity3Dict,
+    AllocatedQuantityDict,
+    Amount,
+    Amount1,
+    Amount1Dict,
+    Amount2,
+    Amount2Dict,
+    Amount3,
+    Amount3Dict,
+    Amount5,
+    Amount5Dict,
+    Amount6,
+    Amount6Dict,
+    Amount7,
+    Amount7Dict,
+    AmountDict,
+    CancelSubscriptionErrorResponse,
+    CancelSubscriptionErrorResponseDict,
+    ComponentId,
+    ComponentId1,
+    ComponentId1Dict,
+    ComponentId2,
+    ComponentId2Dict,
+    ComponentId3,
+    ComponentId3Dict,
+    ComponentIdDict,
+    ComponentIdModel,
+    ComponentIdModelDict,
+    ConversionRate,
+    ConversionRateDict,
+    CreatePrepaymentErrorResponse,
+    CreatePrepaymentErrorResponseDict,
+    DeductServiceCreditErrorResponse,
+    DeductServiceCreditErrorResponseDict,
+    EndingQuantity,
+    EndingQuantityDict,
+    EnumModel,
+    EnumModelDict,
+    Errors1,
+    Errors1Dict,
+    Errors11,
+    Errors11Dict,
+    EventSpecificData,
+    EventSpecificDataDict,
+    ExpirationInterval,
+    ExpirationIntervalDict,
+    ExpirationMonth,
+    ExpirationMonth1,
+    ExpirationMonth1Dict,
+    ExpirationMonth2,
+    ExpirationMonth2Dict,
+    ExpirationMonthDict,
+    ExpirationYear,
+    ExpirationYear1,
+    ExpirationYear1Dict,
+    ExpirationYear2,
+    ExpirationYear2Dict,
+    ExpirationYearDict,
+    FullNumber,
+    FullNumberDict,
+    InitialBalance,
+    InitialBalanceDict,
+    InitialChargeInCents,
+    InitialChargeInCentsDict,
+    Interval,
+    IntervalDict,
+    InvoiceEvent,
+    InvoiceEvent1,
+    InvoiceEvent1Dict,
+    InvoiceEventDict,
+    InvoiceEventPayment,
+    InvoiceEventPayment1,
+    InvoiceEventPayment1Dict,
+    InvoiceEventPaymentDict,
+    IssueServiceCreditErrorResponse,
+    IssueServiceCreditErrorResponseDict,
+    Metafields,
+    Metafields1,
+    Metafields1Dict,
+    MetafieldsDict,
+    NetTerms1,
+    NetTerms1Dict,
+    NewOverageUnitBalance,
+    NewOverageUnitBalanceDict,
+    NewUnitBalance,
+    NewUnitBalanceDict,
+    OfferId,
+    OfferIdDict,
+    PaymentProfile,
+    PaymentProfile1,
+    PaymentProfile1Dict,
+    PaymentProfileDict,
+    PaymentProfileModel,
+    PaymentProfileModelDict,
+    Percentage,
+    Percentage1,
+    Percentage1Dict,
+    PercentageDict,
+    PrepaidConfigurationErrorResponse,
+    PrepaidConfigurationErrorResponseDict,
+    PreviousQuantity,
+    PreviousQuantity1,
+    PreviousQuantity1Dict,
+    PreviousQuantityDict,
+    PriceInCents,
+    PriceInCentsDict,
+    PricePoint,
+    PricePoint2,
+    PricePoint2Dict,
+    PricePointDict,
+    PricePointId,
+    PricePointId1,
+    PricePointId1Dict,
+    PricePointId2,
+    PricePointId2Dict,
+    PricePointId3,
+    PricePointId3Dict,
+    PricePointId4,
+    PricePointId4Dict,
+    PricePointIdDict,
+    PricePointIdModel,
+    PricePointIdModelDict,
+    Product1,
+    Product1Dict,
+    ProductFamilyId,
+    ProductFamilyIdDict,
+    ProductId,
+    ProductIdDict,
+    ProductIdModel,
+    ProductIdModelDict,
+    ProductPricePointId,
+    ProductPricePointIdDict,
+    Quantity,
+    Quantity1,
+    Quantity1Dict,
+    Quantity3,
+    Quantity3Dict,
+    Quantity4,
+    Quantity4Dict,
+    QuantityDict,
+    Refund,
+    RefundDict,
+    RefundPrepaymentErrorResponse,
+    RefundPrepaymentErrorResponseDict,
+    RenewalConfigurationItem,
+    RenewalConfigurationItemDict,
+    Resume,
+    ResumeDict,
+    SegmentProperty1Value,
+    SegmentProperty1Value1,
+    SegmentProperty1Value1Dict,
+    SegmentProperty1ValueDict,
+    SegmentProperty2Value,
+    SegmentProperty2Value1,
+    SegmentProperty2Value1Dict,
+    SegmentProperty2ValueDict,
+    SegmentProperty3Value,
+    SegmentProperty3Value1,
+    SegmentProperty3Value1Dict,
+    SegmentProperty3ValueDict,
+    SegmentProperty4Value,
+    SegmentProperty4Value1,
+    SegmentProperty4Value1Dict,
+    SegmentProperty4ValueDict,
+    SegmentUids,
+    SegmentUidsDict,
+    SnapDay,
+    SnapDay1,
+    SnapDay1Dict,
+    SnapDayDict,
+    StartingQuantity,
+    StartingQuantityDict,
+    SubscriptionIdOrReference,
+    SubscriptionIdOrReferenceDict,
+    TrialInterval,
+    TrialIntervalDict,
+    TrialPriceInCents,
+    TrialPriceInCentsDict,
+    UnitBalance,
+    UnitBalance1,
+    UnitBalance1Dict,
+    UnitBalance2,
+    UnitBalance2Dict,
+    UnitBalanceDict,
+    UnitPrice,
+    UnitPrice1,
+    UnitPrice1Dict,
+    UnitPrice3,
+    UnitPrice3Dict,
+    UnitPrice5,
+    UnitPrice5Dict,
+    UnitPrice7,
+    UnitPrice7Dict,
+    UnitPrice8,
+    UnitPrice8Dict,
+    UnitPriceDict,
+    Value,
+    ValueDict,
+    WalletProductId,
+    WalletProductIdDict,
+)
+from .update_allocation_expiration_date import UpdateAllocationExpirationDate, UpdateAllocationExpirationDateDict
+from .update_component import UpdateComponent, UpdateComponentDict
+from .update_component_price_point import UpdateComponentPricePoint, UpdateComponentPricePointDict
+from .update_component_price_point_request import UpdateComponentPricePointRequest, UpdateComponentPricePointRequestDict
+from .update_component_request import UpdateComponentRequest, UpdateComponentRequestDict
+from .update_coupon_currency import UpdateCouponCurrency, UpdateCouponCurrencyDict
+from .update_currency_price import UpdateCurrencyPrice, UpdateCurrencyPriceDict
+from .update_currency_prices_request import UpdateCurrencyPricesRequest, UpdateCurrencyPricesRequestDict
+from .update_customer import UpdateCustomer, UpdateCustomerDict
+from .update_customer_request import UpdateCustomerRequest, UpdateCustomerRequestDict
+from .update_feature_catalog_item_request import UpdateFeatureCatalogItemRequest, UpdateFeatureCatalogItemRequestDict
+from .update_feature_template_request import UpdateFeatureTemplateRequest, UpdateFeatureTemplateRequestDict
+from .update_invoice import UpdateInvoice, UpdateInvoiceDict
+from .update_invoice_item import UpdateInvoiceItem, UpdateInvoiceItemDict
+from .update_invoice_request import UpdateInvoiceRequest, UpdateInvoiceRequestDict
+from .update_metadata import UpdateMetadata, UpdateMetadataDict
+from .update_metadata_request import UpdateMetadataRequest, UpdateMetadataRequestDict
+from .update_metafield import UpdateMetafield, UpdateMetafieldDict
+from .update_metafields_request import UpdateMetafieldsRequest, UpdateMetafieldsRequestDict
+from .update_payment_profile import UpdatePaymentProfile, UpdatePaymentProfileDict
+from .update_payment_profile_request import UpdatePaymentProfileRequest, UpdatePaymentProfileRequestDict
+from .update_price import UpdatePrice, UpdatePriceDict
+from .update_product_price_point import UpdateProductPricePoint, UpdateProductPricePointDict
+from .update_product_price_point_request import UpdateProductPricePointRequest, UpdateProductPricePointRequestDict
+from .update_reason_code import UpdateReasonCode, UpdateReasonCodeDict
+from .update_reason_code_request import UpdateReasonCodeRequest, UpdateReasonCodeRequestDict
+from .update_segment import UpdateSegment, UpdateSegmentDict
+from .update_segment_request import UpdateSegmentRequest, UpdateSegmentRequestDict
+from .update_subscription import UpdateSubscription, UpdateSubscriptionDict
+from .update_subscription_component import UpdateSubscriptionComponent, UpdateSubscriptionComponentDict
+from .update_subscription_group import UpdateSubscriptionGroup, UpdateSubscriptionGroupDict
+from .update_subscription_group_request import UpdateSubscriptionGroupRequest, UpdateSubscriptionGroupRequestDict
+from .update_subscription_note import UpdateSubscriptionNote, UpdateSubscriptionNoteDict
+from .update_subscription_note_request import UpdateSubscriptionNoteRequest, UpdateSubscriptionNoteRequestDict
+from .update_subscription_request import UpdateSubscriptionRequest, UpdateSubscriptionRequestDict
+from .update_wallet_product_request import UpdateWalletProductRequest, UpdateWalletProductRequestDict
+from .update_wallet_request import UpdateWalletRequest, UpdateWalletRequestDict
+from .upsert_prepaid_configuration import UpsertPrepaidConfiguration, UpsertPrepaidConfigurationDict
+from .upsert_prepaid_configuration_request import (
+    UpsertPrepaidConfigurationRequest,
+    UpsertPrepaidConfigurationRequestDict,
+)
+from .usage import Usage, UsageDict
+from .usage_response import UsageResponse, UsageResponseDict
+from .void_invoice import VoidInvoice, VoidInvoiceDict
+from .void_invoice_event import VoidInvoiceEvent, VoidInvoiceEventDict
+from .void_invoice_event_data import VoidInvoiceEventData, VoidInvoiceEventDataDict
+from .void_invoice_request import VoidInvoiceRequest, VoidInvoiceRequestDict
+from .void_remainder_event import VoidRemainderEvent, VoidRemainderEventDict
+from .void_remainder_event_data import VoidRemainderEventData, VoidRemainderEventDataDict
+from .wallet import Wallet, WalletDict
+from .wallet1 import Wallet1, Wallet1Dict
+from .wallet2 import Wallet2, Wallet2Dict
+from .wallet_error_response import WalletErrorResponse, WalletErrorResponseDict
+from .wallet_error_response1 import WalletErrorResponse1, WalletErrorResponse1Dict
+from .wallet_grant import WalletGrant, WalletGrantDict
+from .wallet_grant_result_response import WalletGrantResultResponse, WalletGrantResultResponseDict
+from .wallet_product import WalletProduct, WalletProductDict
+from .wallet_product1 import WalletProduct1, WalletProduct1Dict
+from .wallet_product_active_wallet import WalletProductActiveWallet, WalletProductActiveWalletDict
+from .wallet_product_list_item import WalletProductListItem, WalletProductListItemDict
+from .wallet_product_price_point_attributes import (
+    WalletProductPricePointAttributes,
+    WalletProductPricePointAttributesDict,
+)
+from .wallet_product_price_point_summary import WalletProductPricePointSummary, WalletProductPricePointSummaryDict
+from .wallet_product_response import WalletProductResponse, WalletProductResponseDict
+from .wallet_product_usage_count import WalletProductUsageCount, WalletProductUsageCountDict
+from .wallet_product_usage_response import WalletProductUsageResponse, WalletProductUsageResponseDict
+from .wallet_product_usage_template import WalletProductUsageTemplate, WalletProductUsageTemplateDict
+from .wallet_products_list_response import WalletProductsListResponse, WalletProductsListResponseDict
+from .wallet_purchase import WalletPurchase, WalletPurchaseDict
+from .wallet_purchase_preview import WalletPurchasePreview, WalletPurchasePreviewDict
+from .wallet_purchase_preview_response import WalletPurchasePreviewResponse, WalletPurchasePreviewResponseDict
+from .wallet_purchase_result_response import WalletPurchaseResultResponse, WalletPurchaseResultResponseDict
+from .wallet_recurring_funding import WalletRecurringFunding, WalletRecurringFundingDict
+from .wallet_response import WalletResponse, WalletResponseDict
+from .wallet_transaction import WalletTransaction, WalletTransactionDict
+from .wallet_transaction1 import WalletTransaction1, WalletTransaction1Dict
+from .wallet_transaction_result_response import WalletTransactionResultResponse, WalletTransactionResultResponseDict
+from .wallet_transactions_list_response import WalletTransactionsListResponse, WalletTransactionsListResponseDict
+from .wallets_list_response import WalletsListResponse, WalletsListResponseDict
+from .webhook import Webhook, WebhookDict
+from .webhook_response import WebhookResponse, WebhookResponseDict
+
+__all__ = [
+    "enums",
+    "unions",
+    "AccountBalance",
+    "AccountBalanceDict",
+    "AccountBalances",
+    "AccountBalancesDict",
+    "AchAgreement",
+    "AchAgreementDict",
+    "ActivateEventBasedComponent",
+    "ActivateEventBasedComponentDict",
+    "ActivateSubscriptionRequest",
+    "ActivateSubscriptionRequestDict",
+    "ActiveWallets",
+    "ActiveWalletsDict",
+    "AddCouponsRequest",
+    "AddCouponsRequestDict",
+    "AddSubscriptionToAGroup",
+    "AddSubscriptionToAGroupDict",
+    "AddressChange",
+    "AddressChangeDict",
+    "Adjustment",
+    "AdjustmentDict",
+    "AggregatedEntitlement",
+    "AggregatedEntitlementDict",
+    "AggregatedEntitlementPeriodicity",
+    "AggregatedEntitlementPeriodicityDict",
+    "AggregatedEntitlementsResponse",
+    "AggregatedEntitlementsResponseDict",
+    "AgreementAcceptance",
+    "AgreementAcceptanceDict",
+    "AllocateComponents",
+    "AllocateComponentsDict",
+    "AllocatedQuantity",
+    "AllocatedQuantity1",
+    "AllocatedQuantity1Dict",
+    "AllocatedQuantity2",
+    "AllocatedQuantity2Dict",
+    "AllocatedQuantity3",
+    "AllocatedQuantity3Dict",
+    "AllocatedQuantityDict",
+    "Allocation",
+    "AllocationDict",
+    "AllocationExpirationDate",
+    "AllocationExpirationDateDict",
+    "AllocationPreview",
+    "AllocationPreviewDict",
+    "AllocationPreviewItem",
+    "AllocationPreviewItemDict",
+    "AllocationPreviewLineItem",
+    "AllocationPreviewLineItemDict",
+    "AllocationPreviewResponse",
+    "AllocationPreviewResponseDict",
+    "AllocationResponse",
+    "AllocationResponseDict",
+    "AllocationSettings",
+    "AllocationSettingsDict",
+    "Amount",
+    "Amount1",
+    "Amount1Dict",
+    "Amount2",
+    "Amount2Dict",
+    "Amount3",
+    "Amount3Dict",
+    "Amount5",
+    "Amount5Dict",
+    "Amount6",
+    "Amount6Dict",
+    "Amount7",
+    "Amount7Dict",
+    "AmountDict",
+    "ApplePayPaymentProfile",
+    "ApplePayPaymentProfileDict",
+    "AppliedCreditNoteData",
+    "AppliedCreditNoteDataDict",
+    "ApplyCreditNoteEvent",
+    "ApplyCreditNoteEventData",
+    "ApplyCreditNoteEventDataDict",
+    "ApplyCreditNoteEventDict",
+    "ApplyDebitNoteEvent",
+    "ApplyDebitNoteEventData",
+    "ApplyDebitNoteEventDataDict",
+    "ApplyDebitNoteEventDict",
+    "ApplyPaymentEvent",
+    "ApplyPaymentEventData",
+    "ApplyPaymentEventDataDict",
+    "ApplyPaymentEventDict",
+    "AttributeErrorModel",
+    "AttributeErrorModelDict",
+    "AutoResume",
+    "AutoResumeDict",
+    "AvailableActions",
+    "AvailableActionsDict",
+    "BackportInvoiceEvent",
+    "BackportInvoiceEventDict",
+    "BankAccountAttributes",
+    "BankAccountAttributesDict",
+    "BankAccountPaymentProfile",
+    "BankAccountPaymentProfileDict",
+    "BankAccountResponse",
+    "BankAccountResponseDict",
+    "BankAccountVerification",
+    "BankAccountVerificationDict",
+    "BankAccountVerificationRequest",
+    "BankAccountVerificationRequestDict",
+    "BaseRefundError",
+    "BaseRefundErrorDict",
+    "BaseStringError",
+    "BaseStringErrorDict",
+    "BatchJob",
+    "BatchJobDict",
+    "BatchJobResponse",
+    "BatchJobResponseDict",
+    "BillingManifest",
+    "BillingManifestDict",
+    "BillingManifestItem",
+    "BillingManifestItemDict",
+    "BillingSchedule",
+    "BillingScheduleDict",
+    "Breakouts",
+    "BreakoutsDict",
+    "BulkComponentsPricePointAssignment",
+    "BulkComponentsPricePointAssignmentDict",
+    "BulkCreateProductPricePointsRequest",
+    "BulkCreateProductPricePointsRequestDict",
+    "BulkCreateProductPricePointsResponse",
+    "BulkCreateProductPricePointsResponseDict",
+    "BulkCreateSegments",
+    "BulkCreateSegmentsDict",
+    "BulkUpdateSegments",
+    "BulkUpdateSegmentsDict",
+    "BulkUpdateSegmentsItem",
+    "BulkUpdateSegmentsItemDict",
+    "CalendarBilling",
+    "CalendarBillingDict",
+    "CancelGroupedSubscriptionsRequest",
+    "CancelGroupedSubscriptionsRequestDict",
+    "CancelSubscriptionErrorResponse",
+    "CancelSubscriptionErrorResponseDict",
+    "CancellationOptions",
+    "CancellationOptionsDict",
+    "CancellationRequest",
+    "CancellationRequestDict",
+    "ChangeChargebackStatusEvent",
+    "ChangeChargebackStatusEventData",
+    "ChangeChargebackStatusEventDataDict",
+    "ChangeChargebackStatusEventDict",
+    "ChangeInvoiceCollectionMethodEvent",
+    "ChangeInvoiceCollectionMethodEventData",
+    "ChangeInvoiceCollectionMethodEventDataDict",
+    "ChangeInvoiceCollectionMethodEventDict",
+    "ChangeInvoiceStatusEvent",
+    "ChangeInvoiceStatusEventData",
+    "ChangeInvoiceStatusEventDataDict",
+    "ChangeInvoiceStatusEventDict",
+    "ChargifyEbb",
+    "ChargifyEbbDict",
+    "ChjsTokenizationFailure",
+    "ChjsTokenizationFailureDict",
+    "ChjsTokenizationSuccess",
+    "ChjsTokenizationSuccessDict",
+    "CloneComponentPricePoint",
+    "CloneComponentPricePointDict",
+    "CloneComponentPricePointRequest",
+    "CloneComponentPricePointRequestDict",
+    "Component",
+    "ComponentAllocationChange",
+    "ComponentAllocationChangeDict",
+    "ComponentAllocationError",
+    "ComponentAllocationError1",
+    "ComponentAllocationError1Dict",
+    "ComponentAllocationErrorDict",
+    "ComponentAllocationErrorItem",
+    "ComponentAllocationErrorItemDict",
+    "ComponentCostData",
+    "ComponentCostDataDict",
+    "ComponentCostDataRateTier",
+    "ComponentCostDataRateTierDict",
+    "ComponentCurrencyPrice",
+    "ComponentCurrencyPriceDict",
+    "ComponentCurrencyPricesResponse",
+    "ComponentCurrencyPricesResponseDict",
+    "ComponentCustomPrice",
+    "ComponentCustomPriceDict",
+    "ComponentDict",
+    "ComponentId",
+    "ComponentId1",
+    "ComponentId1Dict",
+    "ComponentId2",
+    "ComponentId2Dict",
+    "ComponentId3",
+    "ComponentId3Dict",
+    "ComponentIdDict",
+    "ComponentIdModel",
+    "ComponentIdModelDict",
+    "ComponentPrice",
+    "ComponentPriceDict",
+    "ComponentPricePoint",
+    "ComponentPricePointAssignment",
+    "ComponentPricePointAssignmentDict",
+    "ComponentPricePointCurrencyOverageResponse",
+    "ComponentPricePointCurrencyOverageResponseDict",
+    "ComponentPricePointDict",
+    "ComponentPricePointError",
+    "ComponentPricePointError1",
+    "ComponentPricePointError1Dict",
+    "ComponentPricePointErrorDict",
+    "ComponentPricePointErrorItem",
+    "ComponentPricePointErrorItemDict",
+    "ComponentPricePointItem",
+    "ComponentPricePointItemDict",
+    "ComponentPricePointResponse",
+    "ComponentPricePointResponseDict",
+    "ComponentPricePointsResponse",
+    "ComponentPricePointsResponseDict",
+    "ComponentResponse",
+    "ComponentResponseDict",
+    "ConsolidatedInvoice",
+    "ConsolidatedInvoiceDict",
+    "Contract",
+    "ContractDict",
+    "ConversionRate",
+    "ConversionRateDict",
+    "CountResponse",
+    "CountResponseDict",
+    "Coupon",
+    "CouponCurrency",
+    "CouponCurrencyDict",
+    "CouponCurrencyRequest",
+    "CouponCurrencyRequestDict",
+    "CouponCurrencyResponse",
+    "CouponCurrencyResponseDict",
+    "CouponDict",
+    "CouponPayload",
+    "CouponPayloadDict",
+    "CouponRequest",
+    "CouponRequestDict",
+    "CouponResponse",
+    "CouponResponseDict",
+    "CouponRestriction",
+    "CouponRestrictionDict",
+    "CouponSubcodes",
+    "CouponSubcodesDict",
+    "CouponSubcodesResponse",
+    "CouponSubcodesResponseDict",
+    "CouponUsage",
+    "CouponUsageDict",
+    "CreateAllocation",
+    "CreateAllocationDict",
+    "CreateAllocationRequest",
+    "CreateAllocationRequestDict",
+    "CreateComponentPricePoint",
+    "CreateComponentPricePointDict",
+    "CreateComponentPricePointRequest",
+    "CreateComponentPricePointRequestDict",
+    "CreateComponentPricePointsRequest",
+    "CreateComponentPricePointsRequestDict",
+    "CreateCreditNoteEvent",
+    "CreateCreditNoteEventDict",
+    "CreateCurrencyPrice",
+    "CreateCurrencyPriceDict",
+    "CreateCurrencyPricesRequest",
+    "CreateCurrencyPricesRequestDict",
+    "CreateCustomer",
+    "CreateCustomerDict",
+    "CreateCustomerRequest",
+    "CreateCustomerRequestDict",
+    "CreateDebitNoteEvent",
+    "CreateDebitNoteEventDict",
+    "CreateEbbComponent",
+    "CreateEbbComponentDict",
+    "CreateFeatureCatalogItemRequest",
+    "CreateFeatureCatalogItemRequestDict",
+    "CreateFeatureTemplateRequest",
+    "CreateFeatureTemplateRequestDict",
+    "CreateInvoice",
+    "CreateInvoiceAddress",
+    "CreateInvoiceAddressDict",
+    "CreateInvoiceCoupon",
+    "CreateInvoiceCouponDict",
+    "CreateInvoiceDict",
+    "CreateInvoiceItem",
+    "CreateInvoiceItemDict",
+    "CreateInvoicePayment",
+    "CreateInvoicePaymentApplication",
+    "CreateInvoicePaymentApplicationDict",
+    "CreateInvoicePaymentDict",
+    "CreateInvoicePaymentRequest",
+    "CreateInvoicePaymentRequestDict",
+    "CreateInvoiceRequest",
+    "CreateInvoiceRequestDict",
+    "CreateMetadata",
+    "CreateMetadataDict",
+    "CreateMetadataRequest",
+    "CreateMetadataRequestDict",
+    "CreateMetafield",
+    "CreateMetafieldDict",
+    "CreateMetafieldsRequest",
+    "CreateMetafieldsRequestDict",
+    "CreateMeteredComponent",
+    "CreateMeteredComponentDict",
+    "CreateMultiInvoicePayment",
+    "CreateMultiInvoicePaymentDict",
+    "CreateMultiInvoicePaymentRequest",
+    "CreateMultiInvoicePaymentRequestDict",
+    "CreateOffer",
+    "CreateOfferComponent",
+    "CreateOfferComponentDict",
+    "CreateOfferDict",
+    "CreateOfferRequest",
+    "CreateOfferRequestDict",
+    "CreateOnOffComponent",
+    "CreateOnOffComponentDict",
+    "CreateOrUpdateEndpoint",
+    "CreateOrUpdateEndpointDict",
+    "CreateOrUpdateEndpointRequest",
+    "CreateOrUpdateEndpointRequestDict",
+    "CreateOrUpdateProduct",
+    "CreateOrUpdateProductDict",
+    "CreateOrUpdateProductRequest",
+    "CreateOrUpdateProductRequestDict",
+    "CreateOrUpdateSegmentPrice",
+    "CreateOrUpdateSegmentPriceDict",
+    "CreatePayment",
+    "CreatePaymentDict",
+    "CreatePaymentProfile",
+    "CreatePaymentProfileDict",
+    "CreatePaymentProfileRequest",
+    "CreatePaymentProfileRequestDict",
+    "CreatePrepaidComponent",
+    "CreatePrepaidComponentDict",
+    "CreatePrepaidUsageComponentPricePoint",
+    "CreatePrepaidUsageComponentPricePointDict",
+    "CreatePrepayment",
+    "CreatePrepaymentDict",
+    "CreatePrepaymentErrorResponse",
+    "CreatePrepaymentErrorResponseDict",
+    "CreatePrepaymentRequest",
+    "CreatePrepaymentRequestDict",
+    "CreatePrepaymentResponse",
+    "CreatePrepaymentResponseDict",
+    "CreateProductCurrencyPrice",
+    "CreateProductCurrencyPriceDict",
+    "CreateProductCurrencyPricesRequest",
+    "CreateProductCurrencyPricesRequestDict",
+    "CreateProductFamily",
+    "CreateProductFamilyDict",
+    "CreateProductFamilyRequest",
+    "CreateProductFamilyRequestDict",
+    "CreateProductPricePoint",
+    "CreateProductPricePointDict",
+    "CreateProductPricePointRequest",
+    "CreateProductPricePointRequestDict",
+    "CreateQuantityBasedComponent",
+    "CreateQuantityBasedComponentDict",
+    "CreateReasonCode",
+    "CreateReasonCodeDict",
+    "CreateReasonCodeRequest",
+    "CreateReasonCodeRequestDict",
+    "CreateSegment",
+    "CreateSegmentDict",
+    "CreateSegmentRequest",
+    "CreateSegmentRequestDict",
+    "CreateSubscription",
+    "CreateSubscriptionComponent",
+    "CreateSubscriptionComponentDict",
+    "CreateSubscriptionDict",
+    "CreateSubscriptionGroup",
+    "CreateSubscriptionGroupDict",
+    "CreateSubscriptionGroupRequest",
+    "CreateSubscriptionGroupRequestDict",
+    "CreateSubscriptionRequest",
+    "CreateSubscriptionRequestDict",
+    "CreateUsage",
+    "CreateUsageDict",
+    "CreateUsageRequest",
+    "CreateUsageRequestDict",
+    "CreateWalletAdjustmentRequest",
+    "CreateWalletAdjustmentRequestDict",
+    "CreateWalletProductRequest",
+    "CreateWalletProductRequestDict",
+    "CreateWalletPurchaseRequest",
+    "CreateWalletPurchaseRequestDict",
+    "CreateWalletRequest",
+    "CreateWalletRequestDict",
+    "CreateWalletTransactionRequest",
+    "CreateWalletTransactionRequestDict",
+    "CreatedPrepayment",
+    "CreatedPrepaymentDict",
+    "CreditAccountBalanceChanged",
+    "CreditAccountBalanceChangedDict",
+    "CreditCardAttributes",
+    "CreditCardAttributesDict",
+    "CreditCardPaymentProfile",
+    "CreditCardPaymentProfileDict",
+    "CreditNote",
+    "CreditNoteApplication",
+    "CreditNoteApplicationDict",
+    "CreditNoteDict",
+    "CreditNoteLineItem",
+    "CreditNoteLineItemDict",
+    "CreditSchemeRequest",
+    "CreditSchemeRequestDict",
+    "CurrencyOveragePrices",
+    "CurrencyOveragePricesDict",
+    "CurrencyPrice",
+    "CurrencyPriceDict",
+    "CurrencyPricesResponse",
+    "CurrencyPricesResponseDict",
+    "CustomFieldValueChange",
+    "CustomFieldValueChangeDict",
+    "Customer",
+    "CustomerAttributes",
+    "CustomerAttributesDict",
+    "CustomerChange",
+    "CustomerChangeDict",
+    "CustomerChangesPreviewResponse",
+    "CustomerChangesPreviewResponseDict",
+    "CustomerCustomFieldsChange",
+    "CustomerCustomFieldsChangeDict",
+    "CustomerDict",
+    "CustomerError",
+    "CustomerErrorDict",
+    "CustomerErrorResponse",
+    "CustomerErrorResponse1",
+    "CustomerErrorResponse1Dict",
+    "CustomerErrorResponseDict",
+    "CustomerPayerChange",
+    "CustomerPayerChangeDict",
+    "CustomerResponse",
+    "CustomerResponseDict",
+    "DebitNote",
+    "DebitNoteDict",
+    "DeductServiceCredit",
+    "DeductServiceCreditDict",
+    "DeductServiceCreditErrorResponse",
+    "DeductServiceCreditErrorResponseDict",
+    "DeductServiceCreditRequest",
+    "DeductServiceCreditRequestDict",
+    "DelayedCancellationResponse",
+    "DelayedCancellationResponseDict",
+    "DeleteSubscriptionGroupResponse",
+    "DeleteSubscriptionGroupResponseDict",
+    "DeliverProformaInvoiceRequest",
+    "DeliverProformaInvoiceRequestDict",
+    "DunnerData",
+    "DunnerDataDict",
+    "DunningStepData",
+    "DunningStepDataDict",
+    "DunningStepReached",
+    "DunningStepReachedDict",
+    "EbbComponent",
+    "EbbComponentDict",
+    "EbbEvent",
+    "EbbEventDict",
+    "EnableWebhooksRequest",
+    "EnableWebhooksRequestDict",
+    "EnableWebhooksResponse",
+    "EnableWebhooksResponseDict",
+    "EndingQuantity",
+    "EndingQuantityDict",
+    "Endpoint",
+    "EndpointDict",
+    "EndpointResponse",
+    "EndpointResponseDict",
+    "EnumModel",
+    "EnumModelDict",
+    "ErrorArrayMapResponse",
+    "ErrorArrayMapResponse1",
+    "ErrorArrayMapResponse1Dict",
+    "ErrorArrayMapResponseDict",
+    "ErrorListResponse",
+    "ErrorListResponse1",
+    "ErrorListResponse1Dict",
+    "ErrorListResponseDict",
+    "ErrorStringMapResponse",
+    "ErrorStringMapResponse1",
+    "ErrorStringMapResponse1Dict",
+    "ErrorStringMapResponseDict",
+    "Errors1",
+    "Errors11",
+    "Errors11Dict",
+    "Errors1Dict",
+    "ErrorsModel",
+    "ErrorsModelDict",
+    "Event",
+    "EventBasedBillingListSegmentsErrors",
+    "EventBasedBillingListSegmentsErrors1",
+    "EventBasedBillingListSegmentsErrors1Dict",
+    "EventBasedBillingListSegmentsErrorsDict",
+    "EventBasedBillingSegment",
+    "EventBasedBillingSegment1",
+    "EventBasedBillingSegment1Dict",
+    "EventBasedBillingSegmentDict",
+    "EventBasedBillingSegmentError",
+    "EventBasedBillingSegmentErrorDict",
+    "EventBasedBillingSegmentErrors",
+    "EventBasedBillingSegmentErrors1",
+    "EventBasedBillingSegmentErrors1Dict",
+    "EventBasedBillingSegmentErrorsDict",
+    "EventDict",
+    "EventResponse",
+    "EventResponseDict",
+    "EventSpecificData",
+    "EventSpecificDataDict",
+    "ExpirationInterval",
+    "ExpirationIntervalDict",
+    "ExpirationMonth",
+    "ExpirationMonth1",
+    "ExpirationMonth1Dict",
+    "ExpirationMonth2",
+    "ExpirationMonth2Dict",
+    "ExpirationMonthDict",
+    "ExpirationYear",
+    "ExpirationYear1",
+    "ExpirationYear1Dict",
+    "ExpirationYear2",
+    "ExpirationYear2Dict",
+    "ExpirationYearDict",
+    "FailedPaymentEvent",
+    "FailedPaymentEventData",
+    "FailedPaymentEventDataDict",
+    "FailedPaymentEventDict",
+    "Feature",
+    "Feature1",
+    "Feature1Dict",
+    "Feature2",
+    "Feature2Dict",
+    "Feature3",
+    "Feature3Dict",
+    "FeatureCatalogItem",
+    "FeatureCatalogItemDict",
+    "FeatureCatalogItemResponse",
+    "FeatureCatalogItemResponseDict",
+    "FeatureCatalogItemsListResponse",
+    "FeatureCatalogItemsListResponseDict",
+    "FeatureDict",
+    "FeatureTemplate",
+    "FeatureTemplateDict",
+    "FeatureTemplateResponse",
+    "FeatureTemplateResponseDict",
+    "FeatureTemplatesListResponse",
+    "FeatureTemplatesListResponseDict",
+    "FullNumber",
+    "FullNumberDict",
+    "FullSubscriptionGroupResponse",
+    "FullSubscriptionGroupResponseDict",
+    "GetOneTimeTokenBankAccountPaymentProfile",
+    "GetOneTimeTokenBankAccountPaymentProfileDict",
+    "GetOneTimeTokenPaymentProfile",
+    "GetOneTimeTokenPaymentProfileDict",
+    "GetOneTimeTokenRequest",
+    "GetOneTimeTokenRequestDict",
+    "GroupBilling",
+    "GroupBillingDict",
+    "GroupSettings",
+    "GroupSettingsDict",
+    "GroupTarget",
+    "GroupTargetDict",
+    "HistoricUsage",
+    "HistoricUsageDict",
+    "InitialBalance",
+    "InitialBalanceDict",
+    "InitialChargeInCents",
+    "InitialChargeInCentsDict",
+    "Interval",
+    "IntervalDict",
+    "Invoice",
+    "InvoiceAddress",
+    "InvoiceAddressDict",
+    "InvoiceAvataxDetails",
+    "InvoiceAvataxDetailsDict",
+    "InvoiceBalanceItem",
+    "InvoiceBalanceItemDict",
+    "InvoiceCredit",
+    "InvoiceCreditDict",
+    "InvoiceCustomField",
+    "InvoiceCustomFieldDict",
+    "InvoiceCustomer",
+    "InvoiceCustomerDict",
+    "InvoiceDebit",
+    "InvoiceDebitDict",
+    "InvoiceDict",
+    "InvoiceDiscount",
+    "InvoiceDiscountBreakout",
+    "InvoiceDiscountBreakoutDict",
+    "InvoiceDiscountDict",
+    "InvoiceDisplaySettings",
+    "InvoiceDisplaySettingsDict",
+    "InvoiceEvent",
+    "InvoiceEvent1",
+    "InvoiceEvent1Dict",
+    "InvoiceEventDict",
+    "InvoiceEventPayment",
+    "InvoiceEventPayment1",
+    "InvoiceEventPayment1Dict",
+    "InvoiceEventPaymentDict",
+    "InvoiceIssued",
+    "InvoiceIssuedDict",
+    "InvoiceLineItem",
+    "InvoiceLineItemComponentCostData",
+    "InvoiceLineItemComponentCostDataDict",
+    "InvoiceLineItemDict",
+    "InvoiceLineItemEventData",
+    "InvoiceLineItemEventDataDict",
+    "InvoiceLineItemPricingDetail",
+    "InvoiceLineItemPricingDetailDict",
+    "InvoicePayer",
+    "InvoicePayerChange",
+    "InvoicePayerChangeDict",
+    "InvoicePayerDict",
+    "InvoicePayment",
+    "InvoicePaymentApplication",
+    "InvoicePaymentApplicationDict",
+    "InvoicePaymentDict",
+    "InvoicePaymentMethod",
+    "InvoicePaymentMethodDict",
+    "InvoicePrePayment",
+    "InvoicePrePaymentDict",
+    "InvoicePreviousBalance",
+    "InvoicePreviousBalanceDict",
+    "InvoiceRefund",
+    "InvoiceRefundDict",
+    "InvoiceResponse",
+    "InvoiceResponseDict",
+    "InvoiceSeller",
+    "InvoiceSellerDict",
+    "InvoiceTax",
+    "InvoiceTaxBreakout",
+    "InvoiceTaxBreakoutDict",
+    "InvoiceTaxComponentBreakout",
+    "InvoiceTaxComponentBreakoutDict",
+    "InvoiceTaxDict",
+    "IssueAdvanceInvoiceRequest",
+    "IssueAdvanceInvoiceRequestDict",
+    "IssueInvoiceEvent",
+    "IssueInvoiceEventData",
+    "IssueInvoiceEventDataDict",
+    "IssueInvoiceEventDict",
+    "IssueInvoiceRequest",
+    "IssueInvoiceRequestDict",
+    "IssueServiceCredit",
+    "IssueServiceCreditDict",
+    "IssueServiceCreditErrorResponse",
+    "IssueServiceCreditErrorResponseDict",
+    "IssueServiceCreditRequest",
+    "IssueServiceCreditRequestDict",
+    "ItemPricePointChanged",
+    "ItemPricePointChangedDict",
+    "ItemPricePointData",
+    "ItemPricePointDataDict",
+    "ListComponentsFilter",
+    "ListComponentsFilterDict",
+    "ListComponentsPricePointsResponse",
+    "ListComponentsPricePointsResponseDict",
+    "ListCouponsFilter",
+    "ListCouponsFilterDict",
+    "ListCreditNotesResponse",
+    "ListCreditNotesResponseDict",
+    "ListInvoiceEventsResponse",
+    "ListInvoiceEventsResponseDict",
+    "ListInvoicesResponse",
+    "ListInvoicesResponseDict",
+    "ListMetafieldsResponse",
+    "ListMetafieldsResponseDict",
+    "ListMrrFilter",
+    "ListMrrFilterDict",
+    "ListMrrResponse",
+    "ListMrrResponseDict",
+    "ListMrrResponseResult",
+    "ListMrrResponseResultDict",
+    "ListOffersResponse",
+    "ListOffersResponseDict",
+    "ListPrepaymentsFilter",
+    "ListPrepaymentsFilterDict",
+    "ListPricePointsFilter",
+    "ListPricePointsFilterDict",
+    "ListProductPricePointsResponse",
+    "ListProductPricePointsResponseDict",
+    "ListProductsFilter",
+    "ListProductsFilterDict",
+    "ListProformaInvoicesMeta",
+    "ListProformaInvoicesMetaDict",
+    "ListProformaInvoicesResponse",
+    "ListProformaInvoicesResponseDict",
+    "ListPublicKeysMeta",
+    "ListPublicKeysMetaDict",
+    "ListPublicKeysResponse",
+    "ListPublicKeysResponseDict",
+    "ListSaleRepItem",
+    "ListSaleRepItemDict",
+    "ListSegmentsFilter",
+    "ListSegmentsFilterDict",
+    "ListSegmentsResponse",
+    "ListSegmentsResponseDict",
+    "ListServiceCreditsResponse",
+    "ListServiceCreditsResponseDict",
+    "ListSubscriptionComponentsFilter",
+    "ListSubscriptionComponentsFilterDict",
+    "ListSubscriptionComponentsForSiteFilter",
+    "ListSubscriptionComponentsForSiteFilterDict",
+    "ListSubscriptionComponentsResponse",
+    "ListSubscriptionComponentsResponseDict",
+    "ListSubscriptionGroupPrepayment",
+    "ListSubscriptionGroupPrepaymentDict",
+    "ListSubscriptionGroupPrepaymentItem",
+    "ListSubscriptionGroupPrepaymentItemDict",
+    "ListSubscriptionGroupPrepaymentResponse",
+    "ListSubscriptionGroupPrepaymentResponseDict",
+    "ListSubscriptionGroupsItem",
+    "ListSubscriptionGroupsItemDict",
+    "ListSubscriptionGroupsMeta",
+    "ListSubscriptionGroupsMetaDict",
+    "ListSubscriptionGroupsResponse",
+    "ListSubscriptionGroupsResponseDict",
+    "Metadata",
+    "MetadataDict",
+    "Metafield",
+    "MetafieldDict",
+    "MetafieldScope",
+    "MetafieldScopeDict",
+    "Metafields",
+    "Metafields1",
+    "Metafields1Dict",
+    "MetafieldsDict",
+    "Meter",
+    "MeterDict",
+    "MeteredComponent",
+    "MeteredComponentDict",
+    "MeteredUsage",
+    "MeteredUsageDict",
+    "Movement",
+    "MovementDict",
+    "MovementLineItem",
+    "MovementLineItemDict",
+    "Mrr",
+    "MrrDict",
+    "MrrMovement",
+    "MrrMovementDict",
+    "MrrResponse",
+    "MrrResponseDict",
+    "MultiInvoicePayment",
+    "MultiInvoicePaymentDict",
+    "MultiInvoicePaymentResponse",
+    "MultiInvoicePaymentResponseDict",
+    "NestedSubscriptionGroup",
+    "NestedSubscriptionGroupDict",
+    "NetTerms",
+    "NetTerms1",
+    "NetTerms1Dict",
+    "NetTermsDict",
+    "NewOverageUnitBalance",
+    "NewOverageUnitBalanceDict",
+    "NewUnitBalance",
+    "NewUnitBalanceDict",
+    "Offer",
+    "OfferDict",
+    "OfferDiscount",
+    "OfferDiscountDict",
+    "OfferId",
+    "OfferIdDict",
+    "OfferItem",
+    "OfferItemDict",
+    "OfferResponse",
+    "OfferResponseDict",
+    "OfferSignupPage",
+    "OfferSignupPageDict",
+    "OkResponse",
+    "OkResponseDict",
+    "OnOffComponent",
+    "OnOffComponentDict",
+    "OrganizationAddress",
+    "OrganizationAddressDict",
+    "OriginInvoice",
+    "OriginInvoiceDict",
+    "OveragePricing",
+    "OveragePricingDict",
+    "OverrideSubscription",
+    "OverrideSubscriptionDict",
+    "OverrideSubscriptionRequest",
+    "OverrideSubscriptionRequestDict",
+    "PaginatedMetadata",
+    "PaginatedMetadataDict",
+    "PaidInvoice",
+    "PaidInvoiceDict",
+    "PauseRequest",
+    "PauseRequestDict",
+    "PayerAttributes",
+    "PayerAttributesDict",
+    "PayerError",
+    "PayerErrorDict",
+    "PaymentCollectionMethodChanged",
+    "PaymentCollectionMethodChangedDict",
+    "PaymentForAllocation",
+    "PaymentForAllocationDict",
+    "PaymentMethodApplePay",
+    "PaymentMethodApplePayDict",
+    "PaymentMethodBankAccount",
+    "PaymentMethodBankAccountDict",
+    "PaymentMethodCreditCard",
+    "PaymentMethodCreditCardDict",
+    "PaymentMethodExternal",
+    "PaymentMethodExternalDict",
+    "PaymentMethodPaypal",
+    "PaymentMethodPaypalDict",
+    "PaymentProfile",
+    "PaymentProfile1",
+    "PaymentProfile1Dict",
+    "PaymentProfileAttributes",
+    "PaymentProfileAttributesDict",
+    "PaymentProfileDict",
+    "PaymentProfileModel",
+    "PaymentProfileModelDict",
+    "PaymentProfileParams",
+    "PaymentProfileParamsDict",
+    "PaymentProfileResponse",
+    "PaymentProfileResponseDict",
+    "PaymentRelatedEvents",
+    "PaymentRelatedEventsDict",
+    "PaypalPaymentProfile",
+    "PaypalPaymentProfileDict",
+    "PendingCancellationChange",
+    "PendingCancellationChangeDict",
+    "Percentage",
+    "Percentage1",
+    "Percentage1Dict",
+    "PercentageDict",
+    "PortalManagementLink",
+    "PortalManagementLinkDict",
+    "PrepaidConfiguration",
+    "PrepaidConfigurationDict",
+    "PrepaidConfigurationErrorResponse",
+    "PrepaidConfigurationErrorResponseDict",
+    "PrepaidConfigurationResponse",
+    "PrepaidConfigurationResponseDict",
+    "PrepaidProductPricePointFilter",
+    "PrepaidProductPricePointFilterDict",
+    "PrepaidSubscriptionBalanceChanged",
+    "PrepaidSubscriptionBalanceChangedDict",
+    "PrepaidUsage",
+    "PrepaidUsageAllocationDetail",
+    "PrepaidUsageAllocationDetailDict",
+    "PrepaidUsageComponent",
+    "PrepaidUsageComponentDict",
+    "PrepaidUsageDict",
+    "Prepayment",
+    "PrepaymentAccountBalanceChanged",
+    "PrepaymentAccountBalanceChangedDict",
+    "PrepaymentAggregatedError",
+    "PrepaymentAggregatedErrorDict",
+    "PrepaymentDict",
+    "PrepaymentResponse",
+    "PrepaymentResponseDict",
+    "PrepaymentsResponse",
+    "PrepaymentsResponseDict",
+    "PreviewAllocationsRequest",
+    "PreviewAllocationsRequestDict",
+    "PreviousQuantity",
+    "PreviousQuantity1",
+    "PreviousQuantity1Dict",
+    "PreviousQuantityDict",
+    "Price",
+    "Price1",
+    "Price1Dict",
+    "PriceDict",
+    "PriceInCents",
+    "PriceInCentsDict",
+    "PricePoint",
+    "PricePoint2",
+    "PricePoint2Dict",
+    "PricePointDict",
+    "PricePointId",
+    "PricePointId1",
+    "PricePointId1Dict",
+    "PricePointId2",
+    "PricePointId2Dict",
+    "PricePointId3",
+    "PricePointId3Dict",
+    "PricePointId4",
+    "PricePointId4Dict",
+    "PricePointIdDict",
+    "PricePointIdModel",
+    "PricePointIdModelDict",
+    "Product",
+    "Product1",
+    "Product1Dict",
+    "ProductDict",
+    "ProductFamily",
+    "ProductFamilyDict",
+    "ProductFamilyId",
+    "ProductFamilyIdDict",
+    "ProductFamilyResponse",
+    "ProductFamilyResponseDict",
+    "ProductId",
+    "ProductIdDict",
+    "ProductIdModel",
+    "ProductIdModelDict",
+    "ProductPricePoint",
+    "ProductPricePointDict",
+    "ProductPricePointErrorResponse",
+    "ProductPricePointErrorResponse1",
+    "ProductPricePointErrorResponse1Dict",
+    "ProductPricePointErrorResponseDict",
+    "ProductPricePointErrors",
+    "ProductPricePointErrorsDict",
+    "ProductPricePointId",
+    "ProductPricePointIdDict",
+    "ProductPricePointResponse",
+    "ProductPricePointResponseDict",
+    "ProductResponse",
+    "ProductResponseDict",
+    "ProformaBadRequestErrorResponse",
+    "ProformaBadRequestErrorResponse1",
+    "ProformaBadRequestErrorResponse1Dict",
+    "ProformaBadRequestErrorResponseDict",
+    "ProformaError",
+    "ProformaErrorDict",
+    "ProformaInvoice",
+    "ProformaInvoiceCredit",
+    "ProformaInvoiceCreditDict",
+    "ProformaInvoiceDict",
+    "ProformaInvoiceDiscount",
+    "ProformaInvoiceDiscountDict",
+    "ProformaInvoiceIssued",
+    "ProformaInvoiceIssuedDict",
+    "ProformaInvoicePayment",
+    "ProformaInvoicePaymentDict",
+    "ProformaInvoiceTax",
+    "ProformaInvoiceTaxDict",
+    "Proration",
+    "ProrationDict",
+    "PublicKey",
+    "PublicKeyDict",
+    "PublicSignupPage",
+    "PublicSignupPageDict",
+    "Purchase",
+    "PurchaseDict",
+    "Quantity",
+    "Quantity1",
+    "Quantity1Dict",
+    "Quantity3",
+    "Quantity3Dict",
+    "Quantity4",
+    "Quantity4Dict",
+    "QuantityBasedComponent",
+    "QuantityBasedComponentDict",
+    "QuantityDict",
+    "ReactivateSubscriptionGroupRequest",
+    "ReactivateSubscriptionGroupRequestDict",
+    "ReactivateSubscriptionGroupResponse",
+    "ReactivateSubscriptionGroupResponseDict",
+    "ReactivateSubscriptionRequest",
+    "ReactivateSubscriptionRequestDict",
+    "ReactivationBilling",
+    "ReactivationBillingDict",
+    "ReasonCode",
+    "ReasonCodeDict",
+    "ReasonCodeResponse",
+    "ReasonCodeResponseDict",
+    "RecordPaymentRequest",
+    "RecordPaymentRequestDict",
+    "RecordPaymentResponse",
+    "RecordPaymentResponseDict",
+    "ReferralCode",
+    "ReferralCodeDict",
+    "ReferralValidationResponse",
+    "ReferralValidationResponseDict",
+    "Refund",
+    "RefundConsolidatedInvoice",
+    "RefundConsolidatedInvoiceDict",
+    "RefundDict",
+    "RefundInvoice",
+    "RefundInvoiceDict",
+    "RefundInvoiceEvent",
+    "RefundInvoiceEventData",
+    "RefundInvoiceEventDataDict",
+    "RefundInvoiceEventDict",
+    "RefundInvoiceRequest",
+    "RefundInvoiceRequestDict",
+    "RefundPrepayment",
+    "RefundPrepaymentAggregatedError",
+    "RefundPrepaymentAggregatedErrorDict",
+    "RefundPrepaymentAggregatedErrorsResponse",
+    "RefundPrepaymentAggregatedErrorsResponseDict",
+    "RefundPrepaymentBaseErrorsResponse",
+    "RefundPrepaymentBaseErrorsResponse1",
+    "RefundPrepaymentBaseErrorsResponse1Dict",
+    "RefundPrepaymentBaseErrorsResponseDict",
+    "RefundPrepaymentBaseRefundError",
+    "RefundPrepaymentBaseRefundErrorDict",
+    "RefundPrepaymentDict",
+    "RefundPrepaymentErrorResponse",
+    "RefundPrepaymentErrorResponseDict",
+    "RefundPrepaymentRequest",
+    "RefundPrepaymentRequestDict",
+    "RefundSuccess",
+    "RefundSuccessDict",
+    "Register",
+    "RegisterDict",
+    "RemovePaymentEvent",
+    "RemovePaymentEventData",
+    "RemovePaymentEventDataDict",
+    "RemovePaymentEventDict",
+    "RenewalConfigurationItem",
+    "RenewalConfigurationItemDict",
+    "RenewalPreview",
+    "RenewalPreviewComponent",
+    "RenewalPreviewComponentDict",
+    "RenewalPreviewDict",
+    "RenewalPreviewLineItem",
+    "RenewalPreviewLineItemDict",
+    "RenewalPreviewRequest",
+    "RenewalPreviewRequestDict",
+    "RenewalPreviewResponse",
+    "RenewalPreviewResponseDict",
+    "ReplayWebhooksRequest",
+    "ReplayWebhooksRequestDict",
+    "ReplayWebhooksResponse",
+    "ReplayWebhooksResponseDict",
+    "ResentInvitation",
+    "ResentInvitationDict",
+    "Resume",
+    "ResumeDict",
+    "ResumeOptions",
+    "ResumeOptionsDict",
+    "RevokedInvitation",
+    "RevokedInvitationDict",
+    "SaleRep",
+    "SaleRepDict",
+    "SaleRepItemMrr",
+    "SaleRepItemMrrDict",
+    "SaleRepSettings",
+    "SaleRepSettingsDict",
+    "SaleRepSubscription",
+    "SaleRepSubscriptionDict",
+    "ScheduledRenewalComponentCustomPrice",
+    "ScheduledRenewalComponentCustomPriceDict",
+    "ScheduledRenewalConfiguration",
+    "ScheduledRenewalConfigurationDict",
+    "ScheduledRenewalConfigurationItem",
+    "ScheduledRenewalConfigurationItemDict",
+    "ScheduledRenewalConfigurationItemRequest",
+    "ScheduledRenewalConfigurationItemRequestDict",
+    "ScheduledRenewalConfigurationItemResponse",
+    "ScheduledRenewalConfigurationItemResponseDict",
+    "ScheduledRenewalConfigurationRequest",
+    "ScheduledRenewalConfigurationRequestBody",
+    "ScheduledRenewalConfigurationRequestBodyDict",
+    "ScheduledRenewalConfigurationRequestDict",
+    "ScheduledRenewalConfigurationResponse",
+    "ScheduledRenewalConfigurationResponseDict",
+    "ScheduledRenewalConfigurationsResponse",
+    "ScheduledRenewalConfigurationsResponseDict",
+    "ScheduledRenewalItemRequestBodyComponent",
+    "ScheduledRenewalItemRequestBodyComponentDict",
+    "ScheduledRenewalItemRequestBodyProduct",
+    "ScheduledRenewalItemRequestBodyProductDict",
+    "ScheduledRenewalLockInRequest",
+    "ScheduledRenewalLockInRequestDict",
+    "ScheduledRenewalProductPricePoint",
+    "ScheduledRenewalProductPricePointDict",
+    "ScheduledRenewalUpdateRequest",
+    "ScheduledRenewalUpdateRequestDict",
+    "Segment",
+    "SegmentDict",
+    "SegmentPrice",
+    "SegmentPriceDict",
+    "SegmentProperty1Value",
+    "SegmentProperty1Value1",
+    "SegmentProperty1Value1Dict",
+    "SegmentProperty1ValueDict",
+    "SegmentProperty2Value",
+    "SegmentProperty2Value1",
+    "SegmentProperty2Value1Dict",
+    "SegmentProperty2ValueDict",
+    "SegmentProperty3Value",
+    "SegmentProperty3Value1",
+    "SegmentProperty3Value1Dict",
+    "SegmentProperty3ValueDict",
+    "SegmentProperty4Value",
+    "SegmentProperty4Value1",
+    "SegmentProperty4Value1Dict",
+    "SegmentProperty4ValueDict",
+    "SegmentResponse",
+    "SegmentResponseDict",
+    "SegmentUids",
+    "SegmentUidsDict",
+    "SendEmail",
+    "SendEmailDict",
+    "SendInvoiceRequest",
+    "SendInvoiceRequestDict",
+    "ServiceCredit",
+    "ServiceCredit1",
+    "ServiceCredit1Dict",
+    "ServiceCreditDict",
+    "ServiceCreditResponse",
+    "ServiceCreditResponseDict",
+    "SignupProformaPreview",
+    "SignupProformaPreviewDict",
+    "SignupProformaPreviewResponse",
+    "SignupProformaPreviewResponseDict",
+    "SingleErrorResponse",
+    "SingleErrorResponse1",
+    "SingleErrorResponse1Dict",
+    "SingleErrorResponseDict",
+    "SingleStringErrorResponse",
+    "SingleStringErrorResponse1",
+    "SingleStringErrorResponse1Dict",
+    "SingleStringErrorResponseDict",
+    "Site",
+    "SiteDict",
+    "SiteResponse",
+    "SiteResponseDict",
+    "SiteStatistics",
+    "SiteStatisticsDict",
+    "SiteSummary",
+    "SiteSummaryDict",
+    "SnapDay",
+    "SnapDay1",
+    "SnapDay1Dict",
+    "SnapDayDict",
+    "StartingQuantity",
+    "StartingQuantityDict",
+    "Subscription",
+    "SubscriptionAddCouponError",
+    "SubscriptionAddCouponError1",
+    "SubscriptionAddCouponError1Dict",
+    "SubscriptionAddCouponErrorDict",
+    "SubscriptionComponent",
+    "SubscriptionComponentAllocationError",
+    "SubscriptionComponentAllocationError1",
+    "SubscriptionComponentAllocationError1Dict",
+    "SubscriptionComponentAllocationErrorDict",
+    "SubscriptionComponentAllocationErrorItem",
+    "SubscriptionComponentAllocationErrorItemDict",
+    "SubscriptionComponentDict",
+    "SubscriptionComponentResponse",
+    "SubscriptionComponentResponseDict",
+    "SubscriptionComponentSubscription",
+    "SubscriptionComponentSubscriptionDict",
+    "SubscriptionCustomPrice",
+    "SubscriptionCustomPriceDict",
+    "SubscriptionDict",
+    "SubscriptionFilter",
+    "SubscriptionFilterDict",
+    "SubscriptionGroup",
+    "SubscriptionGroupBalances",
+    "SubscriptionGroupBalancesDict",
+    "SubscriptionGroupBankAccount",
+    "SubscriptionGroupBankAccountDict",
+    "SubscriptionGroupComponentCustomPrice",
+    "SubscriptionGroupComponentCustomPriceDict",
+    "SubscriptionGroupCreateErrorResponse",
+    "SubscriptionGroupCreateErrorResponse1",
+    "SubscriptionGroupCreateErrorResponse1Dict",
+    "SubscriptionGroupCreateErrorResponseDict",
+    "SubscriptionGroupCreditCard",
+    "SubscriptionGroupCreditCardDict",
+    "SubscriptionGroupCustomer",
+    "SubscriptionGroupCustomerDict",
+    "SubscriptionGroupDict",
+    "SubscriptionGroupItem",
+    "SubscriptionGroupItemDict",
+    "SubscriptionGroupMembersArrayError",
+    "SubscriptionGroupMembersArrayErrorDict",
+    "SubscriptionGroupPaymentProfile",
+    "SubscriptionGroupPaymentProfileDict",
+    "SubscriptionGroupPrepayment",
+    "SubscriptionGroupPrepaymentDict",
+    "SubscriptionGroupPrepaymentRequest",
+    "SubscriptionGroupPrepaymentRequestDict",
+    "SubscriptionGroupPrepaymentResponse",
+    "SubscriptionGroupPrepaymentResponseDict",
+    "SubscriptionGroupResponse",
+    "SubscriptionGroupResponseDict",
+    "SubscriptionGroupSignup",
+    "SubscriptionGroupSignupComponent",
+    "SubscriptionGroupSignupComponentDict",
+    "SubscriptionGroupSignupDict",
+    "SubscriptionGroupSignupError",
+    "SubscriptionGroupSignupErrorDict",
+    "SubscriptionGroupSignupErrorResponse",
+    "SubscriptionGroupSignupErrorResponse1",
+    "SubscriptionGroupSignupErrorResponse1Dict",
+    "SubscriptionGroupSignupErrorResponseDict",
+    "SubscriptionGroupSignupEventData",
+    "SubscriptionGroupSignupEventDataDict",
+    "SubscriptionGroupSignupFailureData",
+    "SubscriptionGroupSignupFailureDataDict",
+    "SubscriptionGroupSignupItem",
+    "SubscriptionGroupSignupItemDict",
+    "SubscriptionGroupSignupRequest",
+    "SubscriptionGroupSignupRequestDict",
+    "SubscriptionGroupSignupResponse",
+    "SubscriptionGroupSignupResponseDict",
+    "SubscriptionGroupSingleError",
+    "SubscriptionGroupSingleErrorDict",
+    "SubscriptionGroupSubscriptionError",
+    "SubscriptionGroupSubscriptionErrorDict",
+    "SubscriptionGroupUpdateError",
+    "SubscriptionGroupUpdateErrorDict",
+    "SubscriptionGroupUpdateErrorResponse",
+    "SubscriptionGroupUpdateErrorResponse1",
+    "SubscriptionGroupUpdateErrorResponse1Dict",
+    "SubscriptionGroupUpdateErrorResponseDict",
+    "SubscriptionIdOrReference",
+    "SubscriptionIdOrReferenceDict",
+    "SubscriptionIncludedCoupon",
+    "SubscriptionIncludedCouponDict",
+    "SubscriptionMigrationPreview",
+    "SubscriptionMigrationPreviewDict",
+    "SubscriptionMigrationPreviewOptions",
+    "SubscriptionMigrationPreviewOptionsDict",
+    "SubscriptionMigrationPreviewRequest",
+    "SubscriptionMigrationPreviewRequestDict",
+    "SubscriptionMigrationPreviewResponse",
+    "SubscriptionMigrationPreviewResponseDict",
+    "SubscriptionMrr",
+    "SubscriptionMrrBreakout",
+    "SubscriptionMrrBreakoutDict",
+    "SubscriptionMrrDict",
+    "SubscriptionMrrResponse",
+    "SubscriptionMrrResponseDict",
+    "SubscriptionNote",
+    "SubscriptionNoteDict",
+    "SubscriptionNoteResponse",
+    "SubscriptionNoteResponseDict",
+    "SubscriptionPreview",
+    "SubscriptionPreviewDict",
+    "SubscriptionPreviewResponse",
+    "SubscriptionPreviewResponseDict",
+    "SubscriptionProductChange",
+    "SubscriptionProductChangeDict",
+    "SubscriptionProductMigration",
+    "SubscriptionProductMigrationDict",
+    "SubscriptionProductMigrationRequest",
+    "SubscriptionProductMigrationRequestDict",
+    "SubscriptionRemoveCouponErrors",
+    "SubscriptionRemoveCouponErrors1",
+    "SubscriptionRemoveCouponErrors1Dict",
+    "SubscriptionRemoveCouponErrorsDict",
+    "SubscriptionResponse",
+    "SubscriptionResponseDict",
+    "SubscriptionResponseError",
+    "SubscriptionResponseErrorDict",
+    "SubscriptionStateChange",
+    "SubscriptionStateChangeDict",
+    "SubscriptionsMrrErrorResponse",
+    "SubscriptionsMrrErrorResponse1",
+    "SubscriptionsMrrErrorResponse1Dict",
+    "SubscriptionsMrrErrorResponseDict",
+    "TaxConfiguration",
+    "TaxConfigurationDict",
+    "TokenizedPaymentProfile",
+    "TokenizedPaymentProfileDict",
+    "TooManyManagementLinkRequests",
+    "TooManyManagementLinkRequestsDict",
+    "TooManyManagementLinkRequestsError",
+    "TooManyManagementLinkRequestsError1",
+    "TooManyManagementLinkRequestsError1Dict",
+    "TooManyManagementLinkRequestsErrorDict",
+    "TrialInterval",
+    "TrialIntervalDict",
+    "TrialPriceInCents",
+    "TrialPriceInCentsDict",
+    "UnitBalance",
+    "UnitBalance1",
+    "UnitBalance1Dict",
+    "UnitBalance2",
+    "UnitBalance2Dict",
+    "UnitBalanceDict",
+    "UnitPrice",
+    "UnitPrice1",
+    "UnitPrice1Dict",
+    "UnitPrice3",
+    "UnitPrice3Dict",
+    "UnitPrice5",
+    "UnitPrice5Dict",
+    "UnitPrice7",
+    "UnitPrice7Dict",
+    "UnitPrice8",
+    "UnitPrice8Dict",
+    "UnitPriceDict",
+    "UpdateAllocationExpirationDate",
+    "UpdateAllocationExpirationDateDict",
+    "UpdateComponent",
+    "UpdateComponentDict",
+    "UpdateComponentPricePoint",
+    "UpdateComponentPricePointDict",
+    "UpdateComponentPricePointRequest",
+    "UpdateComponentPricePointRequestDict",
+    "UpdateComponentRequest",
+    "UpdateComponentRequestDict",
+    "UpdateCouponCurrency",
+    "UpdateCouponCurrencyDict",
+    "UpdateCurrencyPrice",
+    "UpdateCurrencyPriceDict",
+    "UpdateCurrencyPricesRequest",
+    "UpdateCurrencyPricesRequestDict",
+    "UpdateCustomer",
+    "UpdateCustomerDict",
+    "UpdateCustomerRequest",
+    "UpdateCustomerRequestDict",
+    "UpdateFeatureCatalogItemRequest",
+    "UpdateFeatureCatalogItemRequestDict",
+    "UpdateFeatureTemplateRequest",
+    "UpdateFeatureTemplateRequestDict",
+    "UpdateInvoice",
+    "UpdateInvoiceDict",
+    "UpdateInvoiceItem",
+    "UpdateInvoiceItemDict",
+    "UpdateInvoiceRequest",
+    "UpdateInvoiceRequestDict",
+    "UpdateMetadata",
+    "UpdateMetadataDict",
+    "UpdateMetadataRequest",
+    "UpdateMetadataRequestDict",
+    "UpdateMetafield",
+    "UpdateMetafieldDict",
+    "UpdateMetafieldsRequest",
+    "UpdateMetafieldsRequestDict",
+    "UpdatePaymentProfile",
+    "UpdatePaymentProfileDict",
+    "UpdatePaymentProfileRequest",
+    "UpdatePaymentProfileRequestDict",
+    "UpdatePrice",
+    "UpdatePriceDict",
+    "UpdateProductPricePoint",
+    "UpdateProductPricePointDict",
+    "UpdateProductPricePointRequest",
+    "UpdateProductPricePointRequestDict",
+    "UpdateReasonCode",
+    "UpdateReasonCodeDict",
+    "UpdateReasonCodeRequest",
+    "UpdateReasonCodeRequestDict",
+    "UpdateSegment",
+    "UpdateSegmentDict",
+    "UpdateSegmentRequest",
+    "UpdateSegmentRequestDict",
+    "UpdateSubscription",
+    "UpdateSubscriptionComponent",
+    "UpdateSubscriptionComponentDict",
+    "UpdateSubscriptionDict",
+    "UpdateSubscriptionGroup",
+    "UpdateSubscriptionGroupDict",
+    "UpdateSubscriptionGroupRequest",
+    "UpdateSubscriptionGroupRequestDict",
+    "UpdateSubscriptionNote",
+    "UpdateSubscriptionNoteDict",
+    "UpdateSubscriptionNoteRequest",
+    "UpdateSubscriptionNoteRequestDict",
+    "UpdateSubscriptionRequest",
+    "UpdateSubscriptionRequestDict",
+    "UpdateWalletProductRequest",
+    "UpdateWalletProductRequestDict",
+    "UpdateWalletRequest",
+    "UpdateWalletRequestDict",
+    "UpsertPrepaidConfiguration",
+    "UpsertPrepaidConfigurationDict",
+    "UpsertPrepaidConfigurationRequest",
+    "UpsertPrepaidConfigurationRequestDict",
+    "Usage",
+    "UsageDict",
+    "UsageResponse",
+    "UsageResponseDict",
+    "Value",
+    "ValueDict",
+    "VoidInvoice",
+    "VoidInvoiceDict",
+    "VoidInvoiceEvent",
+    "VoidInvoiceEventData",
+    "VoidInvoiceEventDataDict",
+    "VoidInvoiceEventDict",
+    "VoidInvoiceRequest",
+    "VoidInvoiceRequestDict",
+    "VoidRemainderEvent",
+    "VoidRemainderEventData",
+    "VoidRemainderEventDataDict",
+    "VoidRemainderEventDict",
+    "Wallet",
+    "Wallet1",
+    "Wallet1Dict",
+    "Wallet2",
+    "Wallet2Dict",
+    "WalletDict",
+    "WalletErrorResponse",
+    "WalletErrorResponse1",
+    "WalletErrorResponse1Dict",
+    "WalletErrorResponseDict",
+    "WalletGrant",
+    "WalletGrantDict",
+    "WalletGrantResultResponse",
+    "WalletGrantResultResponseDict",
+    "WalletProduct",
+    "WalletProduct1",
+    "WalletProduct1Dict",
+    "WalletProductActiveWallet",
+    "WalletProductActiveWalletDict",
+    "WalletProductDict",
+    "WalletProductId",
+    "WalletProductIdDict",
+    "WalletProductListItem",
+    "WalletProductListItemDict",
+    "WalletProductPricePointAttributes",
+    "WalletProductPricePointAttributesDict",
+    "WalletProductPricePointSummary",
+    "WalletProductPricePointSummaryDict",
+    "WalletProductResponse",
+    "WalletProductResponseDict",
+    "WalletProductUsageCount",
+    "WalletProductUsageCountDict",
+    "WalletProductUsageResponse",
+    "WalletProductUsageResponseDict",
+    "WalletProductUsageTemplate",
+    "WalletProductUsageTemplateDict",
+    "WalletProductsListResponse",
+    "WalletProductsListResponseDict",
+    "WalletPurchase",
+    "WalletPurchaseDict",
+    "WalletPurchasePreview",
+    "WalletPurchasePreviewDict",
+    "WalletPurchasePreviewResponse",
+    "WalletPurchasePreviewResponseDict",
+    "WalletPurchaseResultResponse",
+    "WalletPurchaseResultResponseDict",
+    "WalletRecurringFunding",
+    "WalletRecurringFundingDict",
+    "WalletResponse",
+    "WalletResponseDict",
+    "WalletTransaction",
+    "WalletTransaction1",
+    "WalletTransaction1Dict",
+    "WalletTransactionDict",
+    "WalletTransactionResultResponse",
+    "WalletTransactionResultResponseDict",
+    "WalletTransactionsListResponse",
+    "WalletTransactionsListResponseDict",
+    "WalletsListResponse",
+    "WalletsListResponseDict",
+    "Webhook",
+    "WebhookDict",
+    "WebhookResponse",
+    "WebhookResponseDict",
+]

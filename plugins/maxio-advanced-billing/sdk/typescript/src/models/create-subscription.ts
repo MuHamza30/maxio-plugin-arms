@@ -1,0 +1,369 @@
+import * as s from "../core/validation/index.js";
+import type { Schema } from "../core/validation/schema.js";
+import { achAgreementSchema, type AchAgreement } from "./ach-agreement.js";
+import { agreementAcceptanceSchema, type AgreementAcceptance } from "./agreement-acceptance.js";
+import { bankAccountAttributesSchema, type BankAccountAttributes } from "./bank-account-attributes.js";
+import { calendarBillingSchema, type CalendarBilling } from "./calendar-billing.js";
+import { collectionMethodSchema, type CollectionMethod } from "./collection-method.js";
+import {
+  createSubscriptionComponentSchema,
+  type CreateSubscriptionComponent,
+} from "./create-subscription-component.js";
+import { customerAttributesSchema, type CustomerAttributes } from "./customer-attributes.js";
+import { groupSettingsSchema, type GroupSettings } from "./group-settings.js";
+import {
+  paymentProfileAttributesSchema,
+  type PaymentProfileAttributes,
+} from "./payment-profile-attributes.js";
+import { subscriptionCustomPriceSchema, type SubscriptionCustomPrice } from "./subscription-custom-price.js";
+import { offerIdSchema, type OfferId } from "./unions/offer-id.js";
+import {
+  upsertPrepaidConfigurationSchema,
+  type UpsertPrepaidConfiguration,
+} from "./upsert-prepaid-configuration.js";
+
+export type CreateSubscription = {
+  /**
+   * The API Handle of the product for which you are creating a subscription. Required, unless a
+   * `product_id` is given instead.
+   */
+  productHandle?: string;
+  /**
+   * The Product ID of the product for which you are creating a subscription. The product ID is not
+   * currently published, so we recommend using the API Handle instead.
+   */
+  productId?: number;
+  /** The user-friendly API handle of a product's particular price point. */
+  productPricePointHandle?: string;
+  /** The ID of the particular price point on the product. */
+  productPricePointId?: number;
+  /**
+   * (Optional) Used in place of `product_price_point_id` to define a custom price point unique to
+   * the subscription. A subscription can have up to 30 custom price points. Exceeding this limit
+   * will result in an API error.
+   */
+  customPrice?: SubscriptionCustomPrice;
+  /**
+   * (deprecated) The coupon code of the single coupon currently applied to the subscription. See
+   * coupon_codes instead as subscriptions can now have more than one coupon.
+   */
+  couponCode?: string;
+  /** An array for all the coupons attached to the subscription. */
+  couponCodes?: string[];
+  /**
+   * The type of payment collection to be used in the subscription. For legacy Statements
+   * Architecture valid options are - `invoice`, `automatic`. For current Relationship Invoicing
+   * Architecture valid options are - `remittance`, `automatic`, `prepaid`.
+   */
+  paymentCollectionMethod?: CollectionMethod;
+  /**
+   * (Optional) Default: True - Whether or not this subscription is set to receive emails related to
+   * this subscription.
+   */
+  receivesInvoiceEmails?: string;
+  /**
+   * (Optional) Default: null The number of days after renewal (on invoice billing) that a
+   * subscription is due. A value between 0 (due immediately) and 180.
+   */
+  netTerms?: string;
+  /**
+   * The ID of an existing customer within Chargify. Required, unless a `customer_reference` or a
+   * set of `customer_attributes` is given.
+   */
+  customerId?: number;
+  /**
+   * The ID of the Branding Theme to assign to this subscription. When set, this subscription-level
+   * Branding Theme is used instead of the customer's default Branding Theme for
+   * subscription-related documents and communications that use subscription theming. Pass null or
+   * an empty value to clear the subscription-level Branding Theme. Available only when Branding
+   * Themes are enabled for the site. Not returned in the response.
+   */
+  brandingThemeId?: number | null;
+  /**
+   * (Optional) Set this attribute to a future date/time to sync imported subscriptions to your
+   * existing renewal schedule. See the notes on “Date/Time Format” in our [subscription import
+   * documentation](https://maxio.zendesk.com/hc/en-us/articles/24251489107213-Advanced-Billing-Subscription-Imports#date-format).
+   * If you provide a next_billing_at timestamp that is in the future, no trial or initial charges
+   * will be applied when you create the subscription. In fact, no payment will be captured at all.
+   * The first payment will be captured, according to the prices defined by the product, near the
+   * time specified by next_billing_at. If you do not provide a value for next_billing_at, any trial
+   * and/or initial charges will be assessed and charged at the time of subscription creation. If
+   * the card cannot be successfully charged, the subscription will not be created. See further
+   * notes in the section on Importing Subscriptions.
+   */
+  nextBillingAt?: Date;
+  /**
+   * (Optional) Set this attribute to a future date/time to create a subscription in the Awaiting
+   * Signup state, rather than Active or Trialing. You can omit the initial_billing_at date to
+   * activate the subscription immediately. In the Awaiting Signup state, a subscription behaves
+   * like any other. It can be canceled, allocated to, or have its billing date changed. etc. When
+   * the initial_billing_at date hits, the subscription will transition to the expected state. If
+   * the product has a trial, the subscription will enter a trial, otherwise it will go active.
+   * Setup fees will be respected either before or after the trial, as configured on the price
+   * point. If the payment is due at the initial_billing_at and it fails the subscription will be
+   * immediately canceled. See the [subscription
+   * import](https://maxio.zendesk.com/hc/en-us/articles/24251489107213-Advanced-Billing-Subscription-Imports#date-format)
+   * documentation for more information about Date/Time Formats.
+   */
+  initialBillingAt?: Date;
+  /**
+   * (Optional) Set this attribute to true to create the subscription in the Awaiting Signup Date
+   * state. Use this when you want to create a subscription that has an unknown first billing date.
+   * When the first billing date is known, update a subscription and set the `initial_billing_at`
+   * date. The subscription moves to the Awaiting Signup state with a scheduled initial billing
+   * date. You can omit the initial_billing_at date to activate the subscription immediately. See
+   * [Subscription
+   * States](https://maxio-chargify.zendesk.com/hc/en-us/articles/5404222005773-Subscription-States)
+   * for more information.
+   *
+   * @default false
+   */
+  deferSignup?: boolean;
+  /**
+   * For European sites subject to PSD2 and using 3D Secure, this can be used to reference a
+   * previous transaction for the customer. This will ensure the card will be charged successfully
+   * at renewal.
+   */
+  storedCredentialTransactionId?: number;
+  salesRepId?: number;
+  /**
+   * The Payment Profile ID of an existing card or bank account, which belongs to an existing
+   * customer to use for payment for this subscription. If the card, bank account, or customer does
+   * not exist already, or if you want to use a new (unstored) card or bank account for the
+   * subscription, use `payment_profile_attributes` instead to create a new payment profile along
+   * with the subscription. (This value is available on an existing subscription via the API as
+   * `credit_card` > id or `bank_account` > id.)
+   */
+  paymentProfileId?: number;
+  /** The reference value (provided by your app) for the subscription itself. */
+  reference?: string;
+  customerAttributes?: CustomerAttributes;
+  /** alias to credit_card_attributes */
+  paymentProfileAttributes?: PaymentProfileAttributes;
+  /**
+   * Credit Card data to create a new Subscription. Interchangeable with
+   * `payment_profile_attributes` property.
+   */
+  creditCardAttributes?: PaymentProfileAttributes;
+  bankAccountAttributes?: BankAccountAttributes;
+  /**
+   * (Optional) An array of component ids and quantities to be added to the subscription. See
+   * [Components](https://maxio.zendesk.com/hc/en-us/articles/24261141522189-Components-Overview)
+   * for more information.
+   */
+  components?: CreateSubscriptionComponent[];
+  /** (Optional). Cannot be used when also specifying next_billing_at. */
+  calendarBilling?: CalendarBilling;
+  /**
+   * (Optional) A set of key/value pairs representing custom fields and their values. Metafields
+   * will be created “on-the-fly” in your site for a given key, if they have not been created yet.
+   */
+  metafields?: Record<string, string>;
+  /**
+   * The reference value (provided by your app) of an existing customer within Chargify. Required,
+   * unless a `customer_id` or a set of `customer_attributes` is given.
+   */
+  customerReference?: string;
+  group?: GroupSettings;
+  /**
+   * A valid referral code. (optional, see
+   * [Referrals](https://maxio.zendesk.com/hc/en-us/articles/24286981223693-Referrals-Reference#how-to-obtain-referral-codes)
+   * for more details). If supplied, must be valid, or else subscription creation will fail.
+   */
+  ref?: string;
+  /**
+   * (Optional) Can be used when canceling a subscription (via the HTTP DELETE method) to make a
+   * note about the reason for cancellation.
+   */
+  cancellationMessage?: string;
+  /**
+   * (Optional) Can be used when canceling a subscription (via the HTTP DELETE method) to make a
+   * note about how the subscription was canceled.
+   */
+  cancellationMethod?: string;
+  /**
+   * (Optional) If Multi-Currency is enabled and the currency is configured in Chargify, pass it at
+   * signup to create a subscription on a non-default currency. Note that you cannot update the
+   * currency of an existing subscription.
+   */
+  currency?: string;
+  /**
+   * Timestamp giving the expiration date of this subscription (if any). You may manually change the
+   * expiration date at any point during a subscription period.
+   */
+  expiresAt?: Date;
+  /**
+   * (Optional, default false) When set to true, and when next_billing_at is present, if the
+   * subscription expires, the expires_at will be shifted by the same amount of time as the
+   * difference between the old and new “next billing” dates.
+   */
+  expirationTracksNextBillingChange?: string;
+  /**
+   * (Optional) The ACH authorization agreement terms. If enabled, an email will be sent to the
+   * customer with a copy of the terms.
+   */
+  agreementTerms?: string;
+  /** (Optional) The first name of the person authorizing the ACH agreement. */
+  authorizerFirstName?: string;
+  /** (Optional) The last name of the person authorizing the ACH agreement. */
+  authorizerLastName?: string;
+  /**
+   * (Optional) One of “prorated” (the default – the prorated product price will be charged
+   * immediately), “immediate” (the full product price will be charged immediately), or “delayed”
+   * (the full product price will be charged with the first scheduled renewal).
+   */
+  calendarBillingFirstCharge?: string;
+  /**
+   * (Optional) Can be used when canceling a subscription (via the HTTP DELETE method) to indicate
+   * why a subscription was canceled.
+   */
+  reasonCode?: string;
+  /**
+   * (Optional) used only for Delayed Product Change When set to true, indicates that a changed
+   * value for product_handle should schedule the product change to the next subscription renewal.
+   */
+  productChangeDelayed?: boolean;
+  /**
+   * Use in place of passing product and component information to set up the subscription with an
+   * existing offer. May be either the Chargify id of the offer or its handle prefixed with
+   * `handle:`.
+   */
+  offerId?: OfferId;
+  prepaidConfiguration?: UpsertPrepaidConfiguration;
+  /**
+   * Providing a previous_billing_at that is in the past will set the current_period_starts_at when
+   * the subscription is created. It will also set activated_at if not explicitly passed during the
+   * subscription import. Can only be used if next_billing_at is also passed. Using this option will
+   * allow you to set the period start for the subscription so mid period component allocations have
+   * the correct prorated amount.
+   */
+  previousBillingAt?: Date;
+  /**
+   * Setting this attribute to true will cause the subscription's MRR to be added to your MRR
+   * analytics immediately. For this value to be honored, a next_billing_at must be present and set
+   * to a future date. This key/value will not be returned in the subscription response body.
+   */
+  importMrr?: boolean;
+  canceledAt?: Date;
+  activatedAt?: Date;
+  /** Required when creating a subscription with Maxio Payments. */
+  agreementAcceptance?: AgreementAcceptance;
+  /** (Optional) If passed, the proof of the authorized ACH agreement terms will be persisted. */
+  achAgreement?: AchAgreement;
+  /**
+   * Enable Communication Delay feature, making sure no communication (email or SMS) is sent to the
+   * Customer between 9PM and 8AM in time zone set by the `dunning_communication_delay_time_zone`
+   * attribute.
+   *
+   * @default false
+   */
+  dunningCommunicationDelayEnabled?: boolean;
+  /** Time zone for the Dunning Communication Delay feature. */
+  dunningCommunicationDelayTimeZone?: string | null;
+  /**
+   * Valid only for the Subscription Preview endpoint. When set to `true` it skips calculating taxes
+   * for the current and next billing manifests. Defaults to `false` when not provided.
+   */
+  skipBillingManifestTaxes?: boolean;
+};
+
+export const createSubscriptionSchema: Schema<CreateSubscription> = s.object<CreateSubscription>({
+  productHandle: s.optional(s.string()),
+  productId: s.optional(s.int()),
+  productPricePointHandle: s.optional(s.string()),
+  productPricePointId: s.optional(s.int()),
+  customPrice: s.optional(s.lazy(() => subscriptionCustomPriceSchema)),
+  couponCode: s.optional(s.string()),
+  couponCodes: s.optional(s.array(s.string())),
+  paymentCollectionMethod: s.optional(s.lazy(() => collectionMethodSchema)),
+  receivesInvoiceEmails: s.optional(s.string()),
+  netTerms: s.optional(s.string()),
+  customerId: s.optional(s.int()),
+  brandingThemeId: s.optionalNullable(s.int()),
+  nextBillingAt: s.optional(s.dateTime()),
+  initialBillingAt: s.optional(s.dateTime()),
+  deferSignup: s.defaulted(s.boolean(), false),
+  storedCredentialTransactionId: s.optional(s.int()),
+  salesRepId: s.optional(s.int()),
+  paymentProfileId: s.optional(s.int()),
+  reference: s.optional(s.string()),
+  customerAttributes: s.optional(s.lazy(() => customerAttributesSchema)),
+  paymentProfileAttributes: s.optional(s.lazy(() => paymentProfileAttributesSchema)),
+  creditCardAttributes: s.optional(s.lazy(() => paymentProfileAttributesSchema)),
+  bankAccountAttributes: s.optional(s.lazy(() => bankAccountAttributesSchema)),
+  components: s.optional(s.array(s.lazy(() => createSubscriptionComponentSchema))),
+  calendarBilling: s.optional(s.lazy(() => calendarBillingSchema)),
+  metafields: s.optional(s.record(s.string(), s.string())),
+  customerReference: s.optional(s.string()),
+  group: s.optional(s.lazy(() => groupSettingsSchema)),
+  ref: s.optional(s.string()),
+  cancellationMessage: s.optional(s.string()),
+  cancellationMethod: s.optional(s.string()),
+  currency: s.optional(s.string()),
+  expiresAt: s.optional(s.dateTime()),
+  expirationTracksNextBillingChange: s.optional(s.string()),
+  agreementTerms: s.optional(s.string()),
+  authorizerFirstName: s.optional(s.string()),
+  authorizerLastName: s.optional(s.string()),
+  calendarBillingFirstCharge: s.optional(s.string()),
+  reasonCode: s.optional(s.string()),
+  productChangeDelayed: s.optional(s.boolean()),
+  offerId: s.optional(s.lazy(() => offerIdSchema)),
+  prepaidConfiguration: s.optional(s.lazy(() => upsertPrepaidConfigurationSchema)),
+  previousBillingAt: s.optional(s.dateTime()),
+  importMrr: s.optional(s.boolean()),
+  canceledAt: s.optional(s.dateTime()),
+  activatedAt: s.optional(s.dateTime()),
+  agreementAcceptance: s.optional(s.lazy(() => agreementAcceptanceSchema)),
+  achAgreement: s.optional(s.lazy(() => achAgreementSchema)),
+  dunningCommunicationDelayEnabled: s.defaulted(s.boolean(), false),
+  dunningCommunicationDelayTimeZone: s.optionalNullable(s.string()),
+  skipBillingManifestTaxes: s.optional(s.boolean()),
+  _keysMap: {
+    productHandle: "product_handle",
+    productId: "product_id",
+    productPricePointHandle: "product_price_point_handle",
+    productPricePointId: "product_price_point_id",
+    customPrice: "custom_price",
+    couponCode: "coupon_code",
+    couponCodes: "coupon_codes",
+    paymentCollectionMethod: "payment_collection_method",
+    receivesInvoiceEmails: "receives_invoice_emails",
+    netTerms: "net_terms",
+    customerId: "customer_id",
+    brandingThemeId: "branding_theme_id",
+    nextBillingAt: "next_billing_at",
+    initialBillingAt: "initial_billing_at",
+    deferSignup: "defer_signup",
+    storedCredentialTransactionId: "stored_credential_transaction_id",
+    salesRepId: "sales_rep_id",
+    paymentProfileId: "payment_profile_id",
+    customerAttributes: "customer_attributes",
+    paymentProfileAttributes: "payment_profile_attributes",
+    creditCardAttributes: "credit_card_attributes",
+    bankAccountAttributes: "bank_account_attributes",
+    calendarBilling: "calendar_billing",
+    customerReference: "customer_reference",
+    cancellationMessage: "cancellation_message",
+    cancellationMethod: "cancellation_method",
+    expiresAt: "expires_at",
+    expirationTracksNextBillingChange: "expiration_tracks_next_billing_change",
+    agreementTerms: "agreement_terms",
+    authorizerFirstName: "authorizer_first_name",
+    authorizerLastName: "authorizer_last_name",
+    calendarBillingFirstCharge: "calendar_billing_first_charge",
+    reasonCode: "reason_code",
+    productChangeDelayed: "product_change_delayed",
+    offerId: "offer_id",
+    prepaidConfiguration: "prepaid_configuration",
+    previousBillingAt: "previous_billing_at",
+    importMrr: "import_mrr",
+    canceledAt: "canceled_at",
+    activatedAt: "activated_at",
+    agreementAcceptance: "agreement_acceptance",
+    achAgreement: "ach_agreement",
+    dunningCommunicationDelayEnabled: "dunning_communication_delay_enabled",
+    dunningCommunicationDelayTimeZone: "dunning_communication_delay_time_zone",
+    skipBillingManifestTaxes: "skip_billing_manifest_taxes",
+  },
+});
