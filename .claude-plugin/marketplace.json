@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "maxio-plugin-arms",
+  "description": "Control arm: the Maxio Advanced Billing context plugin as the APIMatic CLI generates it today, SDKs bundled.",
+  "owner": { "name": "APIMatic" },
+  "plugins": [
+    { "name": "maxio-advanced-billing", "description": "The CLI-generated Maxio Advanced Billing context plugin: per-language skills and bundled C#, Python and TypeScript SDKs.", "source": "./plugins/maxio-advanced-billing", "category": "development" }
+  ]
+}
