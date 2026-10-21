@@ -122,7 +122,7 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 ### findCoupon
 
 - **Provider rules (Maxio)**: Pass `product_family_id` unless the coupon is in the default product family. Notes: `knowledge/operations/coupons.md#findcoupon`
-- **Signature**: `findCoupon(request: Coupons.FindCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, ApiError>`
+- **Signature**: `findCoupon(request?: Coupons.FindCouponRequest, options?: RequestOptions): ApiPromise<CouponResponse, ApiError>`
 - **Wire**: `GET /coupons/find.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -164,7 +164,7 @@ Accessor: `client.coupons` · Source: `src/resources/coupons.ts` · 14 operation
 
 ### listCoupons
 
-- **Signature**: `listCoupons(request: Coupons.ListCouponsRequest, options?: RequestOptions): ApiPromise<CouponResponse[], ApiError>`
+- **Signature**: `listCoupons(request?: Coupons.ListCouponsRequest, options?: RequestOptions): ApiPromise<CouponResponse[], ApiError>`
 - **Wire**: `GET /coupons.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

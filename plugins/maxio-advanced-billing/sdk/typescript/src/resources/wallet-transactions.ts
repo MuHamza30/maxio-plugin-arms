@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -20,6 +21,11 @@ import {
 } from "../models/wallet-transactions-list-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * Use Wallet Transactions to fund a wallet with a one-time grant, consume units with a direct
+ * debit, and read the wallet's append-only ledger. For more information, see [Understand
+ * Wallets](https://docs.maxio.com/billing/catalog/wallets/understand-wallets).
+ */
 export class WalletTransactions {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -147,13 +153,13 @@ export namespace WalletTransactions {
   };
 
   export class CreateWalletTransactionError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error403", undefined>
       | Declared<"walletErrorResponse1", WalletErrorResponse1>
       | Declared<"walletErrorResponse12", WalletErrorResponse1>
       | Declared<"walletErrorResponse13", WalletErrorResponse1>
       | Declared<"walletErrorResponse14", WalletErrorResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateWalletTransactionError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -200,9 +206,10 @@ export namespace WalletTransactions {
   };
 
   export class ListWalletTransactionsError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error403", undefined> | Declared<"walletErrorResponse1", WalletErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error403", undefined>
+      | Declared<"walletErrorResponse1", WalletErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ListWalletTransactionsError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },

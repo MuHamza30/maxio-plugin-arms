@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { bulkCreateSegmentsSchema, type BulkCreateSegments } from "../models/bulk-create-segments.js";
@@ -26,6 +27,13 @@ import { segmentResponseSchema, type SegmentResponse } from "../models/segment-r
 import { updateSegmentRequestSchema, type UpdateSegmentRequest } from "../models/update-segment-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Segment object defines a distinct pricing variation within an event-based billing metric,
+ * based on one or more property values, such as a specific country or usage category.
+ *
+ * Each segment carries its own set of prices, letting a single metric charge different rates
+ * depending on which segment an event falls into.
+ */
 export class EventsBasedBillingSegments {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -360,9 +368,10 @@ export namespace EventsBasedBillingSegments {
   };
 
   export class BulkCreateSegmentsError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"eventBasedBillingSegment1", EventBasedBillingSegment1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"eventBasedBillingSegment1", EventBasedBillingSegment1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<BulkCreateSegmentsError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -383,9 +392,10 @@ export namespace EventsBasedBillingSegments {
   };
 
   export class BulkUpdateSegmentsError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"eventBasedBillingSegment1", EventBasedBillingSegment1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"eventBasedBillingSegment1", EventBasedBillingSegment1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<BulkUpdateSegmentsError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -406,10 +416,10 @@ export namespace EventsBasedBillingSegments {
   };
 
   export class CreateSegmentError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error404", undefined>
       | Declared<"eventBasedBillingSegmentErrors1", EventBasedBillingSegmentErrors1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateSegmentError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -431,7 +441,7 @@ export namespace EventsBasedBillingSegments {
   };
 
   export class DeleteSegmentError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined> | Declared<"error422", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Declared<"error422", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<DeleteSegmentError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -467,10 +477,10 @@ export namespace EventsBasedBillingSegments {
   };
 
   export class ListSegmentsForPricePointError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error404", undefined>
       | Declared<"eventBasedBillingListSegmentsErrors1", EventBasedBillingListSegmentsErrors1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ListSegmentsForPricePointError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -493,10 +503,10 @@ export namespace EventsBasedBillingSegments {
   };
 
   export class UpdateSegmentError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error404", undefined>
       | Declared<"eventBasedBillingSegmentErrors1", EventBasedBillingSegmentErrors1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateSegmentError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

@@ -9,9 +9,9 @@ namespace MaxioAdvancedBilling.Core.Pagination;
 public sealed class Pageable<TPage, TItem> : IAsyncEnumerable<TItem>
 {
     private readonly IAsyncEnumerable<TPage> _pages;
-    private readonly Func<TPage, IReadOnlyList<TItem>> _itemsSelector;
+    private readonly Func<TPage, IReadOnlyList<TItem>?> _itemsSelector;
 
-    internal Pageable(IAsyncEnumerable<TPage> pages, Func<TPage, IReadOnlyList<TItem>> itemsSelector)
+    internal Pageable(IAsyncEnumerable<TPage> pages, Func<TPage, IReadOnlyList<TItem>?> itemsSelector)
     {
         _pages = pages;
         _itemsSelector = itemsSelector;
@@ -20,7 +20,7 @@ public sealed class Pageable<TPage, TItem> : IAsyncEnumerable<TItem>
     public async IAsyncEnumerator<TItem> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
         await foreach (var page in _pages.WithCancellation(cancellationToken).ConfigureAwait(false))
-        foreach (var item in _itemsSelector(page))
+        foreach (var item in _itemsSelector(page) ?? [])
             yield return item;
     }
 

@@ -5,16 +5,13 @@ namespace MaxioAdvancedBilling.Core.Pagination.States;
 
 internal sealed record KeysetState<TResponse> : IPageState<TResponse, KeysetState<TResponse>>
 {
-    private readonly Func<TResponse, int> _count;
     private readonly Func<TResponse, string?> _nextKey;
     private readonly Func<TResponse, HttpResponseHeaders, bool?>? _hasMore;
 
     internal KeysetState(
-        Func<TResponse, int> count,
         Func<TResponse, string?> nextKey,
         Func<TResponse, HttpResponseHeaders, bool?>? hasMore)
     {
-        _count = count;
         _nextKey = nextKey;
         _hasMore = hasMore;
     }
@@ -23,11 +20,9 @@ internal sealed record KeysetState<TResponse> : IPageState<TResponse, KeysetStat
 
     public required long Limit { get; init; }
 
-    public KeysetState<TResponse>? Next(TResponse page, HttpResponseHeaders headers)
+    public KeysetState<TResponse>? Next(TResponse page, HttpResponseHeaders headers, int itemCount)
     {
-        var count = _count(page);
-
-        if (count == 0)
+        if (itemCount == 0)
             return null;
 
         var hasMore = _hasMore?.Invoke(page, headers);
@@ -35,7 +30,7 @@ internal sealed record KeysetState<TResponse> : IPageState<TResponse, KeysetStat
         if (hasMore is false)
             return null;
 
-        if (hasMore is null && count < Limit)
+        if (hasMore is null && itemCount < Limit)
             return null;
 
         var nextKey = _nextKey(page);
@@ -55,8 +50,7 @@ internal static class KeysetState
     internal static KeysetState<TResponse> Create<TResponse>(
         string? key,
         long limit,
-        Func<TResponse, int> count,
         Func<TResponse, string?> nextKey,
         Func<TResponse, HttpResponseHeaders, bool?>? hasMore = null) =>
-        new(count, nextKey, hasMore) { Key = key, Limit = limit };
+        new(nextKey, hasMore) { Key = key, Limit = limit };
 }

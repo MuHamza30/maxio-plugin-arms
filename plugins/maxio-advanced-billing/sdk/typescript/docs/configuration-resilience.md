@@ -5,7 +5,7 @@ idempotent calls are retried by default and writes are not, that the timeout bou
 than the call, that an environment variable turns logging on with no code change, that the default
 environment is whichever the spec listed first, that `fetch` is handed one `Request` it must forward,
 that Node's fetch ignores HTTP_PROXY, or that a hand-written page loop is unbounded by default. This doc
-covers client configuration and resilience for an APIMatic-generated TypeScript SDK: the five
+covers client configuration and resilience for an APIMatic-generated TypeScript SDK: the six
 ClientOptions fields, server/base-URL selection and template variables, the retry policy (on by default
 — what it retries, what it never does, per-call overrides) and the per-attempt timeout, cancellation,
 the built-in logging (off by default — levels, redaction, the environment variable), proxies, TLS and
@@ -42,6 +42,7 @@ TypeScript SDK**, so the engine behaviours below hold without checking your SDK.
 | `serverOptions` | `ServerOptions` | `{}` | per-group, per-environment `baseUrl` and template-variable overrides |
 | `retry` | `RetryOptions` | retries **on** — see *Retries* | the retry policy, and `retry.timeout` (**ms**, `60_000`) bounding each attempt |
 | `logging` | `LoggingOptions` | **off** — see *Logging* | the built-in request/response logger, its levels and its redaction |
+| `eventStream` | `EventStreamOptions` | `idleTimeout` `60_000` (**ms**) | how long an event stream may stay silent; read only by an operation that resolves to an `EventStream` (no Maxio operation does) |
 | `fetch` | `FetchLike` (`typeof fetch`) | global `fetch` | **the one transport extension point** |
 | `{scheme}` / `{scheme}Strategy` | per scheme | unset | credentials — see **`docs/authentication.md`** |
 

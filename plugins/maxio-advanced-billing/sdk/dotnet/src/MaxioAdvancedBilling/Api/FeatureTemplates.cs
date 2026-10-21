@@ -14,6 +14,12 @@ using MaxioAdvancedBilling.Requests.FeatureTemplates;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Feature Template object defines a feature once at the site level, such as Single Sign-On, a monthly API call limit, or a support tier.
+/// <para>
+/// A feature template is not billable on its own. Attach the template to products or components to grant the feature to subscribers. The kind (access_right, usage_limit, or service_right) determines how the feature's value behaves. For more information, see <see href="https://docs.maxio.com/billing/catalog/entitlements/configure-entitlements">Configure Entitlements</see>.
+/// </para>
+/// </summary>
 public sealed class FeatureTemplates
 {
     private readonly RawClient _rawClient;

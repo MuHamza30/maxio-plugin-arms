@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.SubscriptionGroupStatus;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Use the Subscription Group Status object to manage the lifecycle of a Subscription Group as a whole, such as canceling every subscription within the group together.
+/// </summary>
 public sealed class SubscriptionGroupStatus
 {
     private readonly RawClient _rawClient;

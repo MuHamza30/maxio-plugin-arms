@@ -14,6 +14,9 @@ using MaxioAdvancedBilling.Requests.SubscriptionRenewals;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Subscription Renewals object lets you schedule, preview, and manage a subscription's upcoming renewal, including locking in specific pricing or canceling a scheduled renewal before it takes effect. For more information, see <see href="https://docs.maxio.com/billing/subscriptions/configuration/term-renewal/scheduled-renewal">Understand Scheduled Renewal</see>.
+/// </summary>
 public sealed class SubscriptionRenewals
 {
     private readonly RawClient _rawClient;

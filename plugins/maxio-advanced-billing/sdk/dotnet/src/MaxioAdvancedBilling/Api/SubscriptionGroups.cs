@@ -14,6 +14,9 @@ using MaxioAdvancedBilling.Requests.SubscriptionGroups;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Subscription Group object links multiple subscriptions for a single customer under one shared payment profile and collection method, so you can consolidate billing instead of managing payment details separately for each subscription. For more information, see <see href="https://docs.maxio.com/billing/subscriptions/configuration/subscription-groups/understand-subscription-groups">Understand Subscription Groups</see>.
+/// </summary>
 public sealed class SubscriptionGroups
 {
     private readonly RawClient _rawClient;

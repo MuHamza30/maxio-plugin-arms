@@ -135,7 +135,7 @@ Accessor: `client.componentPricePoints` · Source: `src/resources/component-pric
 
 ### listAllComponentPricePoints
 
-- **Signature**: `listAllComponentPricePoints(request: ComponentPricePoints.ListAllComponentPricePointsRequest, options?: RequestOptions): ApiPromise<ListComponentsPricePointsResponse, ComponentPricePoints.ListAllComponentPricePointsError>`
+- **Signature**: `listAllComponentPricePoints(request?: ComponentPricePoints.ListAllComponentPricePointsRequest, options?: RequestOptions): ApiPromise<ListComponentsPricePointsResponse, ComponentPricePoints.ListAllComponentPricePointsError>`
 - **Wire**: `GET /components_price_points.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

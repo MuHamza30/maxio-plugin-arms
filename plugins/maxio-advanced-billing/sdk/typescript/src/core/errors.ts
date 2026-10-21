@@ -2,7 +2,7 @@ import type { HttpMethod } from "./api-request.js";
 import type { ApiError } from "./api-error.js";
 
 /** Discriminant of the {@link CoreError} family. Closed, so a `switch` over it is exhaustive. */
-export type ErrorKind = "api" | "decode" | "encode" | "connection" | "timeout" | "auth";
+export type ErrorKind = "api" | "decode" | "encode" | "connection" | "timeout" | "auth" | "pagination";
 
 /**
  * What every {@link CoreError} is built with: the call it names, and an optional `cause`.
@@ -120,14 +120,15 @@ export class EncodeError extends CoreErrorBase {
 }
 
 /**
- * `fetch` rejected before a response line arrived: the request never reached the server, or the
- * server never answered.
+ * `fetch` rejected before a response line arrived — the request never reached the server, or the
+ * server never answered — or an event stream's connection failed while you read it.
  *
  * @remarks
  * Once a response line has arrived this is no longer the kind: a body that then dies mid-read is a
  * {@link DecodeError}, carrying the status and headers the server did send. A binary success body
  * is the exception, since it is yours from the moment it resolves, so a socket dying under it
- * surfaces on that stream as the platform's own error, not as this.
+ * surfaces on that stream as the platform's own error, not as this. An event stream is the other:
+ * its loop raises this when a read fails, with the fault on `cause`.
  */
 export class ConnectionError extends CoreErrorBase {
   readonly kind = "connection" as const;
@@ -142,20 +143,22 @@ export type TimeoutErrorInit = CoreErrorInit & {
 };
 
 /**
- * The request exceeded the client timeout.
+ * The request exceeded the client timeout, or an event stream stayed silent past its idle timeout.
  *
  * @remarks
- * The budget starts once the credential is in hand and covers the request up to its response
- * headers. Obtaining the credential and reading any response body are not covered. An
+ * The client timeout starts once the credential is in hand and covers the request up to its
+ * response headers. Obtaining the credential and reading any response body are not covered. An
  * OAuth2 token request is timed on its own, so a slow token endpoint raises this with the token
- * endpoint's `uri`, not the operation's.
+ * endpoint's `uri`, not the operation's. An event stream's loop raises this when the server sends
+ * nothing for `eventStream.idleTimeout` while the loop waits.
  */
 export class TimeoutError extends CoreErrorBase {
   readonly kind = "timeout" as const;
 
   /**
-   * The budget that elapsed, in milliseconds. It is `ClientOptions.retry.timeout` as it resolved
-   * for this client, so a handler reads the limit off the failure rather than the configuration.
+   * The budget that elapsed, in milliseconds: `ClientOptions.retry.timeout` as it resolved for this
+   * client, or the stream's `idleTimeout` when an event stream raised it, so a handler reads the
+   * limit off the failure rather than the configuration.
    */
   readonly timeout: number;
 
@@ -186,6 +189,25 @@ export class AuthError extends CoreErrorBase {
 }
 
 /**
+ * A next link the API sent could not be followed, so nothing was sent.
+ *
+ * @remarks
+ * Raised from inside a paged loop, between two pages: the page that carried the link has
+ * already been delivered, and a loop that stops after it never sees this. A link is followed
+ * only when it resolves, against the URL of the page that carried it, to the same scheme, host
+ * and port as the API base, so no credential ever leaves the API; a link to another origin is
+ * refused, and so is one that is not a URL. For a link to another origin, `uri` names the call
+ * that was refused; for a link that is not a URL there is no such call, so `uri` names the page
+ * that carried it and `cause` carries the platform's parse failure.
+ */
+export class PaginationError extends CoreErrorBase {
+  readonly kind = "pagination" as const;
+  constructor(message: string, init: CoreErrorInit) {
+    super(message, init);
+  }
+}
+
+/**
  * The API answered, and the answer is the failure.
  *
  * @remarks
@@ -208,8 +230,9 @@ export const ResponseError = ResponseErrorBase as unknown as abstract new (...ar
  * @remarks
  * One `catch (err) { if (err instanceof AcmeError) }` sees everything: the answers the API gave and
  * the bodies it could not decode, both {@link ResponseError}, plus a request value that would not
- * encode, a dropped connection, a timeout and auth that could not be obtained. Every one names the
- * call that raised it, and `message` opens with that name.
+ * encode, a dropped connection, a timeout, auth that could not be obtained and a pagination link
+ * that could not be followed. Every one names the call that raised it, and `message` opens with
+ * that name.
  *
  * Narrow with `instanceof` on a leaf, or on `err.kind`, which is exhaustive and selects the leaf
  * with its own members: `status` and `headers` on `"api"` and `"decode"`, `payload` on `"api"`,
@@ -219,7 +242,14 @@ export const ResponseError = ResponseErrorBase as unknown as abstract new (...ar
  * for a file are both `TypeError`. A caller abort is outside it too, arriving as the `reason` of
  * the signal you aborted.
  */
-export type CoreError = ApiError | DecodeError | EncodeError | ConnectionError | TimeoutError | AuthError;
+export type CoreError =
+  | ApiError
+  | DecodeError
+  | EncodeError
+  | ConnectionError
+  | TimeoutError
+  | AuthError
+  | PaginationError;
 
 /**
  * The value behind the {@link CoreError} type, exported as `AcmeError`: `err instanceof AcmeError`

@@ -14,6 +14,9 @@ using MaxioAdvancedBilling.Requests.Insights;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Insights endpoints provide aggregate site-level statistics, such as customer and subscription counts, giving a high-level snapshot of account activity.
+/// </summary>
 public sealed class Insights
 {
     private readonly RawClient _rawClient;

@@ -30,7 +30,7 @@ Accessor: `client.wallets` · Source: `src/resources/wallets.ts` · 5 operations
 
 ### createWallet
 
-- **Signature**: `createWallet(request: Wallets.CreateWalletRequestParams, options?: RequestOptions): ApiPromise<WalletResponse, Wallets.CreateWalletError>`
+- **Signature**: `createWallet(request?: Wallets.CreateWalletRequestParams, options?: RequestOptions): ApiPromise<WalletResponse, Wallets.CreateWalletError>`
 - **Wire**: `POST /wallets.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -53,7 +53,7 @@ Accessor: `client.wallets` · Source: `src/resources/wallets.ts` · 5 operations
 
 ### listWallets
 
-- **Signature**: `listWallets(request: Wallets.ListWalletsRequest, options?: RequestOptions): ApiPromise<WalletsListResponse, Wallets.ListWalletsError>`
+- **Signature**: `listWallets(request?: Wallets.ListWalletsRequest, options?: RequestOptions): ApiPromise<WalletsListResponse, Wallets.ListWalletsError>`
 - **Wire**: `GET /wallets.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

@@ -14,6 +14,12 @@ using MaxioAdvancedBilling.Requests.ComponentPricePoints;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Component Price Point object defines a specific pricing configuration for a Component, including the price point's rate structure and billing interval.
+/// <para>
+/// A single Component can have multiple price points, allowing different subscriptions to be billed for the same component under different terms.
+/// </para>
+/// </summary>
 public sealed class ComponentPricePoints
 {
     private readonly RawClient _rawClient;

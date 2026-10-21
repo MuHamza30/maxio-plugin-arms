@@ -8,7 +8,7 @@ Accessor: `client.insights` · Source: `src/resources/insights.ts` · 4 operatio
 
 ### listMrrMovements
 
-- **Signature**: `listMrrMovements(request: Insights.ListMrrMovementsRequest, options?: RequestOptions): ApiPromise<ListMrrResponse, ApiError>`
+- **Signature**: `listMrrMovements(request?: Insights.ListMrrMovementsRequest, options?: RequestOptions): ApiPromise<ListMrrResponse, ApiError>`
 - **Deprecated**: the method carries `@deprecated`, so an IDE strikes the call site through; it still works
 - **Wire**: `GET /mrr_movements.json`
 - **Auth**: `basicAuth`
@@ -32,7 +32,7 @@ Accessor: `client.insights` · Source: `src/resources/insights.ts` · 4 operatio
 
 ### listMrrPerSubscription
 
-- **Signature**: `listMrrPerSubscription(request: Insights.ListMrrPerSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionMrrResponse, Insights.ListMrrPerSubscriptionError>`
+- **Signature**: `listMrrPerSubscription(request?: Insights.ListMrrPerSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionMrrResponse, Insights.ListMrrPerSubscriptionError>`
 - **Deprecated**: the method carries `@deprecated`, so an IDE strikes the call site through; it still works
 - **Wire**: `GET /subscriptions_mrr.json`
 - **Auth**: `basicAuth`
@@ -60,7 +60,7 @@ Accessor: `client.insights` · Source: `src/resources/insights.ts` · 4 operatio
 
 ### readMrr
 
-- **Signature**: `readMrr(request: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise<MrrResponse, ApiError>`
+- **Signature**: `readMrr(request?: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise<MrrResponse, ApiError>`
 - **Deprecated**: the method carries `@deprecated`, so an IDE strikes the call site through; it still works
 - **Wire**: `GET /mrr.json`
 - **Auth**: `basicAuth`

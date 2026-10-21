@@ -16,6 +16,9 @@ using MaxioAdvancedBilling.Requests.CustomFields;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Custom Fields let you define Metafields for a resource type and manage the Metadata values attached to individual records, so you can capture and store additional data beyond built-in system fields. For more information, see <see href="https://docs.maxio.com/configuration/advanced-billing/custom-fields/understand-custom-fields">Understand Custom Fields</see>.
+/// </summary>
 public sealed class CustomFields
 {
     private readonly RawClient _rawClient;

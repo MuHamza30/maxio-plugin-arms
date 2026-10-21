@@ -14,6 +14,12 @@ using MaxioAdvancedBilling.Requests.Offers;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Offer object bundles a specific Product, Price Point, and any associated discounts into a single pre-configured signup option that customers can subscribe to directly.
+/// <para>
+/// Offers are commonly used to power self-service signup pages without requiring each pricing combination to be built manually. For more information, see <see href="https://docs.maxio.com/billing/catalog/offers/understand-offers">Understand Offers</see>.
+/// </para>
+/// </summary>
 public sealed class Offers
 {
     private readonly RawClient _rawClient;

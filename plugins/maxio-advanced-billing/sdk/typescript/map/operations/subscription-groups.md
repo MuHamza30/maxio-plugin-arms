@@ -31,7 +31,7 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 ### createSubscriptionGroup
 
-- **Signature**: `createSubscriptionGroup(request: SubscriptionGroups.CreateSubscriptionGroupRequestParams, options?: RequestOptions): ApiPromise<SubscriptionGroupResponse, SubscriptionGroups.CreateSubscriptionGroupError>`
+- **Signature**: `createSubscriptionGroup(request?: SubscriptionGroups.CreateSubscriptionGroupRequestParams, options?: RequestOptions): ApiPromise<SubscriptionGroupResponse, SubscriptionGroups.CreateSubscriptionGroupError>`
 - **Wire**: `POST /subscription_groups.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -95,7 +95,7 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 
 ### listSubscriptionGroups
 
-- **Signature**: `listSubscriptionGroups(request: SubscriptionGroups.ListSubscriptionGroupsRequest, options?: RequestOptions): ApiPromise<ListSubscriptionGroupsResponse, ApiError>`
+- **Signature**: `listSubscriptionGroups(request?: SubscriptionGroups.ListSubscriptionGroupsRequest, options?: RequestOptions): ApiPromise<ListSubscriptionGroupsResponse, ApiError>`
 - **Wire**: `GET /subscription_groups.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -160,7 +160,7 @@ Accessor: `client.subscriptionGroups` · Source: `src/resources/subscription-gro
 ### signupWithSubscriptionGroup
 
 - **Provider rules (Maxio)**: Send one payer source, at most one payment source, `payment_collection_method` by intent (R14), exactly one subscription with `"primary": true`, and a top-level `uniqueness_token`, unchanged when you resend the request (R12). Notes: `knowledge/operations/subscription-groups.md#signupwithsubscriptiongroup`
-- **Signature**: `signupWithSubscriptionGroup(request: SubscriptionGroups.SignupWithSubscriptionGroupRequest, options?: RequestOptions): ApiPromise<SubscriptionGroupSignupResponse, SubscriptionGroups.SignupWithSubscriptionGroupError>`
+- **Signature**: `signupWithSubscriptionGroup(request?: SubscriptionGroups.SignupWithSubscriptionGroupRequest, options?: RequestOptions): ApiPromise<SubscriptionGroupSignupResponse, SubscriptionGroups.SignupWithSubscriptionGroupError>`
 - **Wire**: `POST /subscription_groups/signup.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all

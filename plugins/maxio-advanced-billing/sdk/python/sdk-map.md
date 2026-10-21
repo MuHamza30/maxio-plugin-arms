@@ -115,6 +115,7 @@ Every API group is a property on the client (e.g. `client.api_exports`). Every c
 | `timeout` | `float` | `float` | `30.0` seconds |
 | `server_config` | `ServerConfigOrDict \| None` | `ServerConfigOrDict \| None` | `None` |
 | `retry_options` | `int \| RetryOptionsOrDict \| None` | `int \| RetryOptionsOrDict \| None` | `None` |
+| `logging_options` | `LoggingOptionsOrDict \| None` | `LoggingOptionsOrDict \| None` | `None` |
 | `custom_http_client` | `HttpClient \| None` | — | `None` |
 | `custom_async_http_client` | — | `AsyncHttpClient \| None` | `None` |
 | `basic_auth` | `BasicAuthCredentialsOrDict \| None` | `BasicAuthCredentialsOrDict \| None` | `None` |
@@ -126,6 +127,7 @@ The types those columns name — where each imports from and, for a credentials 
 | `Environment` | `maxio_advanced_billing.server` | `Literal` of the Environments table's names |
 | `ServerConfigOrDict` | `maxio_advanced_billing.server` | keys as the Servers & auth tables read |
 | `RetryOptionsOrDict` | `maxio_advanced_billing.core` | a retry count, `RetryOptions`, or a dict: `max_retries: int` · `initial_delay: float` · `backoff_factor: float` · `max_delay: float` · `max_jitter: float` · `status_codes_to_retry: frozenset[int]` · `http_methods_to_retry: frozenset[HttpMethod]` |
+| `LoggingOptionsOrDict` | `maxio_advanced_billing.core` | `LoggingOptions` or a dict: `log_request_headers: bool` · `log_response_headers: bool` · `log_request_body: bool` · `body_size_limit: int` · `redaction_placeholder: str` · `unmask_headers: AbstractSet[str]` · `mask_headers: AbstractSet[str]` · `mask_keys: AbstractSet[str]` |
 | `HttpClient` | `maxio_advanced_billing.core` | protocol — `send(request: HttpRequest) -> HttpResponse` · `close()`; `send` returns once the head has arrived and never reads the body, and raises `TransportError` (from `core`) when no response arrives — anything else it raises is never retried |
 | `BasicAuthCredentialsOrDict` | `maxio_advanced_billing.core` | `BasicAuthCredentials` or a dict: `username: str` · `password: str` |
 | `AsyncHttpClient` | `maxio_advanced_billing.core` | protocol — `async send(request: HttpRequest) -> AsyncHttpResponse` · `async aclose()`; the same obligation, awaited |
@@ -149,6 +151,25 @@ The types those columns name — where each imports from and, for a credentials 
 The wait before retry *n* is `initial_delay × backoff_factor^(n−1)` plus up to `max_jitter` of random delay, the sum capped at `max_delay`; a `Retry-After` header replaces it, trimmed to `max_delay`.
 
 A single call overrides two of these through `request_options` (`maxio_advanced_billing/core/request_options.py`): `max_retries` and `status_codes_to_retry`, each merged over the client's policy field by field — `request_options={"max_retries": 0}` turns retrying off for that one call and leaves every other call alone.
+
+### Logging — off by default
+
+Every HTTP exchange is written through the standard `logging` module under the `maxio_advanced_billing` logger, and the SDK configures nothing itself. Set that logger's level to turn it on: INFO writes the request line and a 2xx response line, WARNING a non-2xx response line and each retry, ERROR a call that ends in an exception, and DEBUG the header dumps and the request body that the flags below turn on. Or set `MAXIO_ADVANCED_BILLING_LOG=info|debug` before the process starts: it sets the level, turns the three flags on for `debug`, and adds a stderr handler only where nothing listens.
+
+`LoggingOptions` fields (source: `maxio_advanced_billing/core/logging.py`). Pass only the fields you change; each one left out takes its default, and a name set you pass replaces its default:
+
+| Field | Type | Default |
+| --- | --- | --- |
+| `log_request_headers` | `bool` | `False` |
+| `log_response_headers` | `bool` | `False` |
+| `log_request_body` | `bool` | `False` |
+| `body_size_limit` | `int` (bytes) | `32768` |
+| `redaction_placeholder` | `str` | `"REDACTED"` |
+| `unmask_headers` | `AbstractSet[str]` | `frozenset()` |
+| `mask_headers` | `AbstractSet[str]` | `frozenset()` |
+| `mask_keys` | `AbstractSet[str]` | `frozenset({"sig", "signature", "access_token", "apikey", "api_key", "client_secret", "password", "refresh_token", "code", "assertion", "client_assertion"})` |
+
+A single call is quietened through `request_options` (`maxio_advanced_billing/core/request_options.py`): `log_level`, a `logging` level constant, is a floor below which that call's records are not written; it never turns a dump or the body on. A header value prints `REDACTED` unless its name is on the runtime's safe list, a query value unless its key is a paging name, and a form field whose key is in `mask_keys` always; a JSON body prints as sent; a response body is never logged.
 
 ---
 
@@ -202,7 +223,7 @@ Each links to a sub-page with one block per operation, headed by its full access
 | **Four spellings, one signature** — the same method name and parameters on `Client` and `AsyncClient`, each also reachable through `.with_raw_response`; the async twin is a coroutine to `await`, with the same return types and error case, and where the **Async Type** column differs, pass the type it names | Getting a client |
 | **Parsed raises, raw returns** — `ApiError` versus `ApiResult` | Error-handling model |
 | **Case B error is always `RawError`** — also the last arm of every Case A alias, where a block's **Error arms** bullet ends in it | Error-handling model |
-| **A trailing `request_options`** — keyword-only and optional, for per-call overrides such as a timeout, extra headers, `max_retries` or `status_codes_to_retry`; every signature ends with it | here (`maxio_advanced_billing/core/request_options.py`), Retries |
+| **A trailing `request_options`** — keyword-only and optional, for per-call overrides such as a timeout, extra headers, `max_retries`, `status_codes_to_retry` or `log_level`; every signature ends with it | here (`maxio_advanced_billing/core/request_options.py`), Retries, Logging |
 | **Each operation names its own server** — this SDK declares several, so every block carries a **Server** bullet with the server's key in `server_config=` | its block |
 | **Parameter names are literal** — signatures are generated code verbatim, and everything behind the bare `*` must be passed by name | here |
 | **A parameter's wire name is its Python name** — sent as-is on the path, query string, header or body, unless the block's **Params** bullet carries a wire name beside the role | here |
@@ -211,50 +232,50 @@ Each links to a sub-page with one block per operation, headed by its full access
 
 Sub-pages chunk per `###` block: each block is self-contained given the table above, and assumes this page is loaded beside it.
 
-| Controller | Ops | Page |
-| --- | --- | --- |
-| `client.api_exports` | 9 | [map/operations/api_exports.md](map/operations/api_exports.md) |
-| `client.advance_invoice` | 3 | [map/operations/advance_invoice.md](map/operations/advance_invoice.md) |
-| `client.billing_portal` | 4 | [map/operations/billing_portal.md](map/operations/billing_portal.md) |
-| `client.component_features` | 6 | [map/operations/component_features.md](map/operations/component_features.md) |
-| `client.component_price_points` | 12 | [map/operations/component_price_points.md](map/operations/component_price_points.md) |
-| `client.components` | 12 | [map/operations/components.md](map/operations/components.md) |
-| `client.coupons` | 14 | [map/operations/coupons.md](map/operations/coupons.md) |
-| `client.custom_fields` | 9 | [map/operations/custom_fields.md](map/operations/custom_fields.md) |
-| `client.customers` | 7 | [map/operations/customers.md](map/operations/customers.md) |
-| `client.entitlements` | 1 | [map/operations/entitlements.md](map/operations/entitlements.md) |
-| `client.events` | 3 | [map/operations/events.md](map/operations/events.md) |
-| `client.events_based_billing_segments` | 6 | [map/operations/events_based_billing_segments.md](map/operations/events_based_billing_segments.md) |
-| `client.feature_templates` | 6 | [map/operations/feature_templates.md](map/operations/feature_templates.md) |
-| `client.insights` | 4 | [map/operations/insights.md](map/operations/insights.md) |
-| `client.invoices` | 19 | [map/operations/invoices.md](map/operations/invoices.md) |
-| `client.offers` | 5 | [map/operations/offers.md](map/operations/offers.md) |
-| `client.payment_profiles` | 12 | [map/operations/payment_profiles.md](map/operations/payment_profiles.md) |
-| `client.product_families` | 4 | [map/operations/product_families.md](map/operations/product_families.md) |
-| `client.product_features` | 6 | [map/operations/product_features.md](map/operations/product_features.md) |
-| `client.product_price_points` | 11 | [map/operations/product_price_points.md](map/operations/product_price_points.md) |
-| `client.products` | 6 | [map/operations/products.md](map/operations/products.md) |
-| `client.proforma_invoices` | 10 | [map/operations/proforma_invoices.md](map/operations/proforma_invoices.md) |
-| `client.reason_codes` | 5 | [map/operations/reason_codes.md](map/operations/reason_codes.md) |
-| `client.referral_codes` | 1 | [map/operations/referral_codes.md](map/operations/referral_codes.md) |
-| `client.sales_commissions` | 3 | [map/operations/sales_commissions.md](map/operations/sales_commissions.md) |
-| `client.sites` | 3 | [map/operations/sites.md](map/operations/sites.md) |
-| `client.subscription_components` | 17 | [map/operations/subscription_components.md](map/operations/subscription_components.md) |
-| `client.subscription_group_invoice_account` | 4 | [map/operations/subscription_group_invoice_account.md](map/operations/subscription_group_invoice_account.md) |
-| `client.subscription_group_status` | 4 | [map/operations/subscription_group_status.md](map/operations/subscription_group_status.md) |
-| `client.subscription_groups` | 9 | [map/operations/subscription_groups.md](map/operations/subscription_groups.md) |
-| `client.subscription_invoice_account` | 7 | [map/operations/subscription_invoice_account.md](map/operations/subscription_invoice_account.md) |
-| `client.subscription_notes` | 5 | [map/operations/subscription_notes.md](map/operations/subscription_notes.md) |
-| `client.subscription_products` | 2 | [map/operations/subscription_products.md](map/operations/subscription_products.md) |
-| `client.subscription_renewals` | 11 | [map/operations/subscription_renewals.md](map/operations/subscription_renewals.md) |
-| `client.subscription_status` | 10 | [map/operations/subscription_status.md](map/operations/subscription_status.md) |
-| `client.subscriptions` | 12 | [map/operations/subscriptions.md](map/operations/subscriptions.md) |
-| `client.wallet_adjustments` | 1 | [map/operations/wallet_adjustments.md](map/operations/wallet_adjustments.md) |
-| `client.wallet_products` | 7 | [map/operations/wallet_products.md](map/operations/wallet_products.md) |
-| `client.wallet_purchases` | 2 | [map/operations/wallet_purchases.md](map/operations/wallet_purchases.md) |
-| `client.wallet_transactions` | 2 | [map/operations/wallet_transactions.md](map/operations/wallet_transactions.md) |
-| `client.wallets` | 5 | [map/operations/wallets.md](map/operations/wallets.md) |
-| `client.webhooks` | 6 | [map/operations/webhooks.md](map/operations/webhooks.md) |
+| Controller | Class | Ops | Page |
+| --- | --- | --- | --- |
+| `client.api_exports` | `ApiExports` / `AsyncApiExports` | 9 | [map/operations/api_exports.md](map/operations/api_exports.md) |
+| `client.advance_invoice` | `AdvanceInvoice` / `AsyncAdvanceInvoice` | 3 | [map/operations/advance_invoice.md](map/operations/advance_invoice.md) |
+| `client.billing_portal` | `BillingPortal` / `AsyncBillingPortal` | 4 | [map/operations/billing_portal.md](map/operations/billing_portal.md) |
+| `client.component_features` | `ComponentFeatures` / `AsyncComponentFeatures` | 6 | [map/operations/component_features.md](map/operations/component_features.md) |
+| `client.component_price_points` | `ComponentPricePoints` / `AsyncComponentPricePoints` | 12 | [map/operations/component_price_points.md](map/operations/component_price_points.md) |
+| `client.components` | `Components` / `AsyncComponents` | 12 | [map/operations/components.md](map/operations/components.md) |
+| `client.coupons` | `Coupons` / `AsyncCoupons` | 14 | [map/operations/coupons.md](map/operations/coupons.md) |
+| `client.custom_fields` | `CustomFields` / `AsyncCustomFields` | 9 | [map/operations/custom_fields.md](map/operations/custom_fields.md) |
+| `client.customers` | `Customers` / `AsyncCustomers` | 7 | [map/operations/customers.md](map/operations/customers.md) |
+| `client.entitlements` | `Entitlements` / `AsyncEntitlements` | 1 | [map/operations/entitlements.md](map/operations/entitlements.md) |
+| `client.events` | `Events` / `AsyncEvents` | 3 | [map/operations/events.md](map/operations/events.md) |
+| `client.events_based_billing_segments` | `EventsBasedBillingSegments` / `AsyncEventsBasedBillingSegments` | 6 | [map/operations/events_based_billing_segments.md](map/operations/events_based_billing_segments.md) |
+| `client.feature_templates` | `FeatureTemplates` / `AsyncFeatureTemplates` | 6 | [map/operations/feature_templates.md](map/operations/feature_templates.md) |
+| `client.insights` | `Insights` / `AsyncInsights` | 4 | [map/operations/insights.md](map/operations/insights.md) |
+| `client.invoices` | `Invoices` / `AsyncInvoices` | 19 | [map/operations/invoices.md](map/operations/invoices.md) |
+| `client.offers` | `Offers` / `AsyncOffers` | 5 | [map/operations/offers.md](map/operations/offers.md) |
+| `client.payment_profiles` | `PaymentProfiles` / `AsyncPaymentProfiles` | 12 | [map/operations/payment_profiles.md](map/operations/payment_profiles.md) |
+| `client.product_families` | `ProductFamilies` / `AsyncProductFamilies` | 4 | [map/operations/product_families.md](map/operations/product_families.md) |
+| `client.product_features` | `ProductFeatures` / `AsyncProductFeatures` | 6 | [map/operations/product_features.md](map/operations/product_features.md) |
+| `client.product_price_points` | `ProductPricePoints` / `AsyncProductPricePoints` | 11 | [map/operations/product_price_points.md](map/operations/product_price_points.md) |
+| `client.products` | `Products` / `AsyncProducts` | 6 | [map/operations/products.md](map/operations/products.md) |
+| `client.proforma_invoices` | `ProformaInvoices` / `AsyncProformaInvoices` | 10 | [map/operations/proforma_invoices.md](map/operations/proforma_invoices.md) |
+| `client.reason_codes` | `ReasonCodes` / `AsyncReasonCodes` | 5 | [map/operations/reason_codes.md](map/operations/reason_codes.md) |
+| `client.referral_codes` | `ReferralCodes` / `AsyncReferralCodes` | 1 | [map/operations/referral_codes.md](map/operations/referral_codes.md) |
+| `client.sales_commissions` | `SalesCommissions` / `AsyncSalesCommissions` | 3 | [map/operations/sales_commissions.md](map/operations/sales_commissions.md) |
+| `client.sites` | `Sites` / `AsyncSites` | 3 | [map/operations/sites.md](map/operations/sites.md) |
+| `client.subscription_components` | `SubscriptionComponents` / `AsyncSubscriptionComponents` | 17 | [map/operations/subscription_components.md](map/operations/subscription_components.md) |
+| `client.subscription_group_invoice_account` | `SubscriptionGroupInvoiceAccount` / `AsyncSubscriptionGroupInvoiceAccount` | 4 | [map/operations/subscription_group_invoice_account.md](map/operations/subscription_group_invoice_account.md) |
+| `client.subscription_group_status` | `SubscriptionGroupStatus` / `AsyncSubscriptionGroupStatus` | 4 | [map/operations/subscription_group_status.md](map/operations/subscription_group_status.md) |
+| `client.subscription_groups` | `SubscriptionGroups` / `AsyncSubscriptionGroups` | 9 | [map/operations/subscription_groups.md](map/operations/subscription_groups.md) |
+| `client.subscription_invoice_account` | `SubscriptionInvoiceAccount` / `AsyncSubscriptionInvoiceAccount` | 7 | [map/operations/subscription_invoice_account.md](map/operations/subscription_invoice_account.md) |
+| `client.subscription_notes` | `SubscriptionNotes` / `AsyncSubscriptionNotes` | 5 | [map/operations/subscription_notes.md](map/operations/subscription_notes.md) |
+| `client.subscription_products` | `SubscriptionProducts` / `AsyncSubscriptionProducts` | 2 | [map/operations/subscription_products.md](map/operations/subscription_products.md) |
+| `client.subscription_renewals` | `SubscriptionRenewals` / `AsyncSubscriptionRenewals` | 11 | [map/operations/subscription_renewals.md](map/operations/subscription_renewals.md) |
+| `client.subscription_status` | `SubscriptionStatus` / `AsyncSubscriptionStatus` | 10 | [map/operations/subscription_status.md](map/operations/subscription_status.md) |
+| `client.subscriptions` | `Subscriptions` / `AsyncSubscriptions` | 12 | [map/operations/subscriptions.md](map/operations/subscriptions.md) |
+| `client.wallet_adjustments` | `WalletAdjustments` / `AsyncWalletAdjustments` | 1 | [map/operations/wallet_adjustments.md](map/operations/wallet_adjustments.md) |
+| `client.wallet_products` | `WalletProducts` / `AsyncWalletProducts` | 7 | [map/operations/wallet_products.md](map/operations/wallet_products.md) |
+| `client.wallet_purchases` | `WalletPurchases` / `AsyncWalletPurchases` | 2 | [map/operations/wallet_purchases.md](map/operations/wallet_purchases.md) |
+| `client.wallet_transactions` | `WalletTransactions` / `AsyncWalletTransactions` | 2 | [map/operations/wallet_transactions.md](map/operations/wallet_transactions.md) |
+| `client.wallets` | `Wallets` / `AsyncWallets` | 5 | [map/operations/wallets.md](map/operations/wallets.md) |
+| `client.webhooks` | `Webhooks` / `AsyncWebhooks` | 6 | [map/operations/webhooks.md](map/operations/webhooks.md) |
 
 ---
 

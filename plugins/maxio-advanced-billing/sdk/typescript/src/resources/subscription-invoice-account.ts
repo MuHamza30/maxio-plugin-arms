@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { accountBalancesSchema, type AccountBalances } from "../models/account-balances.js";
@@ -61,6 +62,13 @@ import {
 } from "../models/unions/refund-prepayment-error-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Subscription Invoice Account object lets you manage a subscription's account balance,
+ * including prepayments, service credits, and refunds. For more information, see [Recording
+ * Prepayments](https://docs.maxio.com/getting-started/maxio-platform-basics/advanced-billing-overview-and-resources/subscription-summary-tabs/recording-prepayments)
+ * and [Give, Deduct, and Apply Service
+ * Credits](https://docs.maxio.com/billing/subscriptions/management/subscription-actions/give-deduct-and-apply-service-credits).
+ */
 export class SubscriptionInvoiceAccount {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -405,9 +413,9 @@ export namespace SubscriptionInvoiceAccount {
   };
 
   export class CreatePrepaymentError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"createPrepaymentErrorResponse", CreatePrepaymentErrorResponse>
-    >;
+    declare readonly payload:
+      | Declared<"createPrepaymentErrorResponse", CreatePrepaymentErrorResponse>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreatePrepaymentError> = [
       {
@@ -425,9 +433,9 @@ export namespace SubscriptionInvoiceAccount {
   };
 
   export class DeductServiceCreditError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"deductServiceCreditErrorResponse", DeductServiceCreditErrorResponse>
-    >;
+    declare readonly payload:
+      | Declared<"deductServiceCreditErrorResponse", DeductServiceCreditErrorResponse>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<DeductServiceCreditError> = [
       {
@@ -445,9 +453,9 @@ export namespace SubscriptionInvoiceAccount {
   };
 
   export class IssueServiceCreditError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"issueServiceCreditErrorResponse", IssueServiceCreditErrorResponse>
-    >;
+    declare readonly payload:
+      | Declared<"issueServiceCreditErrorResponse", IssueServiceCreditErrorResponse>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<IssueServiceCreditError> = [
       {
@@ -484,7 +492,7 @@ export namespace SubscriptionInvoiceAccount {
   };
 
   export class ListPrepaymentsError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListPrepaymentsError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -517,9 +525,10 @@ export namespace SubscriptionInvoiceAccount {
   };
 
   export class ListServiceCreditsError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ListServiceCreditsError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -541,11 +550,11 @@ export namespace SubscriptionInvoiceAccount {
   };
 
   export class RefundPrepaymentError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"refundPrepaymentBaseErrorsResponse1", RefundPrepaymentBaseErrorsResponse1>
       | Declared<"error404", string>
       | Declared<"refundPrepaymentErrorResponse", RefundPrepaymentErrorResponse>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<RefundPrepaymentError> = [
       {

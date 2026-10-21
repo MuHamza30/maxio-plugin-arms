@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.SubscriptionStatus;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Subscription Status allows you to manage a subscription's lifecycle, including retrying a failed payment, canceling, pausing, resuming, and reactivating a subscription. For more information, see <see href="https://docs.maxio.com/billing/subscriptions/management/subscription-states/understand-subscription-states">Understand Subscription States</see>.
+/// </summary>
 public sealed class SubscriptionStatus
 {
     private readonly RawClient _rawClient;

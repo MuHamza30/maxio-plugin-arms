@@ -4,7 +4,7 @@
 is handled for you and what is not. Covers client configuration and resilience for an APIMatic-generated
 Python SDK: server and base-URL selection, the retry policy (on by default, off with `max_retries=0`)
 and what it will and will not repeat, what a timeout actually bounds, proxies and TLS, and
-request/response logging through the transport seam.
+request/response logging (built in, or through the transport seam).
 
 > Throughout this doc, `{...}` is a placeholder for a name you take from your SDK (e.g. `{Api}Client`,
 > `{group}`, `{root_package}`) — replace it with the concrete identifier from the source.
@@ -22,7 +22,7 @@ following, so each is yours to build or deliberately do without:
 |---|---|---|
 | **Streaming — file responses** | a `FileResponse` arrives with its body unread and holds its connection until you consume it | `save_to` / `read` / `iter_bytes` (see `docs/file-handling.md`) |
 | **Streaming — SSE** | an `EventStream` arrives with its body unread; iterating yields each event's decoded data, and `timeout` bounds the gap between events | a `for` loop, or `with` for an early exit (see `docs/event-streams.md`) |
-| **Request/response logging** | none — no hook, no event | Wrap the transport; see below |
+| **Request/response logging** | built in: each exchange goes to the `maxio_advanced_billing` logger, silent until you configure logging or set `MAXIO_ADVANCED_BILLING_LOG`; `logging_options` sets the detail (README.md, *Logging*) | Turn it on; for anything more, wrap the transport (see below) |
 | **Circuit breaking, rate limiting** | none | Your own, around the call |
 | **A mock/offline mode** | none | Point `base_url` at a mock server, or supply a fake transport (`docs/testing.md`) |
 
@@ -358,8 +358,9 @@ client = {Api}Client(custom_http_client=transport, {scheme}=...)
 
 ## Logging — wrap the transport
 
-There is no logging hook and no event to subscribe to. The transport protocol is the seam: implement
-it, delegate to the real one, and log around the call.
+The SDK's built-in logging (README.md, *Logging*) writes its own lines; beyond that there is no logging
+hook and no event to subscribe to. The transport protocol is the seam: implement it, delegate to the
+real one, and log around the call.
 
 ```python
 import logging, time

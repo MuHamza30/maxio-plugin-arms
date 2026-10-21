@@ -12,6 +12,9 @@ using MaxioAdvancedBilling.Requests.ReferralCodes;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Referral Code object represents a code attached to a subscription, used to track and validate referrals as part of a referral program. For more information, see <see href="https://docs.maxio.com/configuration/advanced-billing/understand-referrals">Understand Referrals</see>.
+/// </summary>
 public sealed class ReferralCodes
 {
     private readonly RawClient _rawClient;

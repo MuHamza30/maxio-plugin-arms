@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -33,6 +34,14 @@ import {
 } from "../models/single-string-error-response1.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Coupon object defines a discount, either a percentage or a fixed amount, that can be applied
+ * to a subscription to reduce the subscription's billing amount.
+ *
+ * Coupons can be restricted to a specific Product Family, limited to a date range, and configured
+ * to apply once or recur over a set duration. For more information, see [Understand
+ * Coupons](https://docs.maxio.com/billing/catalog/coupons/understand-coupons).
+ */
 export class Coupons {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -334,7 +343,7 @@ export class Coupons {
    * credential that could not be obtained
    */
   findCoupon(
-    request: Coupons.FindCouponRequest,
+    request: Coupons.FindCouponRequest = {},
     options?: RequestOptions,
   ): ApiPromise<CouponResponse, ApiError> {
     return this.#rawClient.execute(
@@ -413,7 +422,7 @@ export class Coupons {
    * credential that could not be obtained
    */
   listCoupons(
-    request: Coupons.ListCouponsRequest,
+    request: Coupons.ListCouponsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<CouponResponse[], ApiError> {
     return this.#rawClient.execute(
@@ -744,7 +753,7 @@ export namespace Coupons {
   };
 
   export class CreateCouponError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateCouponError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -764,7 +773,7 @@ export namespace Coupons {
   };
 
   export class CreateOrUpdateCouponCurrencyPricesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorStringMapResponse1", ErrorStringMapResponse1>>;
+    declare readonly payload: Declared<"errorStringMapResponse1", ErrorStringMapResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateOrUpdateCouponCurrencyPricesError> = [
       {
@@ -783,7 +792,7 @@ export namespace Coupons {
   };
 
   export class DeleteCouponSubcodeError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<DeleteCouponSubcodeError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -913,7 +922,7 @@ export namespace Coupons {
   };
 
   export class UpdateCouponError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateCouponError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -934,9 +943,7 @@ export namespace Coupons {
   };
 
   export class ValidateCouponError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"singleStringErrorResponse1", SingleStringErrorResponse1>
-    >;
+    declare readonly payload: Declared<"singleStringErrorResponse1", SingleStringErrorResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ValidateCouponError> = [
       {

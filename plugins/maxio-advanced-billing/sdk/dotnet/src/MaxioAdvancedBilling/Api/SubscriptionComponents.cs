@@ -16,6 +16,9 @@ using MaxioAdvancedBilling.Requests.SubscriptionComponents;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Use the Subscription Components object to allocate, adjust, and report usage for the components attached to a subscription, including quantity-based, metered, and event-based components. For more information, see <see href="https://docs.maxio.com/getting-started/maxio-platform-basics/advanced-billing-overview-and-resources/subscription-summary-tabs/managing-components-and-usage">Managing Components and Usage</see>.
+/// </summary>
 public sealed class SubscriptionComponents
 {
     private readonly RawClient _rawClient;

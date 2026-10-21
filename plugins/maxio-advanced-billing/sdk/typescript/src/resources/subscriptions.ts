@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -78,6 +79,12 @@ import {
 } from "../models/upsert-prepaid-configuration-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * Subscriptions connect a customer to a product and drive all recurring billing for that
+ * relationship, including invoice generation, billing start dates, and pricing structure across
+ * plan-based and planless configurations. For more information, see [Understand
+ * Subscriptions](https://docs.maxio.com/billing/subscriptions/overview/understand-subscriptions).
+ */
 export class Subscriptions {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -353,7 +360,7 @@ export class Subscriptions {
    * credential that could not be obtained
    */
   createSubscription(
-    request: Subscriptions.CreateSubscriptionRequestParams,
+    request: Subscriptions.CreateSubscriptionRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<SubscriptionResponse, Subscriptions.CreateSubscriptionError> {
     return this.#rawClient.execute(
@@ -394,7 +401,7 @@ export class Subscriptions {
    * credential that could not be obtained
    */
   findSubscription(
-    request: Subscriptions.FindSubscriptionRequest,
+    request: Subscriptions.FindSubscriptionRequest = {},
     options?: RequestOptions,
   ): ApiPromise<SubscriptionResponse, Subscriptions.FindSubscriptionError> {
     return this.#rawClient.execute(
@@ -447,7 +454,7 @@ export class Subscriptions {
    * credential that could not be obtained
    */
   listSubscriptions(
-    request: Subscriptions.ListSubscriptionsRequest,
+    request: Subscriptions.ListSubscriptionsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<SubscriptionResponse[], ApiError> {
     return this.#rawClient.execute(
@@ -666,7 +673,7 @@ export class Subscriptions {
    * credential that could not be obtained
    */
   previewSubscription(
-    request: Subscriptions.PreviewSubscriptionRequest,
+    request: Subscriptions.PreviewSubscriptionRequest = {},
     options?: RequestOptions,
   ): ApiPromise<SubscriptionPreviewResponse, ApiError> {
     return this.#rawClient.execute(
@@ -1018,7 +1025,7 @@ export namespace Subscriptions {
   };
 
   export class ActivateSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1>>;
+    declare readonly payload: Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ActivateSubscriptionError> = [
       {
@@ -1042,9 +1049,9 @@ export namespace Subscriptions {
   };
 
   export class ApplyCouponsToSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"subscriptionAddCouponError1", SubscriptionAddCouponError1>
-    >;
+    declare readonly payload:
+      | Declared<"subscriptionAddCouponError1", SubscriptionAddCouponError1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ApplyCouponsToSubscriptionError> = [
       {
@@ -1060,7 +1067,7 @@ export namespace Subscriptions {
   };
 
   export class CreateSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateSubscriptionError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1073,7 +1080,7 @@ export namespace Subscriptions {
   };
 
   export class FindSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<FindSubscriptionError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -1195,7 +1202,7 @@ export namespace Subscriptions {
   };
 
   export class OverrideSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"singleErrorResponse1", SingleErrorResponse1>>;
+    declare readonly payload: Declared<"singleErrorResponse1", SingleErrorResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<OverrideSubscriptionError> = [
       { on: 422, kind: "singleErrorResponse1", decode: { kind: "json", schema: singleErrorResponse1Schema } },
@@ -1219,7 +1226,7 @@ export namespace Subscriptions {
   };
 
   export class PurgeSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"subscriptionResponse", SubscriptionResponse>>;
+    declare readonly payload: Declared<"subscriptionResponse", SubscriptionResponse> | Undeclared;
 
     static readonly errors: ErrorDecoders<PurgeSubscriptionError> = [
       { on: 400, kind: "subscriptionResponse", decode: { kind: "json", schema: subscriptionResponseSchema } },
@@ -1244,9 +1251,9 @@ export namespace Subscriptions {
   };
 
   export class RemoveCouponFromSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"subscriptionRemoveCouponErrors1", SubscriptionRemoveCouponErrors1>
-    >;
+    declare readonly payload:
+      | Declared<"subscriptionRemoveCouponErrors1", SubscriptionRemoveCouponErrors1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<RemoveCouponFromSubscriptionError> = [
       {
@@ -1264,9 +1271,9 @@ export namespace Subscriptions {
   };
 
   export class UpdatePrepaidSubscriptionConfigurationError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"prepaidConfigurationErrorResponse", PrepaidConfigurationErrorResponse>
-    >;
+    declare readonly payload:
+      | Declared<"prepaidConfigurationErrorResponse", PrepaidConfigurationErrorResponse>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdatePrepaidSubscriptionConfigurationError> = [
       {
@@ -1284,7 +1291,7 @@ export namespace Subscriptions {
   };
 
   export class UpdateSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateSubscriptionError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

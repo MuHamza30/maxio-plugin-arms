@@ -14,6 +14,9 @@ using MaxioAdvancedBilling.Requests.SubscriptionInvoiceAccount;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Subscription Invoice Account object lets you manage a subscription's account balance, including prepayments, service credits, and refunds. For more information, see <see href="https://docs.maxio.com/getting-started/maxio-platform-basics/advanced-billing-overview-and-resources/subscription-summary-tabs/recording-prepayments">Recording Prepayments</see> and <see href="https://docs.maxio.com/billing/subscriptions/management/subscription-actions/give-deduct-and-apply-service-credits">Give, Deduct, and Apply Service Credits</see>.
+/// </summary>
 public sealed class SubscriptionInvoiceAccount
 {
     private readonly RawClient _rawClient;

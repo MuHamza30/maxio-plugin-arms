@@ -161,24 +161,27 @@ def parse_json(content: bytes) -> Any:
         raise ValueError("Response body is not valid JSON") from exc
 
 
-def compact_json(value: object) -> str:
+def compact_json(value: object, *, ensure_ascii: bool = True) -> str:
     """JSON-encode a structured value with no insignificant whitespace.
 
-    ``ensure_ascii`` stays at its default: a header field value is ISO-8859-1 by RFC 9110 and the
-    transport rejects anything outside it, so escaping non-ASCII is the only encoding that
-    survives. ``allow_nan`` is turned off: at its default a non-finite float encodes as
-    ``Infinity`` or ``NaN`` -- a Python dialect no RFC 8259 parser accepts -- so the call would
-    fail server-side, far from the line that produced the value.
+    ``ensure_ascii`` defaults on: a header field value is ISO-8859-1 by RFC 9110 and the transport
+    rejects anything outside it, so a header, a path segment or a multipart text part keeps every
+    non-ASCII character escaped. A JSON *body* passes ``False`` and goes out as UTF-8 -- the bytes
+    httpx's own encoder produced before a body carried its own, so the wire did not change.
+    ``allow_nan`` is turned off: at its default a non-finite float encodes as ``Infinity`` or
+    ``NaN`` -- a Python dialect no RFC 8259 parser accepts -- so the call would fail server-side,
+    far from the line that produced the value.
 
     Args:
         value: The structured value to encode.
+        ensure_ascii: Whether non-ASCII characters are escaped; off for a body, on everywhere else.
 
     Returns:
-        Its JSON text, non-ASCII escaped and no insignificant whitespace.
+        Its JSON text with no insignificant whitespace.
 
     Raises:
         ValueError: If ``value`` holds a non-finite float, which has no RFC 8259 spelling."""
-    return json.dumps(value, separators=(",", ":"), allow_nan=False)
+    return json.dumps(value, separators=(",", ":"), ensure_ascii=ensure_ascii, allow_nan=False)
 
 
 def is_collection(value: object) -> TypeGuard[Iterable[object]]:

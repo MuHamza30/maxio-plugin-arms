@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -65,6 +66,14 @@ import {
 } from "../models/update-product-price-point-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Product Price Point object defines a specific pricing configuration for a Product, including
+ * price, billing interval, and trial terms.
+ *
+ * A single Product can have multiple price points, letting you offer different rates or terms for
+ * the same product without creating separate products. For more information, see [Setting Up Plan
+ * Price Points](https://docs.maxio.com/billing/catalog/plans/setting-up-plan-price-points).
+ */
 export class ProductPricePoints {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -266,7 +275,7 @@ export class ProductPricePoints {
    * credential that could not be obtained
    */
   listAllProductPricePoints(
-    request: ProductPricePoints.ListAllProductPricePointsRequest,
+    request: ProductPricePoints.ListAllProductPricePointsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ListProductPricePointsResponse, ProductPricePoints.ListAllProductPricePointsError> {
     return this.#rawClient.execute(
@@ -587,7 +596,7 @@ export namespace ProductPricePoints {
   };
 
   export class ArchiveProductPricePointError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ArchiveProductPricePointError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -601,7 +610,7 @@ export namespace ProductPricePoints {
   };
 
   export class BulkCreateProductPricePointsError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error422", Record<string, unknown>>>;
+    declare readonly payload: Declared<"error422", Record<string, unknown>> | Undeclared;
 
     static readonly errors: ErrorDecoders<BulkCreateProductPricePointsError> = [
       { on: 422, kind: "error422", decode: { kind: "json", schema: s.record(s.string(), s.unknown()) } },
@@ -615,7 +624,7 @@ export namespace ProductPricePoints {
   };
 
   export class CreateProductCurrencyPricesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1>>;
+    declare readonly payload: Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateProductCurrencyPricesError> = [
       {
@@ -635,9 +644,9 @@ export namespace ProductPricePoints {
   };
 
   export class CreateProductPricePointError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"productPricePointErrorResponse1", ProductPricePointErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"productPricePointErrorResponse1", ProductPricePointErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateProductPricePointError> = [
       {
@@ -678,7 +687,7 @@ export namespace ProductPricePoints {
   };
 
   export class ListAllProductPricePointsError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListAllProductPricePointsError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -764,7 +773,7 @@ export namespace ProductPricePoints {
   };
 
   export class UpdateProductCurrencyPricesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1>>;
+    declare readonly payload: Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateProductCurrencyPricesError> = [
       {

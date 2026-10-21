@@ -108,7 +108,7 @@ Accessor: `client.productPricePoints` · Source: `src/resources/product-price-po
 
 ### listAllProductPricePoints
 
-- **Signature**: `listAllProductPricePoints(request: ProductPricePoints.ListAllProductPricePointsRequest, options?: RequestOptions): ApiPromise<ListProductPricePointsResponse, ProductPricePoints.ListAllProductPricePointsError>`
+- **Signature**: `listAllProductPricePoints(request?: ProductPricePoints.ListAllProductPricePointsRequest, options?: RequestOptions): ApiPromise<ListProductPricePointsResponse, ProductPricePoints.ListAllProductPricePointsError>`
 - **Wire**: `GET /products_price_points.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

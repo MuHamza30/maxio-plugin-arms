@@ -22,6 +22,7 @@ dataclass field, so no model crosses the transport boundary."""
 from __future__ import annotations
 
 from collections.abc import Mapping
+from collections.abc import Set as AbstractSet
 from typing import Final, TypeAlias
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -43,12 +44,15 @@ class RequestOptions(BaseModel):
     turns retrying off for this call and moves nothing else -- where a nested policy obliged the
     caller to restate every term they were happy with in order to change one.
 
-    Only the two terms that vary by call site are here: how many times *this* call may be retried,
-    and which statuses count as transient for *this* endpoint. The wait curve -- ``initial_delay``,
-    ``backoff_factor``, ``max_delay``, ``max_jitter`` -- describes how the server recovers, a fact
-    about the API rather than about one call, and ``http_methods_to_retry`` is fixed by the method an
-    endpoint was emitted with, so a per-call set could only agree with it or disable this call's
-    retrying by a second route. All five stay the client's alone."""
+    Of the retry terms, only the two that vary by call site are here: how many times *this* call may
+    be retried, and which statuses count as transient for *this* endpoint. The wait curve --
+    ``initial_delay``, ``backoff_factor``, ``max_delay``, ``max_jitter`` -- describes how the server
+    recovers, a fact about the API rather than about one call, and ``http_methods_to_retry`` is fixed
+    by the method an endpoint was emitted with, so a per-call set could only agree with it or disable
+    this call's retrying by a second route. All five stay the client's alone.
+
+    ``log_level`` is the third per-call term: how loud *this* call may be, read where a call's log
+    scope is opened."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -61,8 +65,13 @@ class RequestOptions(BaseModel):
     max_retries: MaxRetries | None = None
     """Retries after the initial attempt of this one request. ``0`` turns retrying off for it."""
 
-    status_codes_to_retry: frozenset[int] | None = None
+    status_codes_to_retry: AbstractSet[int] | None = None
     """Statuses that qualify for a retry of this request, under the client's method gate."""
+
+    log_level: int | None = Field(default=None, ge=0)
+    """A floor for this one call's log records: a ``logging`` level. Records below it are not written;
+    records at or above it are written when the logger's own level and the client's flags allow them. It
+    silences, and never turns a dump or the body on. ``None`` leaves every event to the client's options."""
 
     @classmethod
     def coerce(cls, options: RequestOptionsOrDict | None) -> RequestOptions:
@@ -104,7 +113,8 @@ class RequestOptionsDict(TypedDict):
     timeout: NotRequired[float | None]
     extra_headers: NotRequired[Mapping[str, str] | None]
     max_retries: NotRequired[int | None]
-    status_codes_to_retry: NotRequired[frozenset[int] | None]
+    status_codes_to_retry: NotRequired[AbstractSet[int] | None]
+    log_level: NotRequired[int | None]
 
 
 RequestOptionsOrDict: TypeAlias = RequestOptions | RequestOptionsDict

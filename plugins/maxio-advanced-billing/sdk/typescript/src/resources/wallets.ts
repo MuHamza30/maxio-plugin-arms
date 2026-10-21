@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { createWalletRequestSchema, type CreateWalletRequest } from "../models/create-wallet-request.js";
@@ -13,6 +14,15 @@ import { walletResponseSchema, type WalletResponse } from "../models/wallet-resp
 import { walletsListResponseSchema, type WalletsListResponse } from "../models/wallets-list-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Wallet object is a balance, owned by a subscription and denominated in the unit of a Wallet
+ * Product, that you can create, fund, drain, and read through the API.
+ *
+ * Wallets suit prepaid allowances, credits, and consumption pools that don't map cleanly onto the
+ * regular usage-billing cycle. Every balance change is recorded on the wallet's append-only ledger.
+ * For more information, see [Understand
+ * Wallets](https://docs.maxio.com/billing/catalog/wallets/understand-wallets).
+ */
 export class Wallets {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -94,7 +104,7 @@ export class Wallets {
    * credential that could not be obtained
    */
   createWallet(
-    request: Wallets.CreateWalletRequestParams,
+    request: Wallets.CreateWalletRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<WalletResponse, Wallets.CreateWalletError> {
     return this.#rawClient.execute(
@@ -138,7 +148,7 @@ export class Wallets {
    * credential that could not be obtained
    */
   listWallets(
-    request: Wallets.ListWalletsRequest,
+    request: Wallets.ListWalletsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<WalletsListResponse, Wallets.ListWalletsError> {
     return this.#rawClient.execute(
@@ -258,9 +268,10 @@ export namespace Wallets {
   };
 
   export class ArchiveWalletError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error403", undefined> | Declared<"walletErrorResponse1", WalletErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error403", undefined>
+      | Declared<"walletErrorResponse1", WalletErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ArchiveWalletError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -273,11 +284,11 @@ export namespace Wallets {
   };
 
   export class CreateWalletError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error403", undefined>
       | Declared<"walletErrorResponse1", WalletErrorResponse1>
       | Declared<"walletErrorResponse12", WalletErrorResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateWalletError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -319,9 +330,10 @@ export namespace Wallets {
   };
 
   export class ListWalletsError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error403", undefined> | Declared<"walletErrorResponse1", WalletErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error403", undefined>
+      | Declared<"walletErrorResponse1", WalletErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ListWalletsError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -335,9 +347,10 @@ export namespace Wallets {
   };
 
   export class ReadWalletError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error403", undefined> | Declared<"walletErrorResponse1", WalletErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error403", undefined>
+      | Declared<"walletErrorResponse1", WalletErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadWalletError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -352,11 +365,11 @@ export namespace Wallets {
   };
 
   export class UpdateWalletError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error403", undefined>
       | Declared<"walletErrorResponse1", WalletErrorResponse1>
       | Declared<"walletErrorResponse12", WalletErrorResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateWalletError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },

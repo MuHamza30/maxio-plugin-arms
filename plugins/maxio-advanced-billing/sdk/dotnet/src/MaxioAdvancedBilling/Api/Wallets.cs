@@ -13,6 +13,12 @@ using MaxioAdvancedBilling.Requests.Wallets;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Wallet object is a balance, owned by a subscription and denominated in the unit of a Wallet Product, that you can create, fund, drain, and read through the API.
+/// <para>
+/// Wallets suit prepaid allowances, credits, and consumption pools that don't map cleanly onto the regular usage-billing cycle. Every balance change is recorded on the wallet's append-only ledger. For more information, see <see href="https://docs.maxio.com/billing/catalog/wallets/understand-wallets">Understand Wallets</see>.
+/// </para>
+/// </summary>
 public sealed class Wallets
 {
     private readonly RawClient _rawClient;

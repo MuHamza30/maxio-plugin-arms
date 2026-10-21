@@ -13,6 +13,12 @@ using MaxioAdvancedBilling.Requests.ProductFeatures;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Product Feature object attaches a Feature Template to a Product as a feature catalog item with a concrete value, granting that feature to subscribers through the product.
+/// <para>
+/// A product feature applies to the whole product by default, or can be scoped to a single product price point as an override. For more information, see <see href="https://docs.maxio.com/billing/catalog/entitlements/configure-entitlements">Configure Entitlements</see>.
+/// </para>
+/// </summary>
 public sealed class ProductFeatures
 {
     private readonly RawClient _rawClient;

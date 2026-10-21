@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { consolidatedInvoiceSchema, type ConsolidatedInvoice } from "../models/consolidated-invoice.js";
@@ -58,6 +59,15 @@ import { updateInvoiceRequestSchema, type UpdateInvoiceRequest } from "../models
 import { voidInvoiceRequestSchema, type VoidInvoiceRequest } from "../models/void-invoice-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Invoice object is the billing document generated for a subscription, itemizing charges,
+ * taxes, and payments, and tracking amounts owed.
+ *
+ * The role indicates what triggered the invoice (signup, renewal, usage, proration, etc.), and the
+ * status and due_date reflect where an invoice stands in the payment lifecycle. For more
+ * information, see [Get Started with
+ * Invoicing](https://docs.maxio.com/billing/invoicing/overview/get-started-with-invoicing).
+ */
 export class Invoices {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -504,7 +514,7 @@ export class Invoices {
    * credential that could not be obtained
    */
   listCreditNotes(
-    request: Invoices.ListCreditNotesRequest,
+    request: Invoices.ListCreditNotesRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ListCreditNotesResponse, ApiError> {
     return this.#rawClient.execute(
@@ -589,7 +599,7 @@ export class Invoices {
    * credential that could not be obtained
    */
   listInvoiceEvents(
-    request: Invoices.ListInvoiceEventsRequest,
+    request: Invoices.ListInvoiceEventsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ListInvoiceEventsResponse, ApiError> {
     return this.#rawClient.execute(
@@ -644,7 +654,7 @@ export class Invoices {
    * credential that could not be obtained
    */
   listInvoices(
-    request: Invoices.ListInvoicesRequest,
+    request: Invoices.ListInvoicesRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ListInvoicesResponse, ApiError> {
     return this.#rawClient.execute(
@@ -895,7 +905,7 @@ export class Invoices {
    * credential that could not be obtained
    */
   recordPaymentForMultipleInvoices(
-    request: Invoices.RecordPaymentForMultipleInvoicesRequest,
+    request: Invoices.RecordPaymentForMultipleInvoicesRequest = {},
     options?: RequestOptions,
   ): ApiPromise<MultiInvoicePaymentResponse, Invoices.RecordPaymentForMultipleInvoicesError> {
     return this.#rawClient.execute(
@@ -1323,7 +1333,7 @@ export namespace Invoices {
   };
 
   export class CreateInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1>>;
+    declare readonly payload: Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateInvoiceError> = [
       {
@@ -1345,9 +1355,10 @@ export namespace Invoices {
   };
 
   export class DeleteInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"errorListResponse12", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"errorListResponse12", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<DeleteInvoiceError> = [
       { on: 404, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1365,9 +1376,10 @@ export namespace Invoices {
   };
 
   export class IssueInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<IssueInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -1638,9 +1650,10 @@ export namespace Invoices {
   };
 
   export class PreviewCustomerInformationChangesError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"errorListResponse12", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"errorListResponse12", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<PreviewCustomerInformationChangesError> = [
       { on: 404, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1671,7 +1684,7 @@ export namespace Invoices {
   };
 
   export class RecordPaymentForInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<RecordPaymentForInvoiceError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1683,7 +1696,7 @@ export namespace Invoices {
   };
 
   export class RecordPaymentForMultipleInvoicesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<RecordPaymentForMultipleInvoicesError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1697,7 +1710,7 @@ export namespace Invoices {
   };
 
   export class RecordPaymentForSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<RecordPaymentForSubscriptionError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1714,7 +1727,7 @@ export namespace Invoices {
   };
 
   export class RefundInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<RefundInvoiceError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1730,9 +1743,10 @@ export namespace Invoices {
   };
 
   export class ReopenInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", unknown> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", unknown>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ReopenInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "json", schema: s.unknown() } },
@@ -1750,7 +1764,7 @@ export namespace Invoices {
   };
 
   export class SendInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<SendInvoiceError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1766,9 +1780,10 @@ export namespace Invoices {
   };
 
   export class UpdateCustomerInformationError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"errorListResponse12", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"errorListResponse12", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateCustomerInformationError> = [
       { on: 404, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1788,10 +1803,10 @@ export namespace Invoices {
   };
 
   export class UpdateInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"errorListResponse1", ErrorListResponse1>
       | Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateInvoiceError> = [
       { on: 404, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1813,9 +1828,10 @@ export namespace Invoices {
   };
 
   export class VoidInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", unknown> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", unknown>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<VoidInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "json", schema: s.unknown() } },

@@ -8,7 +8,7 @@ Accessor: `client.events` · Source: `src/resources/events.ts` · 3 operations �
 
 ### listEvents
 
-- **Signature**: `listEvents(request: Events.ListEventsRequest, options?: RequestOptions): ApiPromise<EventResponse[], ApiError>`
+- **Signature**: `listEvents(request?: Events.ListEventsRequest, options?: RequestOptions): ApiPromise<EventResponse[], ApiError>`
 - **Wire**: `GET /events.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -67,7 +67,7 @@ Accessor: `client.events` · Source: `src/resources/events.ts` · 3 operations �
 
 ### readEventsCount
 
-- **Signature**: `readEventsCount(request: Events.ReadEventsCountRequest, options?: RequestOptions): ApiPromise<CountResponse, ApiError>`
+- **Signature**: `readEventsCount(request?: Events.ReadEventsCountRequest, options?: RequestOptions): ApiPromise<CountResponse, ApiError>`
 - **Wire**: `GET /events/count.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

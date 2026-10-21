@@ -63,7 +63,7 @@ class TransportError(Exception):
     flattened on the way through.
     A distinction worth narrowing on, a timeout against a refused connection among them, belongs to
     the exception the caller actually sees; the loop itself draws none, waiting the same curve for
-    both, as the C# SDK does through one arm.
+    both.
 
     A response that arrived and said 4xx or 5xx is not this -- that is an :class:`ApiError`, or a
     :class:`~.results.Failure` in the raw response mode. This type means there was no response."""

@@ -2034,7 +2034,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>findCoupon(request: Coupons.FindCouponRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse, ApiError&gt;</code></summary>
+<summary><code>findCoupon(request?: Coupons.FindCouponRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -2216,7 +2216,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listCoupons(request: Coupons.ListCouponsRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse[], ApiError&gt;</code></summary>
+<summary><code>listCoupons(request?: Coupons.ListCouponsRequest, options?: RequestOptions): ApiPromise&lt;CouponResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -4290,7 +4290,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listComponents(request: Components.ListComponentsRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse[], ApiError&gt;</code></summary>
+<summary><code>listComponents(request?: Components.ListComponentsRequest, options?: RequestOptions): ApiPromise&lt;ComponentResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -5359,7 +5359,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listAllComponentPricePoints(request: ComponentPricePoints.ListAllComponentPricePointsRequest, options?: RequestOptions): ApiPromise&lt;ListComponentsPricePointsResponse, ComponentPricePoints.ListAllComponentPricePointsError&gt;</code></summary>
+<summary><code>listAllComponentPricePoints(request?: ComponentPricePoints.ListAllComponentPricePointsRequest, options?: RequestOptions): ApiPromise&lt;ListComponentsPricePointsResponse, ComponentPricePoints.ListAllComponentPricePointsError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -6078,7 +6078,7 @@ if (result.ok) {
 > Source: [Customers](src/resources/customers.ts)
 
 <details>
-<summary><code>createCustomer(request: Customers.CreateCustomerRequestParams, options?: RequestOptions): ApiPromise&lt;CustomerResponse, Customers.CreateCustomerError&gt;</code></summary>
+<summary><code>createCustomer(request?: Customers.CreateCustomerRequestParams, options?: RequestOptions): ApiPromise&lt;CustomerResponse, Customers.CreateCustomerError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -6417,7 +6417,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listCustomers(request: Customers.ListCustomersRequest, options?: RequestOptions): ApiPromise&lt;CustomerResponse[], ApiError&gt;</code></summary>
+<summary><code>listCustomers(request?: Customers.ListCustomersRequest, options?: RequestOptions): ApiPromise&lt;CustomerResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -7873,7 +7873,7 @@ if (result.ok) {
 > Source: [Events](src/resources/events.ts)
 
 <details>
-<summary><code>listEvents(request: Events.ListEventsRequest, options?: RequestOptions): ApiPromise&lt;EventResponse[], ApiError&gt;</code></summary>
+<summary><code>listEvents(request?: Events.ListEventsRequest, options?: RequestOptions): ApiPromise&lt;EventResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -8189,7 +8189,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>readEventsCount(request: Events.ReadEventsCountRequest, options?: RequestOptions): ApiPromise&lt;CountResponse, ApiError&gt;</code></summary>
+<summary><code>readEventsCount(request?: Events.ReadEventsCountRequest, options?: RequestOptions): ApiPromise&lt;CountResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9028,7 +9028,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>createFeatureTemplate(request: FeatureTemplates.CreateFeatureTemplateRequestParams, options?: RequestOptions): ApiPromise&lt;FeatureTemplateResponse, FeatureTemplates.CreateFeatureTemplateError&gt;</code></summary>
+<summary><code>createFeatureTemplate(request?: FeatureTemplates.CreateFeatureTemplateRequestParams, options?: RequestOptions): ApiPromise&lt;FeatureTemplateResponse, FeatureTemplates.CreateFeatureTemplateError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9120,7 +9120,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listFeatureTemplates(request: FeatureTemplates.ListFeatureTemplatesRequest, options?: RequestOptions): ApiPromise&lt;FeatureTemplatesListResponse, FeatureTemplates.ListFeatureTemplatesError&gt;</code></summary>
+<summary><code>listFeatureTemplates(request?: FeatureTemplates.ListFeatureTemplatesRequest, options?: RequestOptions): ApiPromise&lt;FeatureTemplatesListResponse, FeatureTemplates.ListFeatureTemplatesError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9489,7 +9489,7 @@ if (result.ok) {
 > Source: [Insights](src/resources/insights.ts)
 
 <details>
-<summary><code>listMrrMovements(request: Insights.ListMrrMovementsRequest, options?: RequestOptions): ApiPromise&lt;ListMrrResponse, ApiError&gt;</code></summary>
+<summary><code>listMrrMovements(request?: Insights.ListMrrMovementsRequest, options?: RequestOptions): ApiPromise&lt;ListMrrResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9601,7 +9601,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listMrrPerSubscription(request: Insights.ListMrrPerSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionMrrResponse, Insights.ListMrrPerSubscriptionError&gt;</code></summary>
+<summary><code>listMrrPerSubscription(request?: Insights.ListMrrPerSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionMrrResponse, Insights.ListMrrPerSubscriptionError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -9703,7 +9703,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>readMrr(request: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise&lt;MrrResponse, ApiError&gt;</code></summary>
+<summary><code>readMrr(request?: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise&lt;MrrResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -10445,7 +10445,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listCreditNotes(request: Invoices.ListCreditNotesRequest, options?: RequestOptions): ApiPromise&lt;ListCreditNotesResponse, ApiError&gt;</code></summary>
+<summary><code>listCreditNotes(request?: Invoices.ListCreditNotesRequest, options?: RequestOptions): ApiPromise&lt;ListCreditNotesResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -10556,7 +10556,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listInvoiceEvents(request: Invoices.ListInvoiceEventsRequest, options?: RequestOptions): ApiPromise&lt;ListInvoiceEventsResponse, ApiError&gt;</code></summary>
+<summary><code>listInvoiceEvents(request?: Invoices.ListInvoiceEventsRequest, options?: RequestOptions): ApiPromise&lt;ListInvoiceEventsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -10673,7 +10673,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listInvoices(request: Invoices.ListInvoicesRequest, options?: RequestOptions): ApiPromise&lt;ListInvoicesResponse, ApiError&gt;</code></summary>
+<summary><code>listInvoices(request?: Invoices.ListInvoicesRequest, options?: RequestOptions): ApiPromise&lt;ListInvoicesResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -11188,7 +11188,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>recordPaymentForMultipleInvoices(request: Invoices.RecordPaymentForMultipleInvoicesRequest, options?: RequestOptions): ApiPromise&lt;MultiInvoicePaymentResponse, Invoices.RecordPaymentForMultipleInvoicesError&gt;</code></summary>
+<summary><code>recordPaymentForMultipleInvoices(request?: Invoices.RecordPaymentForMultipleInvoicesRequest, options?: RequestOptions): ApiPromise&lt;MultiInvoicePaymentResponse, Invoices.RecordPaymentForMultipleInvoicesError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -12161,7 +12161,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>createOffer(request: Offers.CreateOfferRequestParams, options?: RequestOptions): ApiPromise&lt;OfferResponse, Offers.CreateOfferError&gt;</code></summary>
+<summary><code>createOffer(request?: Offers.CreateOfferRequestParams, options?: RequestOptions): ApiPromise&lt;OfferResponse, Offers.CreateOfferError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -12283,7 +12283,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listOffers(request: Offers.ListOffersRequest, options?: RequestOptions): ApiPromise&lt;ListOffersResponse, Offers.ListOffersError&gt;</code></summary>
+<summary><code>listOffers(request?: Offers.ListOffersRequest, options?: RequestOptions): ApiPromise&lt;ListOffersResponse, Offers.ListOffersError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -12748,7 +12748,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>createPaymentProfile(request: PaymentProfiles.CreatePaymentProfileRequestParams, options?: RequestOptions): ApiPromise&lt;PaymentProfileResponse, PaymentProfiles.CreatePaymentProfileError&gt;</code></summary>
+<summary><code>createPaymentProfile(request?: PaymentProfiles.CreatePaymentProfileRequestParams, options?: RequestOptions): ApiPromise&lt;PaymentProfileResponse, PaymentProfiles.CreatePaymentProfileError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -13152,7 +13152,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listPaymentProfiles(request: PaymentProfiles.ListPaymentProfilesRequest, options?: RequestOptions): ApiPromise&lt;PaymentProfileResponse[], ApiError&gt;</code></summary>
+<summary><code>listPaymentProfiles(request?: PaymentProfiles.ListPaymentProfilesRequest, options?: RequestOptions): ApiPromise&lt;PaymentProfileResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -13806,7 +13806,7 @@ if (result.ok) {
 > Source: [ProductFamilies](src/resources/product-families.ts)
 
 <details>
-<summary><code>createProductFamily(request: ProductFamilies.CreateProductFamilyRequestParams, options?: RequestOptions): ApiPromise&lt;ProductFamilyResponse, ProductFamilies.CreateProductFamilyError&gt;</code></summary>
+<summary><code>createProductFamily(request?: ProductFamilies.CreateProductFamilyRequestParams, options?: RequestOptions): ApiPromise&lt;ProductFamilyResponse, ProductFamilies.CreateProductFamilyError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -13912,7 +13912,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listProductFamilies(request: ProductFamilies.ListProductFamiliesRequest, options?: RequestOptions): ApiPromise&lt;ProductFamilyResponse[], ApiError&gt;</code></summary>
+<summary><code>listProductFamilies(request?: ProductFamilies.ListProductFamiliesRequest, options?: RequestOptions): ApiPromise&lt;ProductFamilyResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -14966,7 +14966,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listProducts(request: Products.ListProductsRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse[], ApiError&gt;</code></summary>
+<summary><code>listProducts(request?: Products.ListProductsRequest, options?: RequestOptions): ApiPromise&lt;ProductResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -15848,7 +15848,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listAllProductPricePoints(request: ProductPricePoints.ListAllProductPricePointsRequest, options?: RequestOptions): ApiPromise&lt;ListProductPricePointsResponse, ProductPricePoints.ListAllProductPricePointsError&gt;</code></summary>
+<summary><code>listAllProductPricePoints(request?: ProductPricePoints.ListAllProductPricePointsRequest, options?: RequestOptions): ApiPromise&lt;ListProductPricePointsResponse, ProductPricePoints.ListAllProductPricePointsError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -16726,7 +16726,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>createSignupProformaInvoice(request: ProformaInvoices.CreateSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise&lt;ProformaInvoice, ProformaInvoices.CreateSignupProformaInvoiceError&gt;</code></summary>
+<summary><code>createSignupProformaInvoice(request?: ProformaInvoices.CreateSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise&lt;ProformaInvoice, ProformaInvoices.CreateSignupProformaInvoiceError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -17243,7 +17243,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>previewSignupProformaInvoice(request: ProformaInvoices.PreviewSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise&lt;SignupProformaPreviewResponse, ProformaInvoices.PreviewSignupProformaInvoiceError&gt;</code></summary>
+<summary><code>previewSignupProformaInvoice(request?: ProformaInvoices.PreviewSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise&lt;SignupProformaPreviewResponse, ProformaInvoices.PreviewSignupProformaInvoiceError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -17553,7 +17553,7 @@ if (result.ok) {
 > Source: [ReasonCodes](src/resources/reason-codes.ts)
 
 <details>
-<summary><code>createReasonCode(request: ReasonCodes.CreateReasonCodeRequestParams, options?: RequestOptions): ApiPromise&lt;ReasonCodeResponse, ReasonCodes.CreateReasonCodeError&gt;</code></summary>
+<summary><code>createReasonCode(request?: ReasonCodes.CreateReasonCodeRequestParams, options?: RequestOptions): ApiPromise&lt;ReasonCodeResponse, ReasonCodes.CreateReasonCodeError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -17739,7 +17739,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listReasonCodes(request: ReasonCodes.ListReasonCodesRequest, options?: RequestOptions): ApiPromise&lt;ReasonCodeResponse[], ReasonCodes.ListReasonCodesError&gt;</code></summary>
+<summary><code>listReasonCodes(request?: ReasonCodes.ListReasonCodesRequest, options?: RequestOptions): ApiPromise&lt;ReasonCodeResponse[], ReasonCodes.ListReasonCodesError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -18425,7 +18425,7 @@ if (result.ok) {
 > Source: [Sites](src/resources/sites.ts)
 
 <details>
-<summary><code>clearSite(request: Sites.ClearSiteRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
+<summary><code>clearSite(request?: Sites.ClearSiteRequest, options?: RequestOptions): ApiPromise&lt;undefined, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -18515,7 +18515,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listChargifyJsPublicKeys(request: Sites.ListChargifyJsPublicKeysRequest, options?: RequestOptions): ApiPromise&lt;ListPublicKeysResponse, ApiError&gt;</code></summary>
+<summary><code>listChargifyJsPublicKeys(request?: Sites.ListChargifyJsPublicKeysRequest, options?: RequestOptions): ApiPromise&lt;ListPublicKeysResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -18930,7 +18930,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>createSubscription(request: Subscriptions.CreateSubscriptionRequestParams, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse, Subscriptions.CreateSubscriptionError&gt;</code></summary>
+<summary><code>createSubscription(request?: Subscriptions.CreateSubscriptionRequestParams, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse, Subscriptions.CreateSubscriptionError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -19124,7 +19124,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>findSubscription(request: Subscriptions.FindSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse, Subscriptions.FindSubscriptionError&gt;</code></summary>
+<summary><code>findSubscription(request?: Subscriptions.FindSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse, Subscriptions.FindSubscriptionError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -19212,7 +19212,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listSubscriptions(request: Subscriptions.ListSubscriptionsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse[], ApiError&gt;</code></summary>
+<summary><code>listSubscriptions(request?: Subscriptions.ListSubscriptionsRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -19468,7 +19468,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>previewSubscription(request: Subscriptions.PreviewSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionPreviewResponse, ApiError&gt;</code></summary>
+<summary><code>previewSubscription(request?: Subscriptions.PreviewSubscriptionRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionPreviewResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -21467,7 +21467,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listSubscriptionComponentsForSite(request: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest, options?: RequestOptions): ApiPromise&lt;ListSubscriptionComponentsResponse, ApiError&gt;</code></summary>
+<summary><code>listSubscriptionComponentsForSite(request?: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest, options?: RequestOptions): ApiPromise&lt;ListSubscriptionComponentsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -22266,7 +22266,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>createSubscriptionGroup(request: SubscriptionGroups.CreateSubscriptionGroupRequestParams, options?: RequestOptions): ApiPromise&lt;SubscriptionGroupResponse, SubscriptionGroups.CreateSubscriptionGroupError&gt;</code></summary>
+<summary><code>createSubscriptionGroup(request?: SubscriptionGroups.CreateSubscriptionGroupRequestParams, options?: RequestOptions): ApiPromise&lt;SubscriptionGroupResponse, SubscriptionGroups.CreateSubscriptionGroupError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -22543,7 +22543,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listSubscriptionGroups(request: SubscriptionGroups.ListSubscriptionGroupsRequest, options?: RequestOptions): ApiPromise&lt;ListSubscriptionGroupsResponse, ApiError&gt;</code></summary>
+<summary><code>listSubscriptionGroups(request?: SubscriptionGroups.ListSubscriptionGroupsRequest, options?: RequestOptions): ApiPromise&lt;ListSubscriptionGroupsResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -22833,7 +22833,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>signupWithSubscriptionGroup(request: SubscriptionGroups.SignupWithSubscriptionGroupRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionGroupSignupResponse, SubscriptionGroups.SignupWithSubscriptionGroupError&gt;</code></summary>
+<summary><code>signupWithSubscriptionGroup(request?: SubscriptionGroups.SignupWithSubscriptionGroupRequest, options?: RequestOptions): ApiPromise&lt;SubscriptionGroupSignupResponse, SubscriptionGroups.SignupWithSubscriptionGroupError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -27605,7 +27605,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>createWallet(request: Wallets.CreateWalletRequestParams, options?: RequestOptions): ApiPromise&lt;WalletResponse, Wallets.CreateWalletError&gt;</code></summary>
+<summary><code>createWallet(request?: Wallets.CreateWalletRequestParams, options?: RequestOptions): ApiPromise&lt;WalletResponse, Wallets.CreateWalletError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -27699,7 +27699,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listWallets(request: Wallets.ListWalletsRequest, options?: RequestOptions): ApiPromise&lt;WalletsListResponse, Wallets.ListWalletsError&gt;</code></summary>
+<summary><code>listWallets(request?: Wallets.ListWalletsRequest, options?: RequestOptions): ApiPromise&lt;WalletsListResponse, Wallets.ListWalletsError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -28571,7 +28571,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>createWalletProduct(request: WalletProducts.CreateWalletProductRequestParams, options?: RequestOptions): ApiPromise&lt;WalletProductResponse, WalletProducts.CreateWalletProductError&gt;</code></summary>
+<summary><code>createWalletProduct(request?: WalletProducts.CreateWalletProductRequestParams, options?: RequestOptions): ApiPromise&lt;WalletProductResponse, WalletProducts.CreateWalletProductError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -28675,7 +28675,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listWalletProducts(request: WalletProducts.ListWalletProductsRequest, options?: RequestOptions): ApiPromise&lt;WalletProductsListResponse, WalletProducts.ListWalletProductsError&gt;</code></summary>
+<summary><code>listWalletProducts(request?: WalletProducts.ListWalletProductsRequest, options?: RequestOptions): ApiPromise&lt;WalletProductsListResponse, WalletProducts.ListWalletProductsError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -29130,7 +29130,7 @@ if (result.ok) {
 > Source: [Webhooks](src/resources/webhooks.ts)
 
 <details>
-<summary><code>createEndpoint(request: Webhooks.CreateEndpointRequest, options?: RequestOptions): ApiPromise&lt;EndpointResponse, Webhooks.CreateEndpointError&gt;</code></summary>
+<summary><code>createEndpoint(request?: Webhooks.CreateEndpointRequest, options?: RequestOptions): ApiPromise&lt;EndpointResponse, Webhooks.CreateEndpointError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -29241,7 +29241,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>enableWebhooks(request: Webhooks.EnableWebhooksRequestParams, options?: RequestOptions): ApiPromise&lt;EnableWebhooksResponse, ApiError&gt;</code></summary>
+<summary><code>enableWebhooks(request?: Webhooks.EnableWebhooksRequestParams, options?: RequestOptions): ApiPromise&lt;EnableWebhooksResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -29405,7 +29405,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>listWebhooks(request: Webhooks.ListWebhooksRequest, options?: RequestOptions): ApiPromise&lt;WebhookResponse[], ApiError&gt;</code></summary>
+<summary><code>listWebhooks(request?: Webhooks.ListWebhooksRequest, options?: RequestOptions): ApiPromise&lt;WebhookResponse[], ApiError&gt;</code></summary>
 
 <dl>
 <dd>
@@ -29499,7 +29499,7 @@ if (result.ok) {
 </details>
 
 <details>
-<summary><code>replayWebhooks(request: Webhooks.ReplayWebhooksRequestParams, options?: RequestOptions): ApiPromise&lt;ReplayWebhooksResponse, ApiError&gt;</code></summary>
+<summary><code>replayWebhooks(request?: Webhooks.ReplayWebhooksRequestParams, options?: RequestOptions): ApiPromise&lt;ReplayWebhooksResponse, ApiError&gt;</code></summary>
 
 <dl>
 <dd>

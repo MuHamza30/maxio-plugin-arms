@@ -52,9 +52,9 @@ export type RawClientOptions = ResolvedCoreClientOptions & {
   readonly defaultPathParams: readonly Param[];
 };
 
-export type UrlTemplate<Path extends string = string> = {
+export type UrlTemplate = {
   readonly baseUrl: string;
-  readonly subPath: Path;
+  readonly subPath: string;
 };
 
 /**
@@ -65,16 +65,6 @@ export type ServerBase = {
   baseUrl: string;
   variables?: Record<string, string> | undefined;
 };
-
-type Placeholders<Path extends string> = Path extends `${string}{${infer Name}}${infer Rest}`
-  ? Name | Placeholders<Rest>
-  : never;
-
-export type PathParamName<Path extends string> = Path extends `${string}{${string}}${string}`
-  ? Placeholders<Path>
-  : Path extends `/${string}`
-    ? never
-    : string;
 
 export type AuthParams = {
   readonly headers: readonly ParamPair[];
@@ -88,11 +78,11 @@ export type AuthScheme = {
   invalidate?(): void;
 };
 
-export type ApiRequest<Path extends string = string> = {
+export type ApiRequest = {
   readonly method: HttpMethod;
-  readonly urlTemplate: UrlTemplate<Path>;
+  readonly urlTemplate: UrlTemplate;
   readonly auth: AuthScheme;
-  readonly pathParams: readonly Param<PathParamName<Path>>[];
+  readonly pathParams: readonly Param[];
   readonly query: readonly StyledParam[];
   readonly headers: readonly Param[];
   readonly body: RequestBody;

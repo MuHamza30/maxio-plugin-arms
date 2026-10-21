@@ -116,7 +116,8 @@ export type OAuth2RefreshableTokenStrategy<TCredentials> = {
  *
  * @remarks
  * `"header"` sends them as `Authorization: Basic`; `"body"` sends them as form fields, the
- * `client_secret_post` style.
+ * `client_secret_post` style. A client with no secret is a public client: under either
+ * placement it sends only `client_id`, as a form field, and no `Authorization` header.
  */
 export type OAuth2CredentialPlacement = "header" | "body";
 
@@ -263,12 +264,17 @@ function placeCredentials(
   clientId: string,
   clientSecret: string | undefined,
 ): { headers: Param[]; fields: StyledParam[] } {
+  const clientIdField: StyledParam = { name: "client_id", value: clientId, schema: s.string() };
+  if (clientSecret === undefined || clientSecret === "") {
+    return { headers: [], fields: [clientIdField] };
+  }
+
   if (placement === "header") {
     return {
       headers: [
         {
           name: "Authorization",
-          value: basicCredential(clientId, clientSecret ?? ""),
+          value: basicCredential(clientId, clientSecret),
           schema: s.string(),
         },
       ],
@@ -276,11 +282,10 @@ function placeCredentials(
     };
   }
 
-  const fields: StyledParam[] = [{ name: "client_id", value: clientId, schema: s.string() }];
-  if (clientSecret !== undefined) {
-    fields.push({ name: "client_secret", value: clientSecret, schema: s.string() });
-  }
-  return { headers: [], fields };
+  return {
+    headers: [],
+    fields: [clientIdField, { name: "client_secret", value: clientSecret, schema: s.string() }],
+  };
 }
 
 async function requestToken<T>(

@@ -176,7 +176,7 @@ Accessor: `client.components` · Source: `src/resources/components.ts` · 12 ope
 
 ### listComponents
 
-- **Signature**: `listComponents(request: Components.ListComponentsRequest, options?: RequestOptions): ApiPromise<ComponentResponse[], ApiError>`
+- **Signature**: `listComponents(request?: Components.ListComponentsRequest, options?: RequestOptions): ApiPromise<ComponentResponse[], ApiError>`
 - **Wire**: `GET /components.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

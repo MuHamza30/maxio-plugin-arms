@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { errorListResponse1Schema, type ErrorListResponse1 } from "../models/error-list-response1.js";
@@ -14,6 +15,12 @@ import {
 import { voidInvoiceRequestSchema, type VoidInvoiceRequest } from "../models/void-invoice-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * Use the Advance Invoice feature to issue, retrieve, or void an invoice for a subscription ahead
+ * of its normal billing schedule, collecting an outstanding balance before the next scheduled
+ * renewal. For more information, see [Issue Advance Invoices for Subscription
+ * Renewals](https://docs.maxio.com/billing/invoicing/advance-invoices/issue-advance-invoices-for-subscription-renewals).
+ */
 export class AdvanceInvoice {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -174,9 +181,10 @@ export namespace AdvanceInvoice {
   };
 
   export class IssueAdvanceInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<IssueAdvanceInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -190,7 +198,7 @@ export namespace AdvanceInvoice {
   };
 
   export class ReadAdvanceInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadAdvanceInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -204,7 +212,7 @@ export namespace AdvanceInvoice {
   };
 
   export class VoidAdvanceInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<VoidAdvanceInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

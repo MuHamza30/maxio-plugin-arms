@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import * as s from "../core/validation/index.js";
 import {
   aggregatedEntitlementsResponseSchema,
@@ -11,6 +12,15 @@ import {
 import { errorListResponse1Schema, type ErrorListResponse1 } from "../models/error-list-response1.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * Entitlements report what a subscription is allowed to do, and how much of it, based on the
+ * features granted by the subscription's products and components.
+ *
+ * When more than one product or component grants the same feature, the values are aggregated into
+ * one entry per feature key and periodicity. For more information, see [Read Subscription
+ * Entitlements with the
+ * API](https://docs.maxio.com/billing/catalog/entitlements/read-subscription-entitlements-with-the-api).
+ */
 export class Entitlements {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -85,9 +95,10 @@ export namespace Entitlements {
   };
 
   export class ReadSubscriptionEntitlementsError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"error404", undefined>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"error404", undefined>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadSubscriptionEntitlementsError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

@@ -20,7 +20,7 @@ from collections.abc import AsyncIterator, Iterator, Mapping
 from dataclasses import dataclass
 from typing import Literal, Protocol, TypeAlias
 
-from ._internal.urls import strip_query
+from ._internal.redaction import redact_url
 from .bodies import RequestBody
 
 HttpMethod: TypeAlias = Literal["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "TRACE", "PATCH"]
@@ -32,7 +32,8 @@ failure, and so a retry policy can only ever nominate a verb a request can carry
 
 @dataclass(frozen=True, slots=True)
 class HttpRequest:
-    """An outbound request, fully resolved and ready for a transport to send."""
+    """An outbound request, fully resolved and ready for a transport to send; ``headers`` already
+    carry the body's own label."""
 
     method: HttpMethod
     url: str
@@ -43,12 +44,13 @@ class HttpRequest:
     """Seconds to wait, or ``None`` to leave the transport's own timeout in force."""
 
     def __repr__(self) -> str:
-        # Identify by method and path only. ``headers`` holds the rendered credential, the query
-        # string holds a query-placed api key, and ``body`` holds a form-encoded ``client_secret``
-        # -- so none of the three reaches the string form. This is also the type that crosses the
-        # ``HttpClient`` seam, which is where a logging transport would print it. The fields stay
-        # readable: this is a string form, not redaction.
-        return f"{type(self).__name__}(method={self.method!r}, url={strip_query(self.url)!r})"
+        # Identify by method and URL, unknown query values masked. ``headers`` holds the rendered
+        # credential and ``body`` a form-encoded ``client_secret``, so neither reaches the string form;
+        # the query string holds a query-placed api key, so it goes through the one printable-URL
+        # rule with its defaults -- keys kept, a known-safe value kept, everything else ``REDACTED``,
+        # since a repr reads no options. This is also the type that crosses the ``HttpClient`` seam,
+        # which is where a logging transport would print it. The fields stay readable.
+        return f"{type(self).__name__}(method={self.method!r}, url={redact_url(self.url)!r})"
 
 
 class HttpResponse(Protocol):
@@ -142,12 +144,11 @@ class HttpClient(Protocol):
       case-insensitively and HTTP/2 requires lowercase, so a caller's lookup needs no case
       handling -- the same rule, for the same reason, as the request side in
       ``_internal/headers.py``.
-    - MUST label a body from what the body carries, and spell nothing of its own: a
-      :class:`BinaryBody`'s ``media_type`` as ``Content-Type`` and, where it names one, its
-      ``filename`` as ``Content-Disposition``. Both merge **underneath** ``request.headers``, so a
-      caller's ``extra_headers`` still wins. The shipped transport renders the disposition through
-      ``_internal/content_disposition.py``; a custom one owning that rendering is the cost it
-      already carries for the media type.
+    - MUST send ``request.headers`` as given and spell no header of its own: a body's label -- its
+      media type as ``Content-Type``, and a raw body's name as ``Content-Disposition`` -- is already
+      among them, folded under the parameter layers when the request was built, so a caller's
+      ``extra_headers`` has already won. The one label a transport writes is a multipart body's,
+      whose boundary exists only once its encoder has minted it.
     - MUST raise :class:`~.exceptions.TransportError` (``from <sdk>.core import TransportError``)
       when a request produces no response at all -- a refused connection, a dropped one, a protocol
       failure, a timeout -- or the retry loop never sees the failure, and MUST confine it to

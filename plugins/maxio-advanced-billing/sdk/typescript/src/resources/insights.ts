@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import * as s from "../core/validation/index.js";
 import { directionSchema, type Direction } from "../models/direction.js";
 import { listMrrFilterSchema, type ListMrrFilter } from "../models/list-mrr-filter.js";
@@ -20,6 +21,10 @@ import {
 } from "../models/subscriptions-mrr-error-response1.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Insights endpoints provide aggregate site-level statistics, such as customer and subscription
+ * counts, giving a high-level snapshot of account activity.
+ */
 export class Insights {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -75,7 +80,7 @@ export class Insights {
    * @deprecated
    */
   listMrrMovements(
-    request: Insights.ListMrrMovementsRequest,
+    request: Insights.ListMrrMovementsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ListMrrResponse, ApiError> {
     return this.#rawClient.execute(
@@ -123,7 +128,7 @@ export class Insights {
    * @deprecated
    */
   listMrrPerSubscription(
-    request: Insights.ListMrrPerSubscriptionRequest,
+    request: Insights.ListMrrPerSubscriptionRequest = {},
     options?: RequestOptions,
   ): ApiPromise<SubscriptionMrrResponse, Insights.ListMrrPerSubscriptionError> {
     return this.#rawClient.execute(
@@ -166,7 +171,10 @@ export class Insights {
    *
    * @deprecated
    */
-  readMrr(request: Insights.ReadMrrRequest, options?: RequestOptions): ApiPromise<MrrResponse, ApiError> {
+  readMrr(
+    request: Insights.ReadMrrRequest = {},
+    options?: RequestOptions,
+  ): ApiPromise<MrrResponse, ApiError> {
     return this.#rawClient.execute(
       {
         method: "GET",
@@ -293,9 +301,9 @@ export namespace Insights {
   };
 
   export class ListMrrPerSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"subscriptionsMrrErrorResponse1", SubscriptionsMrrErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"subscriptionsMrrErrorResponse1", SubscriptionsMrrErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ListMrrPerSubscriptionError> = [
       {

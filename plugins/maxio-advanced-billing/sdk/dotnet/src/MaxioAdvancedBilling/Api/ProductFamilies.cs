@@ -16,6 +16,9 @@ using MaxioAdvancedBilling.Requests.ProductFamilies;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Product Family object groups related Products together for organizational purposes, such as products belonging to a single line of business, each sharing a family-level handle and accounting code. For more information, see <see href="https://docs.maxio.com/billing/catalog/plans/organize-product-families">Organize Product Families</see>.
+/// </summary>
 public sealed class ProductFamilies
 {
     private readonly RawClient _rawClient;

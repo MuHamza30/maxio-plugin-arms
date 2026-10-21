@@ -14,6 +14,9 @@ using MaxioAdvancedBilling.Requests.ApiExports;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// API Exports allow you to generate and download bulk exports of subscriptions, invoices, and proforma invoices as asynchronous batch jobs, useful for reporting or migrating data outside the standard paginated list endpoints. For more information, see <see href="https://docs.maxio.com/insights/data-export/field-references/billing-export-fields-reference#invoice-line-items-fields">Billing Export Fields Reference</see>.
+/// </summary>
 public sealed class ApiExports
 {
     private readonly RawClient _rawClient;

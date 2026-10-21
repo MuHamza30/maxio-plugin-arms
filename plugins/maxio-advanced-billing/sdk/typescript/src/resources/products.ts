@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { basicDateFieldSchema, type BasicDateField } from "../models/basic-date-field.js";
@@ -16,6 +17,17 @@ import { listProductsIncludeSchema, type ListProductsInclude } from "../models/l
 import { productResponseSchema, type ProductResponse } from "../models/product-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Product object defines what you sell, including default pricing, billing interval, and trial
+ * configuration. With the new catalog experience, the UI labels products as Plans, while the API
+ * keeps the product name. See [Catalog
+ * terminology](https://docs.maxio.com/billing/catalog/overview/using-the-new-product-catalog#catalog-terminology).
+ *
+ * Products are grouped under a Product Family and are the base type a customer subscribes to.
+ * Products can also grant features to subscribers. See the **Create Product Feature Catalog Item**
+ * endpoint for details. For more information, see [Understand
+ * Plans](https://docs.maxio.com/billing/catalog/plans/understand-plans).
+ */
 export class Products {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -136,7 +148,7 @@ export class Products {
    * credential that could not be obtained
    */
   listProducts(
-    request: Products.ListProductsRequest,
+    request: Products.ListProductsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ProductResponse[], ApiError> {
     return this.#rawClient.execute(
@@ -323,7 +335,7 @@ export namespace Products {
   };
 
   export class ArchiveProductError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ArchiveProductError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -337,7 +349,7 @@ export namespace Products {
   };
 
   export class CreateProductError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateProductError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -435,7 +447,7 @@ export namespace Products {
   };
 
   export class UpdateProductError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateProductError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

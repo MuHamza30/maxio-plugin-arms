@@ -39,9 +39,9 @@ internal static class HeaderValueExtensions
             }
         }
 
-        public string? GetLinkHeaderUrl(string rel)
+        public string? GetLinkHeaderUrl(string headerName, string rel)
         {
-            if (!headers.TryGetValues("Link", out var headerValues))
+            if (!headers.TryGetValues(headerName, out var headerValues))
                 return null;
 
             foreach (var headerValue in headerValues)

@@ -15,6 +15,12 @@ using MaxioAdvancedBilling.Requests.Customers;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Customer object represents the person or organization being billed and is the anchor that subscriptions, payment profiles, and invoices are all attached to.
+/// <para>
+/// A customer record stores contact and billing details (name, address, tax exemption status, locale) along with references to related records, such as the customer's default subscription group. For more information, see <see href="https://docs.maxio.com/billing/subscriptions/customers/understand-customers-for-subscription-management">Understand Customers for Subscription Management</see>.
+/// </para>
+/// </summary>
 public sealed class Customers
 {
     private readonly RawClient _rawClient;

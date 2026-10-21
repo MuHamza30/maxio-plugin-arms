@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -33,6 +34,15 @@ import { webhookResponseSchema, type WebhookResponse } from "../models/webhook-r
 import { webhookStatusSchema, type WebhookStatus } from "../models/webhook-status.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Webhook object represents a single notification sent to your configured endpoint when an
+ * event occurs.
+ *
+ * A webhook tracks delivery status, including when it was last sent, whether the merchant endpoint
+ * accepted it, and any error from a failed attempt. For more information, see [Understand Webhooks
+ * in Advanced
+ * Billing](https://docs.maxio.com/configuration/advanced-billing/webhooks/understand-webhooks-in-advanced-billing).
+ */
 export class Webhooks {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -62,7 +72,7 @@ export class Webhooks {
    * credential that could not be obtained
    */
   createEndpoint(
-    request: Webhooks.CreateEndpointRequest,
+    request: Webhooks.CreateEndpointRequest = {},
     options?: RequestOptions,
   ): ApiPromise<EndpointResponse, Webhooks.CreateEndpointError> {
     return this.#rawClient.execute(
@@ -102,7 +112,7 @@ export class Webhooks {
    * credential that could not be obtained
    */
   enableWebhooks(
-    request: Webhooks.EnableWebhooksRequestParams,
+    request: Webhooks.EnableWebhooksRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<EnableWebhooksResponse, ApiError> {
     return this.#rawClient.execute(
@@ -176,7 +186,7 @@ export class Webhooks {
    * credential that could not be obtained
    */
   listWebhooks(
-    request: Webhooks.ListWebhooksRequest,
+    request: Webhooks.ListWebhooksRequest = {},
     options?: RequestOptions,
   ): ApiPromise<WebhookResponse[], ApiError> {
     return this.#rawClient.execute(
@@ -222,7 +232,7 @@ export class Webhooks {
    * credential that could not be obtained
    */
   replayWebhooks(
-    request: Webhooks.ReplayWebhooksRequestParams,
+    request: Webhooks.ReplayWebhooksRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<ReplayWebhooksResponse, ApiError> {
     return this.#rawClient.execute(
@@ -303,7 +313,7 @@ export namespace Webhooks {
   };
 
   export class CreateEndpointError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateEndpointError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -362,9 +372,10 @@ export namespace Webhooks {
   };
 
   export class UpdateEndpointError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateEndpointError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

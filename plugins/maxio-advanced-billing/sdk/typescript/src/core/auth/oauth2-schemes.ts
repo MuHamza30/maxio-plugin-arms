@@ -76,5 +76,6 @@ function bearer(token: OAuthToken): AuthParams {
 
 function expiryOf(token: OAuthToken): number {
   if (token.expiresIn === undefined || token.expiresIn <= 0) return Number.POSITIVE_INFINITY;
-  return Date.now() + token.expiresIn * 1000 - EXPIRY_BUFFER_MS;
+  const lifetimeMs = token.expiresIn * 1000;
+  return Date.now() + Math.max(lifetimeMs - EXPIRY_BUFFER_MS, lifetimeMs / 2);
 }

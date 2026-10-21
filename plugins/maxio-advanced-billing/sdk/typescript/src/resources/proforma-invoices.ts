@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -43,6 +44,13 @@ import {
 import { voidInvoiceRequestSchema, type VoidInvoiceRequest } from "../models/void-invoice-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Proforma Invoice object is a preview of an upcoming invoice, showing the charges a customer
+ * will be billed before the actual invoice is issued. A proforma invoice is not a finalized billing
+ * document and is commonly used to give customers advance visibility into what they owe. For more
+ * information, see [Understand Proforma
+ * Invoices](https://docs.maxio.com/billing/invoicing/proforma-invoices/understand-proforma-invoices).
+ */
 export class ProformaInvoices {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -175,7 +183,7 @@ export class ProformaInvoices {
    * credential that could not be obtained
    */
   createSignupProformaInvoice(
-    request: ProformaInvoices.CreateSignupProformaInvoiceRequest,
+    request: ProformaInvoices.CreateSignupProformaInvoiceRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ProformaInvoice, ProformaInvoices.CreateSignupProformaInvoiceError> {
     return this.#rawClient.execute(
@@ -434,7 +442,7 @@ export class ProformaInvoices {
    * credential that could not be obtained
    */
   previewSignupProformaInvoice(
-    request: ProformaInvoices.PreviewSignupProformaInvoiceRequest,
+    request: ProformaInvoices.PreviewSignupProformaInvoiceRequest = {},
     options?: RequestOptions,
   ): ApiPromise<SignupProformaPreviewResponse, ProformaInvoices.PreviewSignupProformaInvoiceError> {
     return this.#rawClient.execute(
@@ -566,7 +574,7 @@ export namespace ProformaInvoices {
   };
 
   export class CreateConsolidatedProformaInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateConsolidatedProformaInvoiceError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -579,7 +587,7 @@ export namespace ProformaInvoices {
   };
 
   export class CreateProformaInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateProformaInvoiceError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -591,10 +599,10 @@ export namespace ProformaInvoices {
   };
 
   export class CreateSignupProformaInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"proformaBadRequestErrorResponse1", ProformaBadRequestErrorResponse1>
       | Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateSignupProformaInvoiceError> = [
       {
@@ -617,9 +625,10 @@ export namespace ProformaInvoices {
   };
 
   export class DeliverProformaInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<DeliverProformaInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -688,7 +697,7 @@ export namespace ProformaInvoices {
   };
 
   export class ListSubscriptionGroupProformaInvoicesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListSubscriptionGroupProformaInvoicesError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -701,9 +710,10 @@ export namespace ProformaInvoices {
   };
 
   export class PreviewProformaInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<PreviewProformaInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -721,10 +731,10 @@ export namespace ProformaInvoices {
   };
 
   export class PreviewSignupProformaInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"proformaBadRequestErrorResponse1", ProformaBadRequestErrorResponse1>
       | Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<PreviewSignupProformaInvoiceError> = [
       {
@@ -746,7 +756,7 @@ export namespace ProformaInvoices {
   };
 
   export class ReadProformaInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadProformaInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -760,9 +770,10 @@ export namespace ProformaInvoices {
   };
 
   export class VoidProformaInvoiceError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<VoidProformaInvoiceError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

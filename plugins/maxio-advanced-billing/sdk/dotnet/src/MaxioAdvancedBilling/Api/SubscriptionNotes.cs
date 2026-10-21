@@ -15,6 +15,12 @@ using MaxioAdvancedBilling.Requests.SubscriptionNotes;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Subscription Note object stores an internal note attached to a subscription, used to record context, decisions, or history for your team.
+/// <para>
+/// Notes are never exposed to the customer; they exist purely for internal reference.
+/// </para>
+/// </summary>
 public sealed class SubscriptionNotes
 {
     private readonly RawClient _rawClient;

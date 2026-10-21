@@ -56,7 +56,7 @@ Accessor: `client.products` · Source: `src/resources/products.ts` · 6 operatio
 
 ### listProducts
 
-- **Signature**: `listProducts(request: Products.ListProductsRequest, options?: RequestOptions): ApiPromise<ProductResponse[], ApiError>`
+- **Signature**: `listProducts(request?: Products.ListProductsRequest, options?: RequestOptions): ApiPromise<ProductResponse[], ApiError>`
 - **Wire**: `GET /products.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

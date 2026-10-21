@@ -9,7 +9,7 @@ Accessor: `client.productFamilies` · Source: `src/resources/product-families.ts
 ### createProductFamily
 
 - **Provider rules (Maxio)**: Set a stable `handle` you will keep (R6). Send `surcharging: false` if the family's products must not carry surcharges. Notes: `knowledge/operations/product-families.md#createproductfamily`
-- **Signature**: `createProductFamily(request: ProductFamilies.CreateProductFamilyRequestParams, options?: RequestOptions): ApiPromise<ProductFamilyResponse, ProductFamilies.CreateProductFamilyError>`
+- **Signature**: `createProductFamily(request?: ProductFamilies.CreateProductFamilyRequestParams, options?: RequestOptions): ApiPromise<ProductFamilyResponse, ProductFamilies.CreateProductFamilyError>`
 - **Wire**: `POST /product_families.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -32,7 +32,7 @@ Accessor: `client.productFamilies` · Source: `src/resources/product-families.ts
 
 ### listProductFamilies
 
-- **Signature**: `listProductFamilies(request: ProductFamilies.ListProductFamiliesRequest, options?: RequestOptions): ApiPromise<ProductFamilyResponse[], ApiError>`
+- **Signature**: `listProductFamilies(request?: ProductFamilies.ListProductFamiliesRequest, options?: RequestOptions): ApiPromise<ProductFamilyResponse[], ApiError>`
 - **Wire**: `GET /product_families.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

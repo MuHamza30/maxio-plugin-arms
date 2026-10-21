@@ -12,6 +12,12 @@ using MaxioAdvancedBilling.Requests.Entitlements;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Entitlements report what a subscription is allowed to do, and how much of it, based on the features granted by the subscription's products and components.
+/// <para>
+/// When more than one product or component grants the same feature, the values are aggregated into one entry per feature key and periodicity. For more information, see <see href="https://docs.maxio.com/billing/catalog/entitlements/read-subscription-entitlements-with-the-api">Read Subscription Entitlements with the API</see>.
+/// </para>
+/// </summary>
 public sealed class Entitlements
 {
     private readonly RawClient _rawClient;

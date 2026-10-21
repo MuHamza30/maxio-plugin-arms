@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -24,6 +25,14 @@ import {
 } from "../models/update-feature-catalog-item-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Component Feature object attaches a Feature Template to a Component as a feature catalog item
+ * with a concrete value, granting that feature to subscribers through the component.
+ *
+ * A component feature applies to the whole component by default, or can be scoped to a single
+ * component price point as an override. For more information, see [Configure
+ * Entitlements](https://docs.maxio.com/billing/catalog/entitlements/configure-entitlements).
+ */
 export class ComponentFeatures {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -296,11 +305,11 @@ export namespace ComponentFeatures {
   };
 
   export class CreateComponentFeatureError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"errorListResponse1", ErrorListResponse1>
       | Declared<"error404", undefined>
       | Declared<"errorListResponse12", ErrorListResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateComponentFeatureError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -315,9 +324,10 @@ export namespace ComponentFeatures {
   };
 
   export class ListComponentFeaturesError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"error404", undefined>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"error404", undefined>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ListComponentFeaturesError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -333,9 +343,10 @@ export namespace ComponentFeatures {
   };
 
   export class ReadComponentFeatureError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"error404", undefined>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"error404", undefined>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadComponentFeatureError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -359,9 +370,10 @@ export namespace ComponentFeatures {
   };
 
   export class RemoveComponentFeatureError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"error404", undefined>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"error404", undefined>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<RemoveComponentFeatureError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -377,11 +389,11 @@ export namespace ComponentFeatures {
   };
 
   export class RestoreComponentFeatureError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"errorListResponse1", ErrorListResponse1>
       | Declared<"error404", undefined>
       | Declared<"errorListResponse12", ErrorListResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<RestoreComponentFeatureError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -399,11 +411,11 @@ export namespace ComponentFeatures {
   };
 
   export class UpdateComponentFeatureError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"errorListResponse1", ErrorListResponse1>
       | Declared<"error404", undefined>
       | Declared<"errorListResponse12", ErrorListResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateComponentFeatureError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

@@ -283,7 +283,7 @@ Accessor: `client.subscriptionComponents` · Source: `src/resources/subscription
 
 ### listSubscriptionComponentsForSite
 
-- **Signature**: `listSubscriptionComponentsForSite(request: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest, options?: RequestOptions): ApiPromise<ListSubscriptionComponentsResponse, ApiError>`
+- **Signature**: `listSubscriptionComponentsForSite(request?: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest, options?: RequestOptions): ApiPromise<ListSubscriptionComponentsResponse, ApiError>`
 - **Wire**: `GET /subscriptions_components.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

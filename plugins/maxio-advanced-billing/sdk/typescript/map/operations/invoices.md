@@ -104,7 +104,7 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 ### listCreditNotes
 
-- **Signature**: `listCreditNotes(request: Invoices.ListCreditNotesRequest, options?: RequestOptions): ApiPromise<ListCreditNotesResponse, ApiError>`
+- **Signature**: `listCreditNotes(request?: Invoices.ListCreditNotesRequest, options?: RequestOptions): ApiPromise<ListCreditNotesResponse, ApiError>`
 - **Wire**: `GET /credit_notes.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -138,7 +138,7 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 
 ### listInvoiceEvents
 
-- **Signature**: `listInvoiceEvents(request: Invoices.ListInvoiceEventsRequest, options?: RequestOptions): ApiPromise<ListInvoiceEventsResponse, ApiError>`
+- **Signature**: `listInvoiceEvents(request?: Invoices.ListInvoiceEventsRequest, options?: RequestOptions): ApiPromise<ListInvoiceEventsResponse, ApiError>`
 - **Wire**: `GET /invoices/events.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -165,7 +165,7 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 ### listInvoices
 
 - **Provider rules (Maxio)**: Request each nested array you need (`line_items=true`, ...) (R9). Use datetime filters only with `date_field` set to `created_at` or `updated_at`. Notes: `knowledge/operations/invoices.md#listinvoices`
-- **Signature**: `listInvoices(request: Invoices.ListInvoicesRequest, options?: RequestOptions): ApiPromise<ListInvoicesResponse, ApiError>`
+- **Signature**: `listInvoices(request?: Invoices.ListInvoicesRequest, options?: RequestOptions): ApiPromise<ListInvoicesResponse, ApiError>`
 - **Wire**: `GET /invoices.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -296,7 +296,7 @@ Accessor: `client.invoices` · Source: `src/resources/invoices.ts` · 19 operati
 ### recordPaymentForMultipleInvoices
 
 - **Provider rules (Maxio)**: This records an external payment; it charges nothing (inferred). Give each invoice at most its due amount; to leave a prepayment, raise the total `amount` above the sum of `applications`. Never include a consolidated invoice. Notes: `knowledge/operations/invoices.md#recordpaymentformultipleinvoices`
-- **Signature**: `recordPaymentForMultipleInvoices(request: Invoices.RecordPaymentForMultipleInvoicesRequest, options?: RequestOptions): ApiPromise<MultiInvoicePaymentResponse, Invoices.RecordPaymentForMultipleInvoicesError>`
+- **Signature**: `recordPaymentForMultipleInvoices(request?: Invoices.RecordPaymentForMultipleInvoicesRequest, options?: RequestOptions): ApiPromise<MultiInvoicePaymentResponse, Invoices.RecordPaymentForMultipleInvoicesError>`
 - **Wire**: `POST /invoices/payments.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all

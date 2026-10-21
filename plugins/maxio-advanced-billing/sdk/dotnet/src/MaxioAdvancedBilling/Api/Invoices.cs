@@ -14,6 +14,12 @@ using MaxioAdvancedBilling.Requests.Invoices;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Invoice object is the billing document generated for a subscription, itemizing charges, taxes, and payments, and tracking amounts owed.
+/// <para>
+/// The role indicates what triggered the invoice (signup, renewal, usage, proration, etc.), and the status and due_date reflect where an invoice stands in the payment lifecycle. For more information, see <see href="https://docs.maxio.com/billing/invoicing/overview/get-started-with-invoicing">Get Started with Invoicing</see>.
+/// </para>
+/// </summary>
 public sealed class Invoices
 {
     private readonly RawClient _rawClient;

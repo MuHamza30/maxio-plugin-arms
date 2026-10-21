@@ -13,6 +13,12 @@ import {
 import { siteResponseSchema, type SiteResponse } from "../models/site-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Site object represents a single billing account and holds site-wide configuration, such as
+ * default currency, tax settings, net terms, and which billing features are enabled. For more
+ * information, see [Understand Advanced Billing
+ * Sites](https://docs.maxio.com/configuration/advanced-billing/sites/sites-overview).
+ */
 export class Sites {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -44,7 +50,7 @@ export class Sites {
    * failure, a timeout, a body that would not decode, a value that would not encode, or a
    * credential that could not be obtained
    */
-  clearSite(request: Sites.ClearSiteRequest, options?: RequestOptions): ApiPromise<undefined, ApiError> {
+  clearSite(request: Sites.ClearSiteRequest = {}, options?: RequestOptions): ApiPromise<undefined, ApiError> {
     return this.#rawClient.execute(
       {
         method: "POST",
@@ -84,7 +90,7 @@ export class Sites {
    * credential that could not be obtained
    */
   listChargifyJsPublicKeys(
-    request: Sites.ListChargifyJsPublicKeysRequest,
+    request: Sites.ListChargifyJsPublicKeysRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ListPublicKeysResponse, ApiError> {
     return this.#rawClient.execute(

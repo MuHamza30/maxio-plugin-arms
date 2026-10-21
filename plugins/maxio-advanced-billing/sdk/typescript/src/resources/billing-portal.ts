@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { autoInviteSchema, type AutoInvite } from "../models/auto-invite.js";
@@ -17,6 +18,12 @@ import {
 } from "../models/too-many-management-link-requests-error1.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Billing Portal object allows you to enable, disable, and manage customer access to the
+ * self-service Billing Portal, where customers can view invoices and manage their own payment
+ * details. For more information, see [Understand the Billing
+ * Portal](https://docs.maxio.com/billing/billing-portal/overview/understand-the-billing-portal).
+ */
 export class BillingPortal {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -245,7 +252,7 @@ export namespace BillingPortal {
   };
 
   export class EnableBillingPortalForCustomerError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<EnableBillingPortalForCustomerError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -258,10 +265,10 @@ export namespace BillingPortal {
   };
 
   export class ReadBillingPortalLinkError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"errorListResponse1", ErrorListResponse1>
       | Declared<"tooManyManagementLinkRequestsError1", TooManyManagementLinkRequestsError1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadBillingPortalLinkError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -279,9 +286,10 @@ export namespace BillingPortal {
   };
 
   export class ResendBillingPortalInvitationError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ResendBillingPortalInvitationError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

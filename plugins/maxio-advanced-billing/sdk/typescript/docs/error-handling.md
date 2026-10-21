@@ -19,7 +19,7 @@ silently wrong.
 > matches**. An API can declare typed errors on every operation, on none, or on a mix.
 
 Operations are **throw-based** (for a non-throwing alternative, see **The non-throwing form** below),
-and every **operational** failure belongs to **one family**: `{Api}Error`, a union over six leaves.
+and every **operational** failure belongs to **one family**: `{Api}Error`, a union over seven leaves.
 One `instanceof {Api}Error` sees all of them, and `err.kind` says which one it is. Four throwables sit
 **outside** the family — a configuration fault, a codec called directly, a bug, and a caller abort —
 so a `catch` that tests the family has to rethrow whatever is left.
@@ -46,6 +46,9 @@ try {
       case "auth":
         // No response was produced — err.kind says which.
         break;
+      case "pagination":
+        // A paged walk could not follow the next link the API sent — the pages before it were delivered.
+        break;
     }
   } else {
     throw err;   // outside the family: an abort's reason, a configuration fault, or a bug
@@ -64,13 +67,13 @@ nothing else.
 
 | import | what it is |
 | --- | --- |
-| `{Api}Error` | the whole family — a type **and** a value. The type is the union of the six leaves; the value is the abstract class they all extend, so `instanceof` and `err.kind` select the same set. It cannot be constructed or extended. The SDK-branded alias of `CoreError`, which is not exported under its own name |
+| `{Api}Error` | the whole family — a type **and** a value. The type is the union of the seven leaves; the value is the abstract class they all extend, so `instanceof` and `err.kind` select the same set. It cannot be constructed or extended. The SDK-branded alias of `CoreError`, which is not exported under its own name |
 | `ResponseError` | the part of the family the server answered on — `ApiError \| DecodeError`, the two that carry `status` and `headers`. A type and a value, like `{Api}Error` |
 | `ApiError` | `kind: "api"` — the API answered with an error status. The base every operation without declared error bodies rejects with, and the class every per-operation error extends |
 | `{Resource}.{Operation}Error` | the generated `ApiError` subclass for an operation that declares error bodies, on the **resource class's merged namespace** — not a free-standing export |
-| `DecodeError` `EncodeError` `ConnectionError` `TimeoutError` `AuthError` | the other five leaves |
+| `DecodeError` `EncodeError` `ConnectionError` `TimeoutError` `AuthError` `PaginationError` | the other six leaves |
 | `ConfigurationError` `SchemaError` | outside the family: a constructor fault, and a codec called directly |
-| `type ErrorKind` `ErrorPayload` `Declared` `Undeclared` `HttpMethod` | type-only helpers, if you name them in your own signatures |
+| `type ErrorKind` `Declared` `Undeclared` `HttpMethod` | type-only helpers, if you name them in your own signatures |
 
 `{Api}Error` is the SDK-branded name — **read the real one** from the `CoreError as …Error` line in
 `src/index.ts`. It is the API name plus `Error` (`Acme` gives `AcmeError`), escalating to
@@ -93,6 +96,7 @@ declare arms, and what those arms are called.
 | `"connection"` | `ConnectionError` | `fetch` rejected before a response line arrived | — |
 | `"timeout"` | `TimeoutError` | an attempt ran out its `retry.timeout`, and no retry was left | `timeout` — the budget that ran out |
 | `"auth"` | `AuthError` | a credential could not be **obtained** | — |
+| `"pagination"` | `PaginationError` | a paged walk could not follow the next link the API sent — it was not a URL, or it named another origin | — |
 
 Every one carries `kind`, `method`, `uri`, `message` and, where there was an underlying failure,
 `cause`. `uri` is the absolute URL the call dialled, with the server variables expanded and the path
@@ -176,6 +180,7 @@ export function writeOutcome(err: unknown): "rejected" | "unknown" | "not sent" 
       return "unknown";
     case "encode":
     case "auth":
+    case "pagination":
       return "not sent";
   }
 }
@@ -592,6 +597,7 @@ function translate(err: unknown): never {
         throw new MyProviderUnreadable(err.status, { cause: err });
       case "encode":
       case "auth":
+      case "pagination":
         throw new MyIntegrationDefect(err.message, { cause: err });
     }
   }

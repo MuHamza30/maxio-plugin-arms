@@ -285,14 +285,16 @@ except for a file response, which carries its own `headers` on the parsed path.
 actually change:
 
 ```python
+import json
+
 from {root_package}.core import JsonBody
 
 req = transport.last_request
 assert req.method == "POST"
 assert req.url.endswith("/{expected/path}")
 assert "{query_param}=..." in req.url                    # query is part of the URL string
-assert isinstance(req.body, JsonBody) and isinstance(req.body.value, dict)   # narrow before indexing
-assert req.body.value["{wire_field}"] == "..."           # JsonBody carries the dumped payload
+assert isinstance(req.body, JsonBody)                    # narrow before reading
+assert json.loads(req.body.content)["{wire_field}"] == "..."   # JsonBody carries the wire bytes
 assert req.headers["authorization"] == "Bearer t"        # lowercase key — see below
 assert req.headers["{header}"] == "..."                  # a real default reached the wire
 ```
@@ -305,12 +307,12 @@ request assertion fails confusingly. (The defensive `"authorization" in {k.lower
 req.headers}` also works, but there is no case to defend against — assert the lowercase key.)
 
 **The body is already serialized by the time a transport sees it.** `req.body` is one of `JsonBody`
-(`.value`, the dumped JSON-safe object), `FormBody` (`.fields`), `MultipartBody` (`.parts`, an
+(`.content`, the compact UTF-8 JSON bytes), `FormBody` (`.content`, the url-encoded bytes), `MultipartBody` (`.parts`, an
 ordered sequence of `MultipartText` and `MultipartFile` — **not** a `.fields`/`.files` pair, and a
 file part's `content` is the unread descriptor you passed, never bytes), `BinaryBody`
-(`.content`, `.media_type`) or `TextBody` (`.text`, `.media_type`, `.charset`) — no transport ever
-serializes anything — so assert on the dumped value
-directly rather than re-parsing bytes. Note it uses **wire aliases**, because that is what
+(`.content`, `.media_type`) or `TextBody` (`.content`, the encoded bytes, `.media_type`, `.charset`) — no transport ever
+serializes anything — so parse a JSON body's bytes with `json.loads`
+and assert on the result. Note it uses **wire aliases**, because that is what
 serialization produces: if a model's Python name differs from its JSON name, the request body has the
 JSON name. Do not "fix" that in the test.
 
@@ -331,7 +333,7 @@ Worth asserting once, somewhere, because they are silent when wrong:
   <!-- maxio:start -->
   No operation of this API accepts an idempotency key. Maxio's key is `uniqueness_token`, which is on
   no model (`docs/models.md`, *Fields the spec does not declare*). For each write that carries it, assert
-  on the captured body that it is at the root (`req.body.value["uniqueness_token"]`), that it is not
+  on the captured body that it is at the root (`json.loads(req.body.content)["uniqueness_token"]`), that it is not
   inside the resource object, that a resend of the same logical write carries the same value, and that a
   different write carries a different one. A misspelt key passes every type check, so this assertion is
   the only proof.

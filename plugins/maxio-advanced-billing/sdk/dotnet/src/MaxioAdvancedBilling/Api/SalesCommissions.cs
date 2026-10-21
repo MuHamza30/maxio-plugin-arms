@@ -13,6 +13,12 @@ using MaxioAdvancedBilling.Requests.SalesCommissions;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Sales Commissions allow sellers with financial access to retrieve commission data for a site with Advanced Analytics enabled.
+/// <para>
+/// These endpoints use a different, user-level authentication method than the rest of the API, since commission data is tied to the seller rather than an individual site.
+/// </para>
+/// </summary>
 public sealed class SalesCommissions
 {
     private readonly RawClient _rawClient;

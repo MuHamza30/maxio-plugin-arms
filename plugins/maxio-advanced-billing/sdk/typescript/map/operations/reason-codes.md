@@ -8,7 +8,7 @@ Accessor: `client.reasonCodes` · Source: `src/resources/reason-codes.ts` · 5 o
 
 ### createReasonCode
 
-- **Signature**: `createReasonCode(request: ReasonCodes.CreateReasonCodeRequestParams, options?: RequestOptions): ApiPromise<ReasonCodeResponse, ReasonCodes.CreateReasonCodeError>`
+- **Signature**: `createReasonCode(request?: ReasonCodes.CreateReasonCodeRequestParams, options?: RequestOptions): ApiPromise<ReasonCodeResponse, ReasonCodes.CreateReasonCodeError>`
 - **Wire**: `POST /reason_codes.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -52,7 +52,7 @@ Accessor: `client.reasonCodes` · Source: `src/resources/reason-codes.ts` · 5 o
 
 ### listReasonCodes
 
-- **Signature**: `listReasonCodes(request: ReasonCodes.ListReasonCodesRequest, options?: RequestOptions): ApiPromise<ReasonCodeResponse[], ReasonCodes.ListReasonCodesError>`
+- **Signature**: `listReasonCodes(request?: ReasonCodes.ListReasonCodesRequest, options?: RequestOptions): ApiPromise<ReasonCodeResponse[], ReasonCodes.ListReasonCodesError>`
 - **Wire**: `GET /reason_codes.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

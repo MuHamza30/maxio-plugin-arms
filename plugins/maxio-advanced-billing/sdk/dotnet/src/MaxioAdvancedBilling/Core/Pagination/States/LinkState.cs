@@ -17,7 +17,7 @@ internal sealed record LinkState<TResponse> : IPageState<TResponse, LinkState<TR
 
     public required string? Link { get; init; }
 
-    public LinkState<TResponse>? Next(TResponse page, HttpResponseHeaders headers)
+    public LinkState<TResponse>? Next(TResponse page, HttpResponseHeaders headers, int itemCount)
     {
         var nextLink = _nextLink(page, headers);
 

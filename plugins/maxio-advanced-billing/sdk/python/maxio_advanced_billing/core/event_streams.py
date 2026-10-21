@@ -25,8 +25,8 @@ from typing import Generic, TypeVar
 
 from typing_extensions import Self
 
+from ._internal.redaction import redact_url
 from ._internal.sse_parser import SseParser
-from ._internal.urls import strip_query
 from .transport import AsyncHttpResponse, HttpResponse
 
 T = TypeVar("T")
@@ -58,8 +58,8 @@ class EventStream(Generic[T]):
         self._response = response
         self._closed = False
         # Captured here rather than read off the response inside the finalizer, which can run at
-        # interpreter shutdown; query-stripped, so an api key placed there cannot reach a warning.
-        self._url = strip_query(response.url)
+        # interpreter shutdown; its query values masked, so an api key placed there cannot reach a warning.
+        self._url = redact_url(response.url)
         self._decode_data = decode_data
         self._sentinel = sentinel
         self._parser = SseParser()
@@ -150,10 +150,10 @@ class AsyncEventStream(Generic[T]):
     __slots__ = ("_closed", "_decode_data", "_parser", "_response", "_sentinel", "_url")
 
     def __init__(self, response: AsyncHttpResponse, decode_data: Callable[[str], T], sentinel: str | None) -> None:
-        # Total by design, and the URL captured and stripped, as in the sync twin.
+        # Total by design, and the URL captured and masked, as in the sync twin.
         self._response = response
         self._closed = False
-        self._url = strip_query(response.url)
+        self._url = redact_url(response.url)
         self._decode_data = decode_data
         self._sentinel = sentinel
         self._parser = SseParser()

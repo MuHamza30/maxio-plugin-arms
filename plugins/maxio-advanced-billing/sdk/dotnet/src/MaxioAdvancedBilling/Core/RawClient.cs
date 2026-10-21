@@ -106,7 +106,7 @@ internal sealed class RawClient
     public Pageable<TResponse, TItem> ExecutePaged<TResponse, TState, TItem, TError>(
         TState initialState,
         Func<TState, ApiRequest> requestFactory,
-        Func<TResponse, IReadOnlyList<TItem>> itemsSelector,
+        Func<TResponse, IReadOnlyList<TItem>?> itemsSelector,
         ApiResponse<TResponse, TError> response,
         RequestOptions? requestOptions,
         CancellationToken cancellationToken)
@@ -128,21 +128,22 @@ internal sealed class RawClient
     public Pageable<ApiResult<TResponse, TError>, TItem> ExecutePagedResult<TResponse, TState, TItem, TError>(
         TState initialState,
         Func<TState, ApiRequest> requestFactory,
-        Func<TResponse, IReadOnlyList<TItem>> itemsSelector,
+        Func<TResponse, IReadOnlyList<TItem>?> itemsSelector,
         ApiResponse<TResponse, TError> response,
         RequestOptions? requestOptions,
         CancellationToken cancellationToken)
         where TState : IPageState<TResponse, TState>
     {
-        var pages = Paginate(initialState, requestFactory, response,
+        var pages = Paginate(initialState, requestFactory, itemsSelector, response,
             (req, resp, ct) => ExecuteResult(req, resp, requestOptions, ct), cancellationToken);
 
         return new Pageable<ApiResult<TResponse, TError>, TItem>(pages, apiResult =>
-            apiResult.TryGetResponse(out var page) ? itemsSelector(page) : []);
+            apiResult.TryGetResponse(out var page) ? itemsSelector(page) : null);
 
         static async IAsyncEnumerable<ApiResult<TResponse, TError>> Paginate(
             TState initialState,
             Func<TState, ApiRequest> requestFactory,
+            Func<TResponse, IReadOnlyList<TItem>?> itemsSelector,
             ApiResponse<TResponse, TError> response,
             ApiCallHandler<TResponse, TError> execute,
             [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -159,7 +160,7 @@ internal sealed class RawClient
                 if (!result.TryGetResponse(out var page))
                     yield break;
 
-                var next = state.Next(page, result.Headers);
+                var next = state.Next(page, result.Headers, itemsSelector(page)?.Count ?? 0);
                 if (next is null)
                     yield break;
 

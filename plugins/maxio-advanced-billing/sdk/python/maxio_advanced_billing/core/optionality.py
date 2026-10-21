@@ -11,15 +11,24 @@ present or absent, with no ``None`` arm -- where ``typing.Optional[T]`` means ``
 differ by exactly the arm that matters: a property the spec does not declare nullable must not be
 able to reach the wire as ``null``, so passing ``None`` to one of these fields is a type error
 rather than a value that serializes. Nothing in a generated SDK imports ``typing.Optional`` -- unions
-are spelled with PEP 604 ``|`` -- so the two never appear in the same module."""
+are spelled with PEP 604 ``|`` -- so the two never appear in the same module.
+
+Both are plain generic aliases, not ``TypeAliasType``. pydantic substitutes a ``TypeAliasType``'s
+parameter itself and folds ``Any | T`` into ``Any`` while doing so, which would take the sentinel arm
+out of ``Optional[Any]`` -- the spelling of a property with no ``type``. ``typing`` substitutes a
+plain alias and keeps the arm; mypy reads the two forms alike. See ADR-0071.
+
+:func:`items_or_empty` is the one reading of a ``None`` or ``UNSET`` array as an empty one. A selector over
+an array field returns it as modelled, and the pagination seams that consume it need a sequence; it lives
+here, beside the sentinel it reads, so ``pagination.py`` and ``results.py`` can both import it."""
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Final, Literal, TypeVar, cast, final
+from collections.abc import Sequence
+from typing import Any, ClassVar, Final, Literal, TypeAlias, TypeVar, cast, final
 
 from pydantic import BaseModel, GetCoreSchemaHandler
-from pydantic_core import core_schema
-from typing_extensions import TypeAliasType
+from pydantic_core import PydanticSerializationUnexpectedValue, core_schema
 
 
 @final
@@ -28,8 +37,9 @@ class UnsetType:
 
     Only ever seen as a field's default -- never constructed or passed by a caller. Dumps
     as plain ``None`` through pydantic's normal fast path (see :func:`strip_unset` for
-    where the tri-state is actually recovered). See
-    ``docs/designs/optional-nullable-fields.md``.
+    where the tri-state is actually recovered), and dumps nothing else: a value its union's
+    real arm failed to serialize is refused here, so it raises instead of going out as ``null``.
+    See ``docs/designs/optional-nullable-fields.md``.
 
     A singleton, and identity-stable through every channel that could duplicate it: ``UnsetType()``
     returns the existing instance, ``copy`` and ``deepcopy`` return it unchanged, and unpickling
@@ -69,15 +79,41 @@ class UnsetType:
     @classmethod
     def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
         return core_schema.is_instance_schema(
-            cls, serialization=core_schema.plain_serializer_function_ser_schema(lambda _: None)
+            cls, serialization=core_schema.plain_serializer_function_ser_schema(cls._dump)
         )
+
+    @staticmethod
+    def _dump(value: object) -> None:
+        # pydantic offers a union's value to each arm until one serializes it. Answering None for
+        # anything made this arm the catch-all: a list its own arm failed on went out as null.
+        # PydanticSerializationUnexpectedValue is pydantic's "not this arm" signal.
+        if isinstance(value, UnsetType):
+            return None
+        raise PydanticSerializationUnexpectedValue(f"Expected UNSET, got {type(value).__name__}")
 
 
 UNSET: Final = UnsetType()
 
 T = TypeVar("T")
-Optional = TypeAliasType("Optional", T | UnsetType, type_params=(T,))
-OptionalNullable = TypeAliasType("OptionalNullable", T | None | UnsetType, type_params=(T,))
+Optional: TypeAlias = T | UnsetType
+OptionalNullable: TypeAlias = T | None | UnsetType
+
+
+def items_or_empty(items: OptionalNullable[Sequence[T]]) -> Sequence[T]:
+    """Return ``items`` as a sequence, reading ``None`` and ``UNSET`` as an empty one.
+
+    A selector over an array field returns the field as modelled -- an omitted array is ``UNSET``, a nullable
+    one may be ``None`` -- and the pagination seams that consume it need a sequence: the loop counts it, the
+    paginator yields from it. One reading here keeps the count and the item view in agreement, which is why
+    neither ``pagination.py`` nor ``results.py`` spells the check itself.
+
+    Args:
+        items: An array field as modelled, possibly ``None`` or ``UNSET``.
+
+    Returns:
+        ``items`` itself, or an empty tuple for ``None`` and ``UNSET``."""
+    return () if items is None or isinstance(items, UnsetType) else items
+
 
 DumpedT = TypeVar("DumpedT")
 

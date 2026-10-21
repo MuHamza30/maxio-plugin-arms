@@ -1,6 +1,11 @@
 import { ConfigurationError } from "./errors.js";
 import { buildLoggingOptions, type LoggingOptions, type ResolvedLoggingOptions } from "./logging.js";
 import { buildRetryOptions, type RetryOptions, type ResolvedRetryOptions } from "./retry.js";
+import {
+  buildEventStreamOptions,
+  type EventStreamOptions,
+  type ResolvedEventStreamOptions,
+} from "./event-stream.js";
 
 /** The signature a replacement `fetch` must have, which is the global `fetch`'s own. */
 export type FetchLike = typeof fetch;
@@ -25,6 +30,15 @@ export type CoreClientOptions = {
    */
   readonly retry?: RetryOptions | undefined;
 
+  /**
+   * How an event stream is watched for a silent server.
+   *
+   * @remarks
+   * Any subset of {@link EventStreamOptions}, resolved once when the client is built and read only
+   * by an operation that resolves to an `EventStream`. A field left out takes its default.
+   */
+  readonly eventStream?: EventStreamOptions | undefined;
+
   /** Logging of requests, responses and retries. Off by default, see {@link LoggingOptions}. */
   readonly logging?: LoggingOptions | undefined;
 
@@ -43,6 +57,7 @@ export type CoreClientOptions = {
 
 export type ResolvedCoreClientOptions = {
   readonly retry: ResolvedRetryOptions;
+  readonly eventStream: ResolvedEventStreamOptions;
   readonly logging: ResolvedLoggingOptions;
   readonly fetch: FetchLike;
 };
@@ -55,8 +70,8 @@ export type ResolvedCoreClientOptions = {
  * It is read here, once, and only when `logging` sets neither `logger` nor `level`.
  *
  * @throws {@link ConfigurationError} when no `fetch` was supplied and the global one is missing,
- * or when reading `retry` or `logging` throws. No value throws: every bounded field resolves, its
- * own default standing in for a value the engine cannot honour.
+ * or when reading `retry`, `eventStream` or `logging` throws. No value throws: every bounded field
+ * resolves, its own default standing in for a value the engine cannot honour.
  */
 export function buildCoreClientOptions(
   options: CoreClientOptions,
@@ -68,6 +83,7 @@ export function buildCoreClientOptions(
   }
   return {
     retry: buildRetryOptions(options.retry),
+    eventStream: buildEventStreamOptions(options.eventStream),
     logging: buildLoggingOptions(options.logging, loggingEnvironmentVariable),
     fetch: fetchImpl,
   };

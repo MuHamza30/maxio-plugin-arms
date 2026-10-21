@@ -32,7 +32,7 @@ Accessor: `client.featureTemplates` · Source: `src/resources/feature-templates.
 ### createFeatureTemplate
 
 - **Provider rules (Maxio)**: Settle `key` and `kind` before creating: `key` is rejected on every later update, and `kind` once any feature catalog item uses the template. Notes: `knowledge/operations/feature-templates.md#createfeaturetemplate`
-- **Signature**: `createFeatureTemplate(request: FeatureTemplates.CreateFeatureTemplateRequestParams, options?: RequestOptions): ApiPromise<FeatureTemplateResponse, FeatureTemplates.CreateFeatureTemplateError>`
+- **Signature**: `createFeatureTemplate(request?: FeatureTemplates.CreateFeatureTemplateRequestParams, options?: RequestOptions): ApiPromise<FeatureTemplateResponse, FeatureTemplates.CreateFeatureTemplateError>`
 - **Wire**: `POST /features.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -55,7 +55,7 @@ Accessor: `client.featureTemplates` · Source: `src/resources/feature-templates.
 
 ### listFeatureTemplates
 
-- **Signature**: `listFeatureTemplates(request: FeatureTemplates.ListFeatureTemplatesRequest, options?: RequestOptions): ApiPromise<FeatureTemplatesListResponse, FeatureTemplates.ListFeatureTemplatesError>`
+- **Signature**: `listFeatureTemplates(request?: FeatureTemplates.ListFeatureTemplatesRequest, options?: RequestOptions): ApiPromise<FeatureTemplatesListResponse, FeatureTemplates.ListFeatureTemplatesError>`
 - **Wire**: `GET /features.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

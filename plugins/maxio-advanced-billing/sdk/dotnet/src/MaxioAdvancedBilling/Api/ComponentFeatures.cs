@@ -13,6 +13,12 @@ using MaxioAdvancedBilling.Requests.ComponentFeatures;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Component Feature object attaches a Feature Template to a Component as a feature catalog item with a concrete value, granting that feature to subscribers through the component.
+/// <para>
+/// A component feature applies to the whole component by default, or can be scoped to a single component price point as an override. For more information, see <see href="https://docs.maxio.com/billing/catalog/entitlements/configure-entitlements">Configure Entitlements</see>.
+/// </para>
+/// </summary>
 public sealed class ComponentFeatures
 {
     private readonly RawClient _rawClient;

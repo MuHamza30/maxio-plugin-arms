@@ -16,6 +16,12 @@ using MaxioAdvancedBilling.Requests.Products;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Product object defines what you sell, including default pricing, billing interval, and trial configuration. With the new catalog experience, the UI labels products as Plans, while the API keeps the product name. See <see href="https://docs.maxio.com/billing/catalog/overview/using-the-new-product-catalog#catalog-terminology">Catalog terminology</see>.
+/// <para>
+/// Products are grouped under a Product Family and are the base type a customer subscribes to. Products can also grant features to subscribers. See the <b>Create Product Feature Catalog Item</b> endpoint for details. For more information, see <see href="https://docs.maxio.com/billing/catalog/plans/understand-plans">Understand Plans</see>.
+/// </para>
+/// </summary>
 public sealed class Products
 {
     private readonly RawClient _rawClient;

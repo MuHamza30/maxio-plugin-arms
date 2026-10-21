@@ -1,9 +1,10 @@
-import type { AnyApiError, PayloadOf } from "./api-error.js";
+import type { ApiError } from "./api-error.js";
 import type { HttpMethod } from "./api-request.js";
+import type { PayloadOf } from "./response-decoder.js";
 
-export type RequestOutcome<T, E extends AnyApiError> =
-  | { ok: true; status: number; headers: Headers; data: T }
-  | { ok: false; status: number; headers: Headers; error: E };
+export type RequestOutcome<T, E extends ApiError> =
+  | { ok: true; status: number; headers: Headers; uri: string; data: T }
+  | { ok: false; status: number; headers: Headers; uri: string; error: E };
 
 /**
  * The non-throwing view of a call, returned by {@link ApiPromise.asApiResult}.
@@ -13,7 +14,7 @@ export type RequestOutcome<T, E extends AnyApiError> =
  * than the error instance, carrying its `status`, `headers`, `message` and `payload` plus the
  * `method` and `uri` of the call, and `result.payload` narrows exactly as `err.payload` would.
  */
-export type ApiResult<T, E extends AnyApiError> =
+export type ApiResult<T, E extends ApiError> =
   | { ok: true; status: number; headers: Headers; value: T }
   | {
       ok: false;
@@ -41,7 +42,7 @@ export type ApiResult<T, E extends AnyApiError> =
  * runtime: `unhandledRejection` on Node, which by default ends the process, and
  * `unhandledrejection` in a browser.
  */
-export class ApiPromise<T, E extends AnyApiError> extends Promise<T> {
+export class ApiPromise<T, E extends ApiError> extends Promise<T> {
   readonly #outcome: Promise<RequestOutcome<T, E>>;
 
   constructor(outcome: Promise<RequestOutcome<T, E>>) {
@@ -70,22 +71,25 @@ export class ApiPromise<T, E extends AnyApiError> extends Promise<T> {
    */
   async asApiResult(): Promise<ApiResult<T, E>> {
     this.catch(() => {});
-    const o = await this.#outcome;
-    return o.ok
-      ? {
-          ok: true,
-          value: o.data,
-          status: o.status,
-          headers: o.headers,
-        }
-      : {
-          ok: false,
-          status: o.error.status,
-          headers: o.error.headers,
-          message: o.error.message,
-          method: o.error.method,
-          uri: o.error.uri,
-          payload: o.error.payload,
-        };
+    return toApiResult(await this.#outcome);
   }
+}
+
+export function toApiResult<T, E extends ApiError>(o: RequestOutcome<T, E>): ApiResult<T, E> {
+  return o.ok
+    ? {
+        ok: true,
+        value: o.data,
+        status: o.status,
+        headers: o.headers,
+      }
+    : {
+        ok: false,
+        status: o.error.status,
+        headers: o.error.headers,
+        message: o.error.message,
+        method: o.error.method,
+        uri: o.error.uri,
+        payload: o.error.payload,
+      };
 }

@@ -9,7 +9,7 @@ Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operatio
 ### createEndpoint
 
 - **Provider notes (Maxio)**: `knowledge/operations/webhooks.md#createendpoint`
-- **Signature**: `createEndpoint(request: Webhooks.CreateEndpointRequest, options?: RequestOptions): ApiPromise<EndpointResponse, Webhooks.CreateEndpointError>`
+- **Signature**: `createEndpoint(request?: Webhooks.CreateEndpointRequest, options?: RequestOptions): ApiPromise<EndpointResponse, Webhooks.CreateEndpointError>`
 - **Wire**: `POST /endpoints.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -33,7 +33,7 @@ Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operatio
 ### enableWebhooks
 
 - **Provider notes (Maxio)**: `knowledge/operations/webhooks.md#enablewebhooks`
-- **Signature**: `enableWebhooks(request: Webhooks.EnableWebhooksRequestParams, options?: RequestOptions): ApiPromise<EnableWebhooksResponse, ApiError>`
+- **Signature**: `enableWebhooks(request?: Webhooks.EnableWebhooksRequestParams, options?: RequestOptions): ApiPromise<EnableWebhooksResponse, ApiError>`
 - **Wire**: `PUT /webhooks/settings.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -68,7 +68,7 @@ Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operatio
 ### listWebhooks
 
 - **Provider notes (Maxio)**: `knowledge/operations/webhooks.md#listwebhooks`
-- **Signature**: `listWebhooks(request: Webhooks.ListWebhooksRequest, options?: RequestOptions): ApiPromise<WebhookResponse[], ApiError>`
+- **Signature**: `listWebhooks(request?: Webhooks.ListWebhooksRequest, options?: RequestOptions): ApiPromise<WebhookResponse[], ApiError>`
 - **Wire**: `GET /webhooks.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -96,7 +96,7 @@ Accessor: `client.webhooks` · Source: `src/resources/webhooks.ts` · 6 operatio
 ### replayWebhooks
 
 - **Provider rules (Maxio)**: Send at most 1000 ids per call. Replay only after `last_sent_at` is well outside the automatic retry intervals. Notes: `knowledge/operations/webhooks.md#replaywebhooks`
-- **Signature**: `replayWebhooks(request: Webhooks.ReplayWebhooksRequestParams, options?: RequestOptions): ApiPromise<ReplayWebhooksResponse, ApiError>`
+- **Signature**: `replayWebhooks(request?: Webhooks.ReplayWebhooksRequestParams, options?: RequestOptions): ApiPromise<ReplayWebhooksResponse, ApiError>`
 - **Wire**: `POST /webhooks/replay.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all

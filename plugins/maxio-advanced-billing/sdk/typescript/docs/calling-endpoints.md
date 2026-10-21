@@ -48,8 +48,8 @@ Every operation has the same shape, with no positional overload and no sync vari
 {operation}(request: {Resource}.{Operation}Request, options?: RequestOptions): ApiPromise<T, E>
 ```
 
-- **There is exactly one request parameter**, and it is **not optional** — even when every field on it
-  is. An all-optional request still needs `{}` passed explicitly.
+- **There is exactly one request parameter.** It is required when any field on it is; when every field
+  on it is optional it defaults to `{}`, so the call may leave it out.
 - **`options` is on every generated operation**, always last, always optional. It is
   `RequestOptions` = `{ signal?: AbortSignal; retry?: RequestRetryOptions }` and nothing else — see
   [Cancellation and per-call retry](#cancellation-and-per-call-retry).

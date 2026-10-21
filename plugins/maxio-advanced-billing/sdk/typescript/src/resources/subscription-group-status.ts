@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -20,6 +21,10 @@ import {
 } from "../models/reactivate-subscription-group-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * Use the Subscription Group Status object to manage the lifecycle of a Subscription Group as a
+ * whole, such as canceling every subscription within the group together.
+ */
 export class SubscriptionGroupStatus {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -257,7 +262,7 @@ export namespace SubscriptionGroupStatus {
   };
 
   export class CancelDelayedCancellationForGroupError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CancelDelayedCancellationForGroupError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -271,7 +276,7 @@ export namespace SubscriptionGroupStatus {
   };
 
   export class CancelSubscriptionsInGroupError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CancelSubscriptionsInGroupError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -284,7 +289,7 @@ export namespace SubscriptionGroupStatus {
   };
 
   export class InitiateDelayedCancellationForGroupError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<InitiateDelayedCancellationForGroupError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -298,7 +303,7 @@ export namespace SubscriptionGroupStatus {
   };
 
   export class ReactivateSubscriptionGroupError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReactivateSubscriptionGroupError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -18,6 +19,14 @@ import {
 } from "../models/update-reason-code-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Reason Code object defines a churn reason that can be presented to customers when they cancel
+ * a subscription, such as "too expensive" or "switching providers."
+ *
+ * Reason codes give merchants visibility into why subscribers are canceling. For more information,
+ * see [Configure Churn Reason
+ * Codes](https://docs.maxio.com/configuration/advanced-billing/settings/churn-reason-codes).
+ */
 export class ReasonCodes {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -54,7 +63,7 @@ export class ReasonCodes {
    * credential that could not be obtained
    */
   createReasonCode(
-    request: ReasonCodes.CreateReasonCodeRequestParams,
+    request: ReasonCodes.CreateReasonCodeRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<ReasonCodeResponse, ReasonCodes.CreateReasonCodeError> {
     return this.#rawClient.execute(
@@ -133,7 +142,7 @@ export class ReasonCodes {
    * credential that could not be obtained
    */
   listReasonCodes(
-    request: ReasonCodes.ListReasonCodesRequest,
+    request: ReasonCodes.ListReasonCodesRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ReasonCodeResponse[], ReasonCodes.ListReasonCodesError> {
     return this.#rawClient.execute(
@@ -242,7 +251,7 @@ export namespace ReasonCodes {
   };
 
   export class CreateReasonCodeError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateReasonCodeError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -255,7 +264,7 @@ export namespace ReasonCodes {
   };
 
   export class DeleteReasonCodeError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<DeleteReasonCodeError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -284,7 +293,7 @@ export namespace ReasonCodes {
   };
 
   export class ListReasonCodesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListReasonCodesError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -297,7 +306,7 @@ export namespace ReasonCodes {
   };
 
   export class ReadReasonCodeError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadReasonCodeError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -311,9 +320,10 @@ export namespace ReasonCodes {
   };
 
   export class UpdateReasonCodeError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateReasonCodeError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

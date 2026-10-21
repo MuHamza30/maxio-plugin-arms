@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.Sites;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Site object represents a single billing account and holds site-wide configuration, such as default currency, tax settings, net terms, and which billing features are enabled. For more information, see <see href="https://docs.maxio.com/configuration/advanced-billing/sites/sites-overview">Understand Advanced Billing Sites</see>.
+/// </summary>
 public sealed class Sites
 {
     private readonly RawClient _rawClient;

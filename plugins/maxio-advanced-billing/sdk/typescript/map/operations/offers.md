@@ -25,7 +25,7 @@ Accessor: `client.offers` · Source: `src/resources/offers.ts` · 5 operations �
 ### createOffer
 
 - **Provider notes (Maxio)**: `knowledge/operations/offers.md#createoffer`
-- **Signature**: `createOffer(request: Offers.CreateOfferRequestParams, options?: RequestOptions): ApiPromise<OfferResponse, Offers.CreateOfferError>`
+- **Signature**: `createOffer(request?: Offers.CreateOfferRequestParams, options?: RequestOptions): ApiPromise<OfferResponse, Offers.CreateOfferError>`
 - **Wire**: `POST /offers.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -48,7 +48,7 @@ Accessor: `client.offers` · Source: `src/resources/offers.ts` · 5 operations �
 
 ### listOffers
 
-- **Signature**: `listOffers(request: Offers.ListOffersRequest, options?: RequestOptions): ApiPromise<ListOffersResponse, Offers.ListOffersError>`
+- **Signature**: `listOffers(request?: Offers.ListOffersRequest, options?: RequestOptions): ApiPromise<ListOffersResponse, Offers.ListOffersError>`
 - **Wire**: `GET /offers.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

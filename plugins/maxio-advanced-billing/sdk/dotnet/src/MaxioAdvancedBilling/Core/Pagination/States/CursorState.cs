@@ -18,7 +18,7 @@ internal sealed record CursorState<TResponse> : IPageState<TResponse, CursorStat
 
     public required string? Cursor { get; init; }
 
-    public CursorState<TResponse>? Next(TResponse page, HttpResponseHeaders headers)
+    public CursorState<TResponse>? Next(TResponse page, HttpResponseHeaders headers, int itemCount)
     {
         var next = _nextCursor(page, headers);
 

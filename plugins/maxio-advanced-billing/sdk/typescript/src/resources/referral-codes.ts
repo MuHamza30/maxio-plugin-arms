@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import * as s from "../core/validation/index.js";
 import {
   referralValidationResponseSchema,
@@ -14,6 +15,11 @@ import {
 } from "../models/single-string-error-response1.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Referral Code object represents a code attached to a subscription, used to track and validate
+ * referrals as part of a referral program. For more information, see [Understand
+ * Referrals](https://docs.maxio.com/configuration/advanced-billing/understand-referrals).
+ */
 export class ReferralCodes {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -75,9 +81,7 @@ export namespace ReferralCodes {
   };
 
   export class ValidateReferralCodeError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"singleStringErrorResponse1", SingleStringErrorResponse1>
-    >;
+    declare readonly payload: Declared<"singleStringErrorResponse1", SingleStringErrorResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ValidateReferralCodeError> = [
       {

@@ -14,6 +14,12 @@ using MaxioAdvancedBilling.Requests.ReasonCodes;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Reason Code object defines a churn reason that can be presented to customers when they cancel a subscription, such as "too expensive" or "switching providers."
+/// <para>
+/// Reason codes give merchants visibility into why subscribers are canceling. For more information, see <see href="https://docs.maxio.com/configuration/advanced-billing/settings/churn-reason-codes">Configure Churn Reason Codes</see>.
+/// </para>
+/// </summary>
 public sealed class ReasonCodes
 {
     private readonly RawClient _rawClient;

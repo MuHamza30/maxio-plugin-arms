@@ -142,7 +142,7 @@ Logging types named by the fields above — their **declared types**, verbatim f
 | `Logger` — the `logger` field | `error(message: string, details: LogDetails): void` · `warn(message: string, details: LogDetails): void` · `info(message: string, details: LogDetails): void` · `debug(message: string, details: LogDetails): void` | `src/core/logging.ts` |
 | `LogDetails` — narrow on `event` | `HttpRequestDetails \| RequestHeadersDetails \| RequestBodyDetails \| HttpResponseDetails \| ResponseHeadersDetails \| HttpRetryingDetails \| HttpFailedDetails`, each exported as a type | `src/core/logging.ts` |
 
-**`ClientOptions.fetch` is the one transport extension point** — there are no hooks, no middleware and no interceptors, so a proxy, a custom agent and extra headers all go here. The SDK calls a replacement with one argument, the `Request` of the attempt, and no `init`. A replacement **must forward that `Request`, or its `signal`,** to whatever actually performs the request. Drop the signal and both the per-call signal and `retry.timeout` go inert — the call neither aborts nor times out. To add a header, copy the `Request` with `new Request(request)` and set it on the copy's `headers`: passing `{ headers }` to the copy replaces every header the SDK set rather than adding to them. A replacement may reject with an error of its own when that signal aborts; the SDK reads the `reason` of the signal it built the `Request` with to tell the deadline's `TimeoutError` from an abort of `RequestOptions.signal`, so a timeout is still retried, and an abort still rejects with the caller's own `reason`.
+**`ClientOptions.fetch` is the one transport extension point** — there are no hooks, no middleware and no interceptors, so a proxy, a custom agent and extra headers all go here. The SDK calls a replacement with one argument, the `Request` of the attempt, and no `init`. A replacement **must forward that `Request`, or its `signal`,** to whatever actually performs the request. Drop the signal and both the per-call signal and `retry.timeout` go inert — the call neither aborts nor times out. To add a header, copy the `Request` with `new Request(request)` and set it on the copy's `headers`: passing `{ headers }` to the copy replaces every header the SDK set rather than adding to them. A replacement may reject with an error of its own when that signal aborts: a timeout is still a `TimeoutError` that is retried, and an abort of `RequestOptions.signal` still rejects with the caller's own `reason`.
 
 **Cancellation.** The `signal` on `RequestOptions` is the per-request cancellation surface. Aborting rejects with the signal's **own `reason`** — whatever you passed to `abort()`, or the platform `DOMException` a bare `abort()` supplies — unwrapped, so it is **not** an `MaxioAdvancedBillingError` and a `catch` that tests the family must rethrow it. An already-aborted signal rejects immediately. The `retry.timeout` that bounded the attempt is the SDK's own and does stay in the family, as `err.kind === "timeout"`. It starts once the credential is in hand and covers the request up to its response headers — not obtaining the credential and not reading the body, which only the signal bounds, so a body that stalls after its headers holds a call with no signal until the transport gives up.
 
@@ -161,7 +161,6 @@ The entire per-request surface is the optional second argument of every operatio
 | You might reach for | Reality |
 | --- | --- |
 | hooks, middleware, interceptors, `onRequest`/`onResponse` | none. `fetch` is the one transport extension point |
-| pagination, `for await`, auto-paging helpers | no operation is paginated and nothing is async-iterable |
 | SSE, `text/event-stream` | no event streams. Every decoder reads the body to completion, bar a binary success, which hands its stream over unread |
 | multipart <em>responses</em>, XML bodies | none. A multipart reply is not decoded and an XML body is not sent — an operation declaring either is still emitted, with no body to supply or read |
 | per-request `headers`, `baseUrl`, idempotency key | none. `RequestOptions` is `{ signal, retry, logging }`; a header, a base URL and a caller-supplied idempotency key are not on it |
@@ -171,7 +170,7 @@ The entire per-request surface is the optional second argument of every operatio
 
 ## Error-handling model (read once — applies to every operation)
 
-Operations are **throw-based**, and every **operational** failure belongs to **one family**: `MaxioAdvancedBillingError`, a union over six leaves, so one `instanceof MaxioAdvancedBillingError` sees all of them. It is not the whole escape set — four throwables sit outside it, enumerated below. Every leaf names the call it raised — `err.method` and `err.uri` — and `message` opens with that name. `instanceof` is reliable **within one dialect**: a process that loads both — `import` in one file, `require` in another — gets two independent copies of every error class, and `instanceof` across that boundary is `false`. Narrow on `err.kind` there, or on `err.name`, which is stable across copies.
+Operations are **throw-based**, and every **operational** failure belongs to **one family**: `MaxioAdvancedBillingError`, a union over seven leaves, so one `instanceof MaxioAdvancedBillingError` sees all of them. It is not the whole escape set — four throwables sit outside it, enumerated below. Every leaf names the call it raised — `err.method` and `err.uri` — and `message` opens with that name. `instanceof` is reliable **within one dialect**: a process that loads both — `import` in one file, `require` in another — gets two independent copies of every error class, and `instanceof` across that boundary is `false`. Narrow on `err.kind` there, or on `err.name`, which is stable across copies.
 
 Core types (public members with their declared types; all are `readonly`):
 
@@ -181,11 +180,10 @@ Core types (public members with their declared types; all are `readonly`):
 | `ResponseError` | the rung the server answered on, `ApiError \| DecodeError`; adds `status: number` · `headers: Headers` | `src/core/errors.ts` |
 | `ApiError` | `kind: "api"` · `payload` — the open arm, whose `kind` is `string`. **Not generic**: a typed operation's subclass redeclares `payload` with its own literal arms | `src/core/api-error.ts` |
 | `TimeoutError` | `kind: "timeout"` · `timeout: number` | `src/core/errors.ts` |
-| `DecodeError`, `EncodeError`, `ConnectionError`, `AuthError` | their `kind`, and nothing beyond the two rows above | `src/core/errors.ts` |
+| `DecodeError`, `EncodeError`, `ConnectionError`, `AuthError`, `PaginationError` | their `kind`, and nothing beyond the two rows above | `src/core/errors.ts` |
 | `Declared<K, B>` | `kind: K` · `body: B` | `src/core/api-error.ts` |
-| `ErrorPayload<P>` | `P` or `{ kind: "undeclared"; rawBody: ArrayBuffer }` | `src/core/api-error.ts` |
-| `Undeclared` | `kind: "undeclared"` · `rawBody: ArrayBuffer` — the always-present arm, carrying the untouched bytes of a status the spec does not describe | `src/core/api-error.ts` |
-| `ApiResult<T, E>` | on success `{ ok: true; status; headers; value: T }`, on failure `{ ok: false; status; headers; message: string; method: HttpMethod; uri: string; payload: ErrorPayload<P> }` — the failure branch carries the error's own members, never the error object | `src/core/api-promise.ts` |
+| `Undeclared` | `kind: "undeclared"` · `rawBody: ArrayBuffer` — the last arm of every error class, carrying the untouched bytes of a status no arm covers, a middleware's included | `src/core/api-error.ts` |
+| `ApiResult<T, E>` | on success `{ ok: true; status; headers; value: T }`, on failure `{ ok: false; status; headers; message: string; method: HttpMethod; uri: string; payload: P }`, `P` being the error class's payload union — the failure branch carries the error's own members, never the error object | `src/core/api-promise.ts` |
 
 `MaxioAdvancedBillingError` and `ResponseError` are each a **type and a value**: the type is the union, the value is the abstract class every leaf extends, so `instanceof` and `err.kind` select the same set. Neither can be constructed or extended. `uri` is the absolute URL the call dialled, with the server variables expanded and the path parameters filled. It carries no query, fragment or userinfo, so no query parameter reaches it. One failure names an unresolved URI: a path parameter rejected by its schema arrives as an `EncodeError` whose `uri` still shows the unfilled `{braces}` — an `undefined` one included, since a path parameter is always required, so its schema rejects it first.
 
@@ -199,6 +197,7 @@ Core types (public members with their declared types; all are `readonly`):
 | `"connection"` | `fetch` rejected before a response line arrived | — |
 | `"timeout"` | `ClientOptions.retry.timeout` elapsed. `timeout` is the budget that ran out | `timeout` |
 | `"auth"` | a credential could not be **obtained**, per the paragraph below | — |
+| `"pagination"` | a next link the API sent resolved to another origin, or was not a URL, so the walk stopped there. Raised inside a paged loop, after the page that carried the link; `uri` names the link, or the page that carried it when the link is not a URL | — |
 
 **Four throwables sit outside the family**, so `instanceof MaxioAdvancedBillingError` is `false` on each and a `catch` that tests it has to rethrow what is left. `ConfigurationError` comes out of the **`MaxioAdvancedBillingClient` constructor**, synchronously and before any `ApiPromise` exists: no reachable `fetch`, a `basicAuth.username` containing a colon (invalid per RFC 7617 §2, because the first colon separates user-id from password), an unknown `ClientOptions.serverEnvironment`, or a `ClientOptions.retry` or `ClientOptions.logging` whose reads throw. One call can reject with it too: a `RequestOptions.retry` or `RequestOptions.logging` whose reads throw. Either way the failed read is on `cause`. `SchemaError` is what a codec throws when called directly — `achAgreementSchema.decode(json)` — so it names no call; through an operation the same failure arrives one level down, on `DecodeError.cause` or `EncodeError.cause`, and a `serverOptions` override whose value is not a string raises it from the constructor too. Bugs stay outside the family and reach you raw — an unparseable `baseUrl` is a `TypeError`. And a caller abort arrives as the signal's own `reason`, unwrapped. The first two are exported from the package root; the other two are not ours to export.
 
@@ -224,6 +223,9 @@ try {
       case "auth":
         // TODO: no response was produced — err.kind says which
         break;
+      case "pagination":
+        // TODO: the walk stopped at a next link it could not follow — err.uri says where
+        break;
     }
   } else {
     throw err;
@@ -233,7 +235,7 @@ try {
 
 **Narrowing the payload.** A typed subclass declares its arms as literals, so `switch (err.payload.kind)` narrows `payload.body` to exactly one model. The `kind` is named after the arm's **body**, *not* its status code: a body that references a model takes that model's name in lower camel, any other body `error{Status}`, and a second arm that would land on the same name takes a numeric suffix. On the base `ApiError` — what an operation with no declared error bodies rejects with — `payload.kind` is `string`, so comparing it to `"undeclared"` narrows **nothing**: use `"rawBody" in err.payload`. Which arms an operation declares, with the status each covers, is the **Error arms** bullet on its page below.
 
-**Matcher precedence** for a subclass with several arms, in three passes: an exact numeric status is looked up across the whole table **first**, then the first covering `[lo, hi]` range, and last a `"default"` arm where the spec declared one. A body that does not fit the arm it matched is a `DecodeError` — except on `"default"`, which describes no status in particular and so **degrades to the `"undeclared"` arm** rather than throwing.
+**Matcher precedence** for a subclass with several arms, in two passes: an exact numeric status is looked up across the whole table **first**, then the first covering `[lo, hi]` range. A body that does not fit the arm it matched is a `DecodeError`. A status no row covers is the `"undeclared"` arm with its bytes untouched — a spec's `default` response is not a row, so a gateway's or a WAF's own status lands there rather than failing the `default` schema.
 
 **The non-throwing form exists on every operation.** `.asApiResult()` returns `ApiResult<T, E>` and does **not** reject for an HTTP error status — every other failure still rejects, `DecodeError` included, so the `catch` stays. It must be called on the value the operation returned: `ApiPromise` overrides `Symbol.species`, so `.then()`, `.catch()` and `.finally()` hand back a plain `Promise` and the method is gone.
 
@@ -255,7 +257,7 @@ try {
 }
 ```
 
-`result.payload` is the same `ErrorPayload<P>` a thrown `ApiError` carries on `err.payload`, and `result.message`, `result.method` and `result.uri` are that error's own members — so the **Error arms** bullet on an operation's page enumerates the payload either way, and the `catch` above it is for the rest of the family. `result.method` and `result.uri` are named on this map alone.
+`result.payload` is the same payload union a thrown `ApiError` carries on `err.payload`, and `result.message`, `result.method` and `result.uri` are that error's own members — so the **Error arms** bullet on an operation's page enumerates the payload either way, and the `catch` above it is for the rest of the family. `result.method` and `result.uri` are named on this map alone.
 
 Of **285 operations**, **201** declare typed error bodies and **84** reject with the base `ApiError`, whose payload is always the `"undeclared"` arm.
 
@@ -269,12 +271,12 @@ Each page below carries one block per operation, with bullets in the fixed order
 
 | Applies to every operation | Stated where | A block departs from it only by |
 | --- | --- | --- |
-| **Call shape `op(request, options?)`** — one flat request object first, the per-call options second. There is no positional overload. What the second argument carries is a `signal`, a `retry` override and a log level; a per-call base URL, header or auth override does not exist | here, Getting a client | never — it always holds |
+| **Call shape `op(request, options?)`** — one flat request object first, the per-call options second. When the request type has no required field the request is `request?:` and may be omitted — `client.coupons.findCoupon()` sends what `client.coupons.findCoupon({})` sends; 47 of the 285 operations are in that case. There is no positional overload. What the second argument carries is a `signal`, a `retry` override and a log level; a per-call base URL, header or auth override does not exist | here, Getting a client | never — it always holds |
 | **The request object is flat and channel-blind.** A field named `body` *is* the whole request body; every other field is fanned out to path, query, header or form by the SDK. Nothing in the object is nested by channel | here | never — the **Fields** table `Channel` column always resolves it |
-| **Throw-based, returning `ApiPromise<T, E>`.** `await` it for `T`; call `.asApiResult()` on the returned value for the non-throwing `ApiResult<T, E>`. No operation is result-only | here, Error-handling model | never |
+| **Throw-based, returning `ApiPromise<T, E>`.** `await` it for `T`; call `.asApiResult()` on the returned value for the non-throwing `ApiResult<T, E>`. No operation is result-only | here, Error-handling model | the operation is paged — it returns a `Pageable<TPage, TItem, E>`: a loop over it throws `E` at the first error status, and `.asApiResult()` on the returned value is the form whose `.pages()` yields one `ApiResult<TPage, E>` per page |
 | **`E` is the base `ApiError`** and the payload is always the `"undeclared"` arm | Error-handling model | the spec declared error bodies — the **Error** bullet names a subclass and an **Error arms** bullet gives each arm's tag, status and body |
 | **The request body and its media type are stated on every block**, by a **Request body** bullet that is never omitted. `none` means no body **and no `Content-Type` header**, and a named media type means the body is **required** — the request type's field is not optional | here | the spec declared the body optional — the bullet adds **Optional**, the field is `field?:`, and omitting it sends no body and no `Content-Type` header at all |
-| **Resolves once, to one whole value** — except a binary body, which resolves to a stream the caller reads. No pagination, no SSE, no async iterables and no partial results | here, Not on this SDK | never at this SDK version |
+| **Resolves once, to one whole value** — except a binary body, which resolves to a stream the caller reads. No SSE and no partial results | here, Not on this SDK | the operation is paged — it returns a `Pageable`, the first request goes out when a loop starts, and each page resolves on its own as the loop reaches it. Its **Returns** bullet says so |
 | **Six identity headers ride every request** — `User-Agent`, `X-APIMatic-Lang`, `X-APIMatic-Package-Version`, `X-APIMatic-Gen-Version`, `X-APIMatic-OS` and `X-APIMatic-Runtime`. They identify the generated SDK, so **no option configures them** | here | the operation declared a header of the same name — the operation's layer is folded after the client's, so its value wins |
 | **A fresh `Idempotency-Key` rides every non-GET call that does not declare that header itself**, minted per call in the operation's own header layer. It makes a *replayed* request safe, not a repeated one — a value that changes per call deduplicates nothing, so it is no substitute for a key the API documents. **No option sets it**, and once minted it is always sent — a runtime with no `crypto` global mints it from `Math.random` mixed with the clock and a per-process counter | here | the operation is a GET, or declared that header itself — then its own value stands and nothing is minted |
 | **Server group `production`** | here, Servers & auth | the operation is on another group — its block carries a **Server** bullet |
@@ -295,50 +297,50 @@ Each page below carries one block per operation, with bullets in the fixed order
 
 **Endpoint prose is not on this map.** Where the *semantics* of an operation decide what you must pass — a field whose value changes server-side behaviour, an ordering or exclusivity rule between fields — read `api-reference.md`, whose entries are keyed by the same signature these pages print. Blocks here give you the contract: names, channels, types, defaults, errors.
 
-| Resource (`client.X`) | Ops | Page |
-| --- | --- | --- |
-| `apiExports` | 9 | [map/operations/api-exports.md](map/operations/api-exports.md) |
-| `advanceInvoice` | 3 | [map/operations/advance-invoice.md](map/operations/advance-invoice.md) |
-| `billingPortal` | 4 | [map/operations/billing-portal.md](map/operations/billing-portal.md) |
-| `coupons` | 14 | [map/operations/coupons.md](map/operations/coupons.md) |
-| `componentFeatures` | 6 | [map/operations/component-features.md](map/operations/component-features.md) |
-| `components` | 12 | [map/operations/components.md](map/operations/components.md) |
-| `componentPricePoints` | 12 | [map/operations/component-price-points.md](map/operations/component-price-points.md) |
-| `customers` | 7 | [map/operations/customers.md](map/operations/customers.md) |
-| `customFields` | 9 | [map/operations/custom-fields.md](map/operations/custom-fields.md) |
-| `entitlements` | 1 | [map/operations/entitlements.md](map/operations/entitlements.md) |
-| `events` | 3 | [map/operations/events.md](map/operations/events.md) |
-| `eventsBasedBillingSegments` | 6 | [map/operations/events-based-billing-segments.md](map/operations/events-based-billing-segments.md) |
-| `featureTemplates` | 6 | [map/operations/feature-templates.md](map/operations/feature-templates.md) |
-| `insights` | 4 | [map/operations/insights.md](map/operations/insights.md) |
-| `invoices` | 19 | [map/operations/invoices.md](map/operations/invoices.md) |
-| `offers` | 5 | [map/operations/offers.md](map/operations/offers.md) |
-| `paymentProfiles` | 12 | [map/operations/payment-profiles.md](map/operations/payment-profiles.md) |
-| `productFamilies` | 4 | [map/operations/product-families.md](map/operations/product-families.md) |
-| `productFeatures` | 6 | [map/operations/product-features.md](map/operations/product-features.md) |
-| `products` | 6 | [map/operations/products.md](map/operations/products.md) |
-| `productPricePoints` | 11 | [map/operations/product-price-points.md](map/operations/product-price-points.md) |
-| `proformaInvoices` | 10 | [map/operations/proforma-invoices.md](map/operations/proforma-invoices.md) |
-| `reasonCodes` | 5 | [map/operations/reason-codes.md](map/operations/reason-codes.md) |
-| `referralCodes` | 1 | [map/operations/referral-codes.md](map/operations/referral-codes.md) |
-| `salesCommissions` | 3 | [map/operations/sales-commissions.md](map/operations/sales-commissions.md) |
-| `sites` | 3 | [map/operations/sites.md](map/operations/sites.md) |
-| `subscriptions` | 12 | [map/operations/subscriptions.md](map/operations/subscriptions.md) |
-| `subscriptionComponents` | 17 | [map/operations/subscription-components.md](map/operations/subscription-components.md) |
-| `subscriptionGroups` | 9 | [map/operations/subscription-groups.md](map/operations/subscription-groups.md) |
-| `subscriptionGroupInvoiceAccount` | 4 | [map/operations/subscription-group-invoice-account.md](map/operations/subscription-group-invoice-account.md) |
-| `subscriptionGroupStatus` | 4 | [map/operations/subscription-group-status.md](map/operations/subscription-group-status.md) |
-| `subscriptionInvoiceAccount` | 7 | [map/operations/subscription-invoice-account.md](map/operations/subscription-invoice-account.md) |
-| `subscriptionNotes` | 5 | [map/operations/subscription-notes.md](map/operations/subscription-notes.md) |
-| `subscriptionProducts` | 2 | [map/operations/subscription-products.md](map/operations/subscription-products.md) |
-| `subscriptionRenewals` | 11 | [map/operations/subscription-renewals.md](map/operations/subscription-renewals.md) |
-| `subscriptionStatus` | 10 | [map/operations/subscription-status.md](map/operations/subscription-status.md) |
-| `wallets` | 5 | [map/operations/wallets.md](map/operations/wallets.md) |
-| `walletTransactions` | 2 | [map/operations/wallet-transactions.md](map/operations/wallet-transactions.md) |
-| `walletAdjustments` | 1 | [map/operations/wallet-adjustments.md](map/operations/wallet-adjustments.md) |
-| `walletPurchases` | 2 | [map/operations/wallet-purchases.md](map/operations/wallet-purchases.md) |
-| `walletProducts` | 7 | [map/operations/wallet-products.md](map/operations/wallet-products.md) |
-| `webhooks` | 6 | [map/operations/webhooks.md](map/operations/webhooks.md) |
+| Resource (`client.X`) | Ops | Operations | Page |
+| --- | --- | --- | --- |
+| `apiExports` | 9 | `exportInvoices` · `exportProformaInvoices` · `exportSubscriptions` · `listExportedInvoices` · `listExportedProformaInvoices` · `listExportedSubscriptions` · `readInvoicesExport` · `readProformaInvoicesExport` · `readSubscriptionsExport` | [map/operations/api-exports.md](map/operations/api-exports.md) |
+| `advanceInvoice` | 3 | `issueAdvanceInvoice` · `readAdvanceInvoice` · `voidAdvanceInvoice` | [map/operations/advance-invoice.md](map/operations/advance-invoice.md) |
+| `billingPortal` | 4 | `enableBillingPortalForCustomer` · `readBillingPortalLink` · `resendBillingPortalInvitation` · `revokeBillingPortalAccess` | [map/operations/billing-portal.md](map/operations/billing-portal.md) |
+| `coupons` | 14 | `archiveCoupon` · `createCoupon` · `createCouponSubcodes` · `createOrUpdateCouponCurrencyPrices` · `deleteCouponSubcode` · `findCoupon` · `listCouponSubcodes` · `listCoupons` · `listCouponsForProductFamily` · `readCoupon` · `readCouponUsage` · `updateCoupon` · `updateCouponSubcodes` · `validateCoupon` | [map/operations/coupons.md](map/operations/coupons.md) |
+| `componentFeatures` | 6 | `createComponentFeature` · `listComponentFeatures` · `readComponentFeature` · `removeComponentFeature` · `restoreComponentFeature` · `updateComponentFeature` | [map/operations/component-features.md](map/operations/component-features.md) |
+| `components` | 12 | `archiveComponent` · `createEventBasedComponent` · `createMeteredComponent` · `createOnOffComponent` · `createPrepaidUsageComponent` · `createQuantityBasedComponent` · `findComponent` · `listComponents` · `listComponentsForProductFamily` · `readComponent` · `updateComponent` · `updateProductFamilyComponent` | [map/operations/components.md](map/operations/components.md) |
+| `componentPricePoints` | 12 | `archiveComponentPricePoint` · `bulkCreateComponentPricePoints` · `cloneComponentPricePoint` · `createComponentPricePoint` · `createCurrencyPrices` · `listAllComponentPricePoints` · `listComponentPricePoints` · `promoteComponentPricePointToDefault` · `readComponentPricePoint` · `unarchiveComponentPricePoint` · `updateComponentPricePoint` · `updateCurrencyPrices` | [map/operations/component-price-points.md](map/operations/component-price-points.md) |
+| `customers` | 7 | `createCustomer` · `deleteCustomer` · `listCustomerSubscriptions` · `listCustomers` · `readCustomer` · `readCustomerByReference` · `updateCustomer` | [map/operations/customers.md](map/operations/customers.md) |
+| `customFields` | 9 | `createMetadata` · `createMetafields` · `deleteMetadata` · `deleteMetafield` · `listMetadata` · `listMetadataForResourceType` · `listMetafields` · `updateMetadata` · `updateMetafield` | [map/operations/custom-fields.md](map/operations/custom-fields.md) |
+| `entitlements` | 1 | `readSubscriptionEntitlements` | [map/operations/entitlements.md](map/operations/entitlements.md) |
+| `events` | 3 | `listEvents` · `listSubscriptionEvents` · `readEventsCount` | [map/operations/events.md](map/operations/events.md) |
+| `eventsBasedBillingSegments` | 6 | `bulkCreateSegments` · `bulkUpdateSegments` · `createSegment` · `deleteSegment` · `listSegmentsForPricePoint` · `updateSegment` | [map/operations/events-based-billing-segments.md](map/operations/events-based-billing-segments.md) |
+| `featureTemplates` | 6 | `archiveFeatureTemplate` · `createFeatureTemplate` · `listFeatureTemplates` · `readFeatureTemplate` · `restoreFeatureTemplate` · `updateFeatureTemplate` | [map/operations/feature-templates.md](map/operations/feature-templates.md) |
+| `insights` | 4 | `listMrrMovements` · `listMrrPerSubscription` · `readMrr` · `readSiteStats` | [map/operations/insights.md](map/operations/insights.md) |
+| `invoices` | 19 | `createInvoice` · `deleteInvoice` · `issueInvoice` · `listConsolidatedInvoiceSegments` · `listCreditNotes` · `listInvoiceEvents` · `listInvoices` · `previewCustomerInformationChanges` · `readCreditNote` · `readInvoice` · `recordPaymentForInvoice` · `recordPaymentForMultipleInvoices` · `recordPaymentForSubscription` · `refundInvoice` · `reopenInvoice` · `sendInvoice` · `updateCustomerInformation` · `updateInvoice` · `voidInvoice` | [map/operations/invoices.md](map/operations/invoices.md) |
+| `offers` | 5 | `archiveOffer` · `createOffer` · `listOffers` · `readOffer` · `unarchiveOffer` | [map/operations/offers.md](map/operations/offers.md) |
+| `paymentProfiles` | 12 | `changeSubscriptionDefaultPaymentProfile` · `changeSubscriptionGroupDefaultPaymentProfile` · `createPaymentProfile` · `deleteSubscriptionGroupPaymentProfile` · `deleteSubscriptionsPaymentProfile` · `deleteUnusedPaymentProfile` · `listPaymentProfiles` · `readOneTimeToken` · `readPaymentProfile` · `sendRequestUpdatePaymentEmail` · `updatePaymentProfile` · `verifyBankAccount` | [map/operations/payment-profiles.md](map/operations/payment-profiles.md) |
+| `productFamilies` | 4 | `createProductFamily` · `listProductFamilies` · `listProductsForProductFamily` · `readProductFamily` | [map/operations/product-families.md](map/operations/product-families.md) |
+| `productFeatures` | 6 | `createProductFeature` · `listProductFeatures` · `readProductFeature` · `removeProductFeature` · `restoreProductFeature` · `updateProductFeature` | [map/operations/product-features.md](map/operations/product-features.md) |
+| `products` | 6 | `archiveProduct` · `createProduct` · `listProducts` · `readProduct` · `readProductByHandle` · `updateProduct` | [map/operations/products.md](map/operations/products.md) |
+| `productPricePoints` | 11 | `archiveProductPricePoint` · `bulkCreateProductPricePoints` · `createProductCurrencyPrices` · `createProductPricePoint` · `listAllProductPricePoints` · `listProductPricePoints` · `promoteProductPricePointToDefault` · `readProductPricePoint` · `unarchiveProductPricePoint` · `updateProductCurrencyPrices` · `updateProductPricePoint` | [map/operations/product-price-points.md](map/operations/product-price-points.md) |
+| `proformaInvoices` | 10 | `createConsolidatedProformaInvoice` · `createProformaInvoice` · `createSignupProformaInvoice` · `deliverProformaInvoice` · `listProformaInvoices` · `listSubscriptionGroupProformaInvoices` · `previewProformaInvoice` · `previewSignupProformaInvoice` · `readProformaInvoice` · `voidProformaInvoice` | [map/operations/proforma-invoices.md](map/operations/proforma-invoices.md) |
+| `reasonCodes` | 5 | `createReasonCode` · `deleteReasonCode` · `listReasonCodes` · `readReasonCode` · `updateReasonCode` | [map/operations/reason-codes.md](map/operations/reason-codes.md) |
+| `referralCodes` | 1 | `validateReferralCode` | [map/operations/referral-codes.md](map/operations/referral-codes.md) |
+| `salesCommissions` | 3 | `listSalesCommissionSettings` · `listSalesReps` · `readSalesRep` | [map/operations/sales-commissions.md](map/operations/sales-commissions.md) |
+| `sites` | 3 | `clearSite` · `listChargifyJsPublicKeys` · `readSite` | [map/operations/sites.md](map/operations/sites.md) |
+| `subscriptions` | 12 | `activateSubscription` · `applyCouponsToSubscription` · `createSubscription` · `findSubscription` · `listSubscriptions` · `overrideSubscription` · `previewSubscription` · `purgeSubscription` · `readSubscription` · `removeCouponFromSubscription` · `updatePrepaidSubscriptionConfiguration` · `updateSubscription` | [map/operations/subscriptions.md](map/operations/subscriptions.md) |
+| `subscriptionComponents` | 17 | `activateEventBasedComponent` · `allocateComponent` · `allocateComponents` · `bulkRecordEvents` · `bulkResetSubscriptionComponentsPricePoints` · `bulkUpdateSubscriptionComponentsPricePoints` · `createUsage` · `deactivateEventBasedComponent` · `deletePrepaidUsageAllocation` · `listAllocations` · `listSubscriptionComponents` · `listSubscriptionComponentsForSite` · `listUsages` · `previewAllocations` · `readSubscriptionComponent` · `recordEvent` · `updatePrepaidUsageAllocationExpirationDate` | [map/operations/subscription-components.md](map/operations/subscription-components.md) |
+| `subscriptionGroups` | 9 | `addSubscriptionToGroup` · `createSubscriptionGroup` · `deleteSubscriptionGroup` · `findSubscriptionGroup` · `listSubscriptionGroups` · `readSubscriptionGroup` · `removeSubscriptionFromGroup` · `signupWithSubscriptionGroup` · `updateSubscriptionGroupMembers` | [map/operations/subscription-groups.md](map/operations/subscription-groups.md) |
+| `subscriptionGroupInvoiceAccount` | 4 | `createSubscriptionGroupPrepayment` · `deductSubscriptionGroupServiceCredit` · `issueSubscriptionGroupServiceCredit` · `listPrepaymentsForSubscriptionGroup` | [map/operations/subscription-group-invoice-account.md](map/operations/subscription-group-invoice-account.md) |
+| `subscriptionGroupStatus` | 4 | `cancelDelayedCancellationForGroup` · `cancelSubscriptionsInGroup` · `initiateDelayedCancellationForGroup` · `reactivateSubscriptionGroup` | [map/operations/subscription-group-status.md](map/operations/subscription-group-status.md) |
+| `subscriptionInvoiceAccount` | 7 | `createPrepayment` · `deductServiceCredit` · `issueServiceCredit` · `listPrepayments` · `listServiceCredits` · `readAccountBalances` · `refundPrepayment` | [map/operations/subscription-invoice-account.md](map/operations/subscription-invoice-account.md) |
+| `subscriptionNotes` | 5 | `createSubscriptionNote` · `deleteSubscriptionNote` · `listSubscriptionNotes` · `readSubscriptionNote` · `updateSubscriptionNote` | [map/operations/subscription-notes.md](map/operations/subscription-notes.md) |
+| `subscriptionProducts` | 2 | `migrateSubscriptionProduct` · `previewSubscriptionProductMigration` | [map/operations/subscription-products.md](map/operations/subscription-products.md) |
+| `subscriptionRenewals` | 11 | `cancelScheduledRenewalConfiguration` · `createScheduledRenewalConfiguration` · `createScheduledRenewalConfigurationItem` · `deleteScheduledRenewalConfigurationItem` · `listScheduledRenewalConfigurations` · `lockInScheduledRenewalImmediately` · `readScheduledRenewalConfiguration` · `scheduleScheduledRenewalLockIn` · `unpublishScheduledRenewalConfiguration` · `updateScheduledRenewalConfiguration` · `updateScheduledRenewalConfigurationItem` | [map/operations/subscription-renewals.md](map/operations/subscription-renewals.md) |
+| `subscriptionStatus` | 10 | `cancelDelayedCancellation` · `cancelDunning` · `cancelSubscription` · `initiateDelayedCancellation` · `pauseSubscription` · `previewRenewal` · `reactivateSubscription` · `resumeSubscription` · `retrySubscription` · `updateAutomaticSubscriptionResumption` | [map/operations/subscription-status.md](map/operations/subscription-status.md) |
+| `wallets` | 5 | `archiveWallet` · `createWallet` · `listWallets` · `readWallet` · `updateWallet` | [map/operations/wallets.md](map/operations/wallets.md) |
+| `walletTransactions` | 2 | `createWalletTransaction` · `listWalletTransactions` | [map/operations/wallet-transactions.md](map/operations/wallet-transactions.md) |
+| `walletAdjustments` | 1 | `createWalletAdjustment` | [map/operations/wallet-adjustments.md](map/operations/wallet-adjustments.md) |
+| `walletPurchases` | 2 | `createWalletPurchase` · `previewWalletPurchase` | [map/operations/wallet-purchases.md](map/operations/wallet-purchases.md) |
+| `walletProducts` | 7 | `archiveWalletProduct` · `createWalletProduct` · `listWalletProducts` · `readWalletProduct` · `readWalletProductUsage` · `unarchiveWalletProduct` · `updateWalletProduct` | [map/operations/wallet-products.md](map/operations/wallet-products.md) |
+| `webhooks` | 6 | `createEndpoint` · `enableWebhooks` · `listEndpoints` · `listWebhooks` · `replayWebhooks` · `updateEndpoint` | [map/operations/webhooks.md](map/operations/webhooks.md) |
 
 ---
 

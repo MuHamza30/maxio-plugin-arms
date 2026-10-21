@@ -380,7 +380,7 @@ def create(
   `mypy --strict` and by `pyright`. Do not silence them with `# type: ignore`: use `model_validate`.
 - `model_validate` takes any mapping, so **a misspelt key is sent as it is and nothing complains**. Only a
   test that captures the request proves the token is on the wire, at the root and not inside the resource
-  object: `request.body.value["uniqueness_token"] == token` (`docs/testing.md`, *Assert the outgoing
+  object: `json.loads(request.body.content)["uniqueness_token"] == token` (`docs/testing.md`, *Assert the outgoing
   request*). `recipes/safe_signup.py` sends the token this way, and its tests check the captured body
   (`recipes/README.md`).
 - The same form works for every operation that has a `body` parameter: validate

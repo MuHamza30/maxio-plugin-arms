@@ -15,6 +15,12 @@ using MaxioAdvancedBilling.Requests.Coupons;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Coupon object defines a discount, either a percentage or a fixed amount, that can be applied to a subscription to reduce the subscription's billing amount.
+/// <para>
+/// Coupons can be restricted to a specific Product Family, limited to a date range, and configured to apply once or recur over a set duration. For more information, see <see href="https://docs.maxio.com/billing/catalog/coupons/understand-coupons">Understand Coupons</see>.
+/// </para>
+/// </summary>
 public sealed class Coupons
 {
     private readonly RawClient _rawClient;

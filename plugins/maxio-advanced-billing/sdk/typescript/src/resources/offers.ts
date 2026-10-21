@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { createOfferRequestSchema, type CreateOfferRequest } from "../models/create-offer-request.js";
@@ -15,6 +16,14 @@ import { listOffersResponseSchema, type ListOffersResponse } from "../models/lis
 import { offerResponseSchema, type OfferResponse } from "../models/offer-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Offer object bundles a specific Product, Price Point, and any associated discounts into a
+ * single pre-configured signup option that customers can subscribe to directly.
+ *
+ * Offers are commonly used to power self-service signup pages without requiring each pricing
+ * combination to be built manually. For more information, see [Understand
+ * Offers](https://docs.maxio.com/billing/catalog/offers/understand-offers).
+ */
 export class Offers {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -94,7 +103,7 @@ export class Offers {
    * credential that could not be obtained
    */
   createOffer(
-    request: Offers.CreateOfferRequestParams,
+    request: Offers.CreateOfferRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<OfferResponse, Offers.CreateOfferError> {
     return this.#rawClient.execute(
@@ -135,7 +144,7 @@ export class Offers {
    * credential that could not be obtained
    */
   listOffers(
-    request: Offers.ListOffersRequest,
+    request: Offers.ListOffersRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ListOffersResponse, Offers.ListOffersError> {
     return this.#rawClient.execute(
@@ -243,7 +252,7 @@ export namespace Offers {
   };
 
   export class CreateOfferError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1>>;
+    declare readonly payload: Declared<"errorArrayMapResponse1", ErrorArrayMapResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateOfferError> = [
       {
@@ -278,7 +287,7 @@ export namespace Offers {
   };
 
   export class ListOffersError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListOffersError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

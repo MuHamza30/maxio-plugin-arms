@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { basicDateFieldSchema, type BasicDateField } from "../models/basic-date-field.js";
@@ -23,6 +24,15 @@ import {
 } from "../models/update-customer-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Customer object represents the person or organization being billed and is the anchor that
+ * subscriptions, payment profiles, and invoices are all attached to.
+ *
+ * A customer record stores contact and billing details (name, address, tax exemption status,
+ * locale) along with references to related records, such as the customer's default subscription
+ * group. For more information, see [Understand Customers for Subscription
+ * Management](https://docs.maxio.com/billing/subscriptions/customers/understand-customers-for-subscription-management).
+ */
 export class Customers {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -107,7 +117,7 @@ export class Customers {
    * credential that could not be obtained
    */
   createCustomer(
-    request: Customers.CreateCustomerRequestParams,
+    request: Customers.CreateCustomerRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<CustomerResponse, Customers.CreateCustomerError> {
     return this.#rawClient.execute(
@@ -241,7 +251,7 @@ export class Customers {
    * credential that could not be obtained
    */
   listCustomers(
-    request: Customers.ListCustomersRequest,
+    request: Customers.ListCustomersRequest = {},
     options?: RequestOptions,
   ): ApiPromise<CustomerResponse[], ApiError> {
     return this.#rawClient.execute(
@@ -440,7 +450,7 @@ export namespace Customers {
   };
 
   export class CreateCustomerError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"customerErrorResponse1", CustomerErrorResponse1>>;
+    declare readonly payload: Declared<"customerErrorResponse1", CustomerErrorResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateCustomerError> = [
       {
@@ -537,9 +547,10 @@ export namespace Customers {
   };
 
   export class UpdateCustomerError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"customerErrorResponse1", CustomerErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"customerErrorResponse1", CustomerErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateCustomerError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

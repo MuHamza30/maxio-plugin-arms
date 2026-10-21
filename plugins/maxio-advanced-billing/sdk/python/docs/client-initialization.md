@@ -25,6 +25,7 @@ constructor:
     # server selection — one of four shapes, see "Choosing the server / base URL"
     timeout: float = 30.0,             # seconds; the generator's default
     retry_options=None,                # None: the default policy; 0 disables; a count, RetryOptions or dict tunes it
+    logging_options=None,              # what the built-in logging records; see README.md, *Logging*
     custom_http_client=None,           # your own transport
     {scheme}=None,                     # one credentials keyword per declared scheme
     {scheme}_token_source=None,        # managed-OAuth schemes only
@@ -205,8 +206,8 @@ two satisfies the Protocol under `mypy --strict`:
 client = {Api}Client(custom_http_client=MyTransport(), {scheme}=...)
 ```
 
-This is the seam for **logging, tracing, metrics and tests** — the SDK ships no logging or middleware of
-its own. Wrap the SDK's own transport rather than reimplementing HTTP:
+This is the seam for **logging, tracing, metrics and tests** — the SDK ships no middleware of its own,
+and its built-in logging (`logging_options`, README.md *Logging*) writes only its own lines. Wrap the SDK's own transport rather than reimplementing HTTP:
 
 ```python
 class LoggingTransport:

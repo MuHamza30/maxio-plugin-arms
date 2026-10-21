@@ -1,11 +1,16 @@
 """Request bodies: the wire shapes a transport receives, and the factories that build them.
 
-A body is already serialized by the time it exists -- except file content, which is deliberately
+A buffered body **is** its wire bytes by the time it exists -- UTF-8 for JSON (RFC 8259) and for a
+percent-encoded form (pure ASCII, so the same bytes under any ASCII-compatible charset), and the
+declared charset for a text body. A multipart body's text parts carry their UTF-8 bytes the same
+way; only the framing around them is the encoder's. File content is deliberately
 the opposite: a file is *described* (a ``Path``, a handle, an iterable of chunks) and first read
 inside the transport when the request is sent, so building a body never opens a resource. Each
 factory validates any typed value against the type the endpoint declared and dumps it through that
 type's adapter, so a transport, including a caller-supplied one, never serializes anything, and
-:class:`HttpRequest` never carries a pydantic adapter.
+:class:`HttpRequest` never carries a pydantic adapter. A body also carries its own label:
+:func:`content_headers` is the one place a body's ``Content-Type`` (and a raw body's
+``Content-Disposition``) is spelled, folded onto the request beneath every parameter layer.
 
 ``RequestBody`` is a closed union rather than a Protocol: all five shapes live here and are
 generator-emitted, so the set cannot grow behind the runtime's back."""
@@ -13,7 +18,7 @@ generator-emitted, so the set cannot grow behind the runtime's back."""
 from __future__ import annotations
 
 import codecs
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Final, Generic, TypeAlias, TypeVar, overload
@@ -21,8 +26,10 @@ from typing import Any, Final, Generic, TypeAlias, TypeVar, overload
 from pydantic import TypeAdapter
 from typing_extensions import TypeForm, assert_never
 
-from ._internal.flattening import flatten, to_fields
+from ._internal.content_disposition import render_content_disposition
+from ._internal.flattening import flatten
 from ._internal.subscripts import SubscriptOnly
+from ._internal.urls import urlencode_params
 from ._internal.wire import compact_json, to_text
 from .adapters import adapter_for, validation_target
 from .files import AsyncBinaryContent, AsyncFileInput, NamedFile
@@ -34,41 +41,42 @@ T = TypeVar("T")
 
 @dataclass(frozen=True, slots=True)
 class JsonBody(Generic[T]):
-    """A JSON body of declared type ``T``, reduced to JSON-safe Python objects, under the
-    operation's declared media type.
+    """A JSON body of declared type ``T``: its wire bytes, under the operation's declared media type.
 
-    ``T`` records the type the value was validated and dumped *as*; ``value`` holds the result of
-    that dump, which is why it is ``object`` and not ``T``. ``media_type`` is the operation's
-    content key -- ``application/json`` almost always, but ``application/merge-patch+json`` and the
-    ``+json`` vendor types are the same wire shape under a different label, and a transport writes
-    whichever it is handed. Construct it through ``json_body[...]``, whose subscript binds ``T``."""
+    ``T`` records the type the value was validated and dumped *as*; ``content`` is that dump --
+    compact, UTF-8, produced once by ``json_body[...]`` -- so the transport sends it unchanged and a
+    log line describing the body shows the same bytes. ``media_type`` is the operation's content key:
+    ``application/json`` almost always, ``application/merge-patch+json`` and the ``+json`` vendor
+    types being the same wire shape under a different label. Construct it through ``json_body[...]``,
+    whose subscript binds ``T``."""
 
-    value: object
+    content: bytes
     media_type: str
 
 
 @dataclass(frozen=True, slots=True)
 class FormBody:
-    """A url-encoded form body, already flattened into wire fields.
+    """A url-encoded form body: its wire bytes.
 
-    A field is one text or, where the key repeats, the list of texts it collected -- the whole
-    value space :func:`to_fields` can produce, spelled out so a caller-supplied transport is
-    type-checked on what it does with them."""
+    Rendered by the encoder the query string uses (``urlencode_params``), so a form field and a
+    query parameter of one value are the same bytes, in the same order. Percent-encoding leaves
+    ASCII, so the UTF-8 bytes of that text are the same bytes under any ASCII-compatible charset."""
 
-    fields: Mapping[str, str | list[str]]
+    content: bytes
 
 
 @dataclass(frozen=True, slots=True)
 class MultipartText:
-    """One non-file part: a named text value, optionally under a declared media type.
+    """One non-file part: a named text value, already encoded as UTF-8, optionally under a declared media type.
 
     A JSON part is not a separate shape: it is a text part under the media type the operation
     declares for it (``application/json``, unless its encoding object says otherwise) -- the
-    identical ``(None, text, media_type)`` wire spelling either way. Classes split only where the
-    transport must act differently, and here it does not."""
+    identical ``(None, content, media_type)`` wire spelling either way. Classes split only where the
+    transport must act differently, and here it does not. The bytes are the factory's, as every
+    in-memory body's are: the encoder frames a part and encodes nothing."""
 
     name: str
-    text: str
+    content: bytes
     media_type: str | None = None
 
 
@@ -136,8 +144,8 @@ class BinaryBody:
 
     ``filename`` is resolved, in :class:`MultipartFile`'s exact sense: ``None`` means *resolved to
     absent*, never *derive one*. :func:`binary_body` has already applied the same fallback a part
-    gets, so the two classes' ``filename`` fields mean the same thing. A transport renders it as
-    ``Content-Disposition``."""
+    gets, so the two classes' ``filename`` fields mean the same thing. :func:`content_headers`
+    renders it onto the request as ``Content-Disposition``."""
 
     content: AsyncBinaryContent
     filename: str | None
@@ -146,16 +154,17 @@ class BinaryBody:
 
 @dataclass(frozen=True, slots=True)
 class TextBody:
-    """A body that is one text value under a declared media type and charset.
+    """A body that is one text value, already encoded, under a declared media type and charset.
 
     ``charset`` is the spec's own label (``utf-8``, ``iso-8859-1``, ``windows-1252``) and does two
-    jobs from one field: a transport encodes ``text`` with it and labels the result
-    ``media_type; charset=<charset>`` -- so the bytes and the label cannot disagree. The shipped
-    transport does exactly that and nothing else; a custom one carries the same obligation. The
-    factory defaults ``charset`` to ``utf-8`` and ``media_type`` to ``text/plain``, and an endpoint
-    writes either only where the spec differs -- so the body a transport sees is always explicit."""
+    jobs from one field: the factory encoded the text with it, and :func:`content_headers` writes
+    the label ``media_type; charset=<charset>`` onto the request from that same field -- so the bytes
+    and the label cannot disagree, and a transport encodes nothing. Text the charset cannot represent
+    is refused at the factory, before any request is composed. The factory defaults ``charset`` to
+    ``utf-8`` and ``media_type`` to ``text/plain``, and an endpoint writes either only where the spec
+    differs -- so the body a transport sees is always explicit."""
 
-    text: str
+    content: bytes
     media_type: str
     charset: str
 
@@ -166,6 +175,34 @@ RequestBody: TypeAlias = JsonBody[Any] | FormBody | MultipartBody | BinaryBody |
 A union rather than one class with five optional fields: of the combinations such a class would
 admit, only five are legal, and the illegal rest had to be rejected at runtime. Here they cannot
 be written down. A transport ``match``es on this to pick its body arguments."""
+
+
+def content_headers(body: RequestBody | None) -> dict[str, str]:
+    """The headers a body carries for itself: its media type, and a raw body's name.
+
+    Folded **under** the resolved parameter layers by ``BaseRawClient._build_request``, so a caller's
+    ``extra_headers`` still wins, and a transport sends ``request.headers`` as given. A multipart body
+    contributes nothing: its ``Content-Type`` carries the boundary the encoder mints, so only the
+    transport can write it (ADR-0051 keeps httpx's encoder).
+
+    Args:
+        body: The body an endpoint built, or ``None`` for a request that carries none.
+
+    Returns:
+        Lowercased header names to values; empty for no body and for a multipart one."""
+    match body:
+        case None | MultipartBody():
+            return {}
+        case JsonBody(_, media_type):
+            return {"content-type": media_type}
+        case FormBody():
+            return {"content-type": "application/x-www-form-urlencoded"}
+        case BinaryBody(_, str() as filename, media_type):
+            return {"content-type": media_type, "content-disposition": render_content_disposition(filename)}
+        case BinaryBody(_, _, media_type):
+            return {"content-type": media_type}
+        case TextBody(_, media_type, charset):
+            return {"content-type": f"{media_type}; charset={charset}"}
 
 
 def _json_value(adapter: TypeAdapter[T], value: T) -> object:
@@ -200,7 +237,7 @@ class _DeclaredJsonBody(Generic[T]):
     adapter: TypeAdapter[T]
 
     def __call__(self, value: T, /, *, media_type: str = "application/json") -> JsonBody[T]:
-        return JsonBody(_json_value(self.adapter, value), media_type)
+        return JsonBody(compact_json(_json_value(self.adapter, value), ensure_ascii=False).encode("utf-8"), media_type)
 
 
 class _JsonBodyFactory(SubscriptOnly):
@@ -254,17 +291,17 @@ json_body: Final = _JsonBodyFactory()
 
 
 def form_body(*params: Param[Any]) -> FormBody:
-    """Flatten ``params`` into a url-encoded form body.
+    """Render ``params`` into a url-encoded form body.
 
     Args:
         params: The form parameters, in wire order, each already carrying its declared type's adapter.
 
     Returns:
-        A :class:`FormBody` holding wire-ready text fields.
+        A :class:`FormBody` holding the wire bytes.
 
     Raises:
         ValueError: If a parameter's value fails validation against its declared type."""
-    return FormBody(to_fields(params))
+    return FormBody(urlencode_params(params).encode("utf-8"))
 
 
 def multipart_body(*parts: Param[Any] | MultipartPart | MultipartFiles | None) -> MultipartBody:
@@ -297,7 +334,7 @@ def multipart_body(*parts: Param[Any] | MultipartPart | MultipartFiles | None) -
             case None:
                 pass
             case Param():
-                resolved.extend(MultipartText(key, text) for key, text in flatten([part]))
+                resolved.extend(MultipartText(key, text.encode("utf-8")) for key, text in flatten([part]))
             case MultipartFiles(files):
                 resolved.extend(files)
             case MultipartText() | MultipartFile():
@@ -422,7 +459,7 @@ class _DeclaredJsonPart(Generic[T]):
     adapter: TypeAdapter[T]
 
     def __call__(self, name: str, value: T, /, *, media_type: str = "application/json") -> MultipartText:
-        return MultipartText(name, compact_json(_json_value(self.adapter, value)), media_type)
+        return MultipartText(name, compact_json(_json_value(self.adapter, value)).encode("utf-8"), media_type)
 
 
 class _JsonPartFactory(SubscriptOnly):
@@ -459,7 +496,8 @@ def binary_body(content: AsyncFileInput, *, media_type: str = "application/octet
     :func:`file_part` applies -- the override, then the SDK's own answer. ``media_type`` falls back
     to the operation's declared value; ``filename`` falls back to :func:`_derive_filename`, so a
     ``Path`` or a named handle is sent under its name and a nameless source under none at all
-    (ADR-0053, amended). The transport renders it as a ``Content-Disposition``.
+    (ADR-0053, amended). :func:`content_headers` renders it onto the request as a
+    ``Content-Disposition``.
 
     Only the basename is sent, so a caller's directories never reach the wire.
 
@@ -508,19 +546,21 @@ class _DeclaredTextBody(Generic[T]):
                 resolves as written; ``utf-8`` when omitted.
 
         Returns:
-            A :class:`TextBody` carrying the dumped text and both facts unchanged.
+            A :class:`TextBody` carrying the dumped text encoded with ``charset``, and both facts unchanged.
 
         Raises:
-            ValueError: If ``charset`` names no codec, or ``value`` fails validation."""
+            ValueError: If ``charset`` names no codec, ``value`` fails validation, or the text holds a
+                character ``charset`` cannot represent (``UnicodeEncodeError``, a ``ValueError``)."""
         try:
             codecs.lookup(charset)
         except LookupError as error:
-            # ``str.encode`` would report this as LookupError at send time, inside the transport and
-            # outside the ValueError contract every other rejection here honours.
+            # ``str.encode`` would report this as LookupError, outside the ValueError contract every
+            # other rejection here honours.
             raise ValueError(f"Unknown charset for a text body: {charset!r}") from error
         validated = self.adapter.validate_python(value)
         dumped = self.adapter.dump_python(validated, mode="json")
-        return TextBody(dumped if isinstance(dumped, str) else to_text(dumped), media_type, charset)
+        text = dumped if isinstance(dumped, str) else to_text(dumped)
+        return TextBody(text.encode(charset), media_type, charset)
 
 
 class _TextBodyFactory(SubscriptOnly):
@@ -531,7 +571,7 @@ class _TextBodyFactory(SubscriptOnly):
     base64 string: validation passes the raw bytes through, the dump encodes -- the encoding is the
     declared type's own dump, not a call at the emission site. It is fully resident by construction,
     and the peak is about **3.7x** the payload: the caller's ``bytes``, the base64 ``str`` at 1.33x,
-    and the transport's ``encode(charset)`` of that at 1.33x again. Base64 has no streaming path here
+    and the factory's ``encode(charset)`` of that at 1.33x again. Base64 has no streaming path here
     -- the parameter is ``bytes``, so a caller cannot hand over a stream to begin with. It *is*
     chunkable at any multiple of three bytes should a spec ever need it; the arm is absent rather
     than impossible (ADR-0051 decision 6). The two

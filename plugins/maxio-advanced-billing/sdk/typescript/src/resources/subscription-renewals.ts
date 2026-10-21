@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { errorListResponse1Schema, type ErrorListResponse1 } from "../models/error-list-response1.js";
@@ -37,6 +38,12 @@ import {
 import { statusSchema, type Status } from "../models/status.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Subscription Renewals object lets you schedule, preview, and manage a subscription's upcoming
+ * renewal, including locking in specific pricing or canceling a scheduled renewal before it takes
+ * effect. For more information, see [Understand Scheduled
+ * Renewal](https://docs.maxio.com/billing/subscriptions/configuration/term-renewal/scheduled-renewal).
+ */
 export class SubscriptionRenewals {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -580,7 +587,7 @@ export namespace SubscriptionRenewals {
   };
 
   export class CancelScheduledRenewalConfigurationError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CancelScheduledRenewalConfigurationError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -594,7 +601,7 @@ export namespace SubscriptionRenewals {
   };
 
   export class CreateScheduledRenewalConfigurationError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateScheduledRenewalConfigurationError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -610,7 +617,7 @@ export namespace SubscriptionRenewals {
   };
 
   export class CreateScheduledRenewalConfigurationItemError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateScheduledRenewalConfigurationItemError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -627,7 +634,7 @@ export namespace SubscriptionRenewals {
   };
 
   export class DeleteScheduledRenewalConfigurationItemError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<DeleteScheduledRenewalConfigurationItemError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -649,7 +656,7 @@ export namespace SubscriptionRenewals {
   };
 
   export class LockInScheduledRenewalImmediatelyError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<LockInScheduledRenewalImmediatelyError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -672,7 +679,7 @@ export namespace SubscriptionRenewals {
   };
 
   export class ScheduleScheduledRenewalLockInError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ScheduleScheduledRenewalLockInError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -687,7 +694,7 @@ export namespace SubscriptionRenewals {
   };
 
   export class UnpublishScheduledRenewalConfigurationError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UnpublishScheduledRenewalConfigurationError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -703,7 +710,7 @@ export namespace SubscriptionRenewals {
   };
 
   export class UpdateScheduledRenewalConfigurationError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateScheduledRenewalConfigurationError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -721,7 +728,7 @@ export namespace SubscriptionRenewals {
   };
 
   export class UpdateScheduledRenewalConfigurationItemError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateScheduledRenewalConfigurationItemError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

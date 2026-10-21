@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -64,6 +65,12 @@ import {
 } from "../models/update-subscription-group-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Subscription Group object links multiple subscriptions for a single customer under one shared
+ * payment profile and collection method, so you can consolidate billing instead of managing payment
+ * details separately for each subscription. For more information, see [Understand Subscription
+ * Groups](https://docs.maxio.com/billing/subscriptions/configuration/subscription-groups/understand-subscription-groups).
+ */
 export class SubscriptionGroups {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -158,7 +165,7 @@ export class SubscriptionGroups {
    * credential that could not be obtained
    */
   createSubscriptionGroup(
-    request: SubscriptionGroups.CreateSubscriptionGroupRequestParams,
+    request: SubscriptionGroups.CreateSubscriptionGroupRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<SubscriptionGroupResponse, SubscriptionGroups.CreateSubscriptionGroupError> {
     return this.#rawClient.execute(
@@ -281,7 +288,7 @@ export class SubscriptionGroups {
    * credential that could not be obtained
    */
   listSubscriptionGroups(
-    request: SubscriptionGroups.ListSubscriptionGroupsRequest,
+    request: SubscriptionGroups.ListSubscriptionGroupsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ListSubscriptionGroupsResponse, ApiError> {
     return this.#rawClient.execute(
@@ -433,7 +440,7 @@ export class SubscriptionGroups {
    * credential that could not be obtained
    */
   signupWithSubscriptionGroup(
-    request: SubscriptionGroups.SignupWithSubscriptionGroupRequest,
+    request: SubscriptionGroups.SignupWithSubscriptionGroupRequest = {},
     options?: RequestOptions,
   ): ApiPromise<SubscriptionGroupSignupResponse, SubscriptionGroups.SignupWithSubscriptionGroupError> {
     return this.#rawClient.execute(
@@ -515,9 +522,9 @@ export namespace SubscriptionGroups {
   };
 
   export class CreateSubscriptionGroupError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"subscriptionGroupCreateErrorResponse1", SubscriptionGroupCreateErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"subscriptionGroupCreateErrorResponse1", SubscriptionGroupCreateErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateSubscriptionGroupError> = [
       {
@@ -534,7 +541,7 @@ export namespace SubscriptionGroups {
   };
 
   export class DeleteSubscriptionGroupError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<DeleteSubscriptionGroupError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -547,7 +554,7 @@ export namespace SubscriptionGroups {
   };
 
   export class FindSubscriptionGroupError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<FindSubscriptionGroupError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -599,9 +606,10 @@ export namespace SubscriptionGroups {
   };
 
   export class RemoveSubscriptionFromGroupError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<RemoveSubscriptionFromGroupError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -614,9 +622,9 @@ export namespace SubscriptionGroups {
   };
 
   export class SignupWithSubscriptionGroupError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"subscriptionGroupSignupErrorResponse1", SubscriptionGroupSignupErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"subscriptionGroupSignupErrorResponse1", SubscriptionGroupSignupErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<SignupWithSubscriptionGroupError> = [
       {
@@ -634,9 +642,9 @@ export namespace SubscriptionGroups {
   };
 
   export class UpdateSubscriptionGroupMembersError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"subscriptionGroupUpdateErrorResponse1", SubscriptionGroupUpdateErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"subscriptionGroupUpdateErrorResponse1", SubscriptionGroupUpdateErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateSubscriptionGroupMembersError> = [
       {

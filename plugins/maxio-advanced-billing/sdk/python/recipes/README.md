@@ -117,7 +117,7 @@ def test_the_token_is_at_the_top_level_of_the_body() -> None:
 
     sent = transport.requests[0].body
     assert isinstance(sent, JsonBody)
-    payload = cast("dict[str, Any]", sent.value)
+    payload = cast("dict[str, Any]", json.loads(sent.content))
     assert payload["uniqueness_token"] == "token-1"  # a misspelt key fails here, and nowhere else
     assert "uniqueness_token" not in payload["subscription"]
 ```

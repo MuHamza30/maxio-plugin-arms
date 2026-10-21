@@ -15,6 +15,12 @@ using MaxioAdvancedBilling.Requests.WebhooksApi;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Webhook object represents a single notification sent to your configured endpoint when an event occurs.
+/// <para>
+/// A webhook tracks delivery status, including when it was last sent, whether the merchant endpoint accepted it, and any error from a failed attempt. For more information, see <see href="https://docs.maxio.com/configuration/advanced-billing/webhooks/understand-webhooks-in-advanced-billing">Understand Webhooks in Advanced Billing</see>.
+/// </para>
+/// </summary>
 public sealed class WebhooksApi
 {
     private readonly RawClient _rawClient;

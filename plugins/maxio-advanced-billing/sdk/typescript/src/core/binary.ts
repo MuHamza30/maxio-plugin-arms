@@ -121,12 +121,13 @@ export async function readBinaryError(
   response: Response,
   method: HttpMethod,
   uri: string,
+  signal: AbortSignal,
 ): Promise<BinaryErrorContent> {
   let buffer: ArrayBuffer;
   try {
     buffer = await response.arrayBuffer();
   } catch (err) {
-    if (err instanceof CoreError) throw err;
+    if (err instanceof CoreError || (signal.aborted && err === signal.reason)) throw err;
     throw new DecodeError(`${method} ${uri} failed: Response body could not be read.`, {
       cause: err,
       method,

@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.AdvanceInvoice;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Use the Advance Invoice feature to issue, retrieve, or void an invoice for a subscription ahead of its normal billing schedule, collecting an outstanding balance before the next scheduled renewal. For more information, see <see href="https://docs.maxio.com/billing/invoicing/advance-invoices/issue-advance-invoices-for-subscription-renewals">Issue Advance Invoices for Subscription Renewals</see>.
+/// </summary>
 public sealed class AdvanceInvoice
 {
     private readonly RawClient _rawClient;

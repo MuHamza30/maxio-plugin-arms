@@ -32,6 +32,7 @@ from typing import Any, Generic, NoReturn, TypeAlias, TypeVar, overload
 
 from ._internal.wire import parse_json
 from .exceptions import ApiError
+from .optionality import OptionalNullable, items_or_empty
 from .paginator import AsyncPaginator, Paginator
 
 T = TypeVar("T")
@@ -122,19 +123,21 @@ def unwrap(result: ApiResult[T, E], /) -> T: ...
 
 @overload
 def unwrap(
-    paginator: Paginator[ApiResult[T, E], ItemT], items_selector: Callable[[T], Sequence[ItemT]], /
+    paginator: Paginator[ApiResult[T, E], ItemT], items_selector: Callable[[T], OptionalNullable[Sequence[ItemT]]], /
 ) -> Paginator[T, ItemT]: ...
 
 
 @overload
 def unwrap(
-    paginator: AsyncPaginator[ApiResult[T, E], ItemT], items_selector: Callable[[T], Sequence[ItemT]], /
+    paginator: AsyncPaginator[ApiResult[T, E], ItemT],
+    items_selector: Callable[[T], OptionalNullable[Sequence[ItemT]]],
+    /,
 ) -> AsyncPaginator[T, ItemT]: ...
 
 
 def unwrap(
     value: ApiResult[T, E] | Paginator[ApiResult[T, E], ItemT] | AsyncPaginator[ApiResult[T, E], ItemT],
-    items_selector: Callable[[T], Sequence[ItemT]] | None = None,
+    items_selector: Callable[[T], OptionalNullable[Sequence[ItemT]]] | None = None,
     /,
 ) -> T | Paginator[T, ItemT] | AsyncPaginator[T, ItemT]:
     """Return the parsed form of a raw value: a result's payload, or a paginator over payloads.
@@ -145,7 +148,8 @@ def unwrap(
 
     Args:
         value: A result, or a paginator whose pages are results.
-        items_selector: Returns one payload's items, in order. Required with a paginator; omit it with a result.
+        items_selector: Returns one payload's items, in order, as the field is modelled: ``None`` or ``UNSET`` is a
+            page with none. Required with a paginator; omit it with a result.
 
     Returns:
         The payload, or a lazy paginator over payloads that can be iterated more than once.
@@ -166,13 +170,18 @@ def unwrap(
                 for result in value.iter_pages():
                     yield unwrap(result)
 
-            return Paginator(fetch_pages, items)
+            return Paginator(
+                fetch_pages, lambda page: items_or_empty(items_selector(page)) if items_selector is not None else ()
+            )
         case AsyncPaginator(), items if items is not None:
 
             async def async_fetch_pages() -> AsyncIterator[T]:
                 async for result in value.iter_pages():
                     yield unwrap(result)
 
-            return AsyncPaginator(async_fetch_pages, items)
+            return AsyncPaginator(
+                async_fetch_pages,
+                lambda page: items_or_empty(items_selector(page)) if items_selector is not None else (),
+            )
         case _:
             raise TypeError("the value cannot be unwrapped")

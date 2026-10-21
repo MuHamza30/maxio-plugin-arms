@@ -9,7 +9,7 @@ Accessor: `client.sites` · Source: `src/resources/sites.ts` · 3 operations · 
 ### clearSite
 
 - **Provider rules (Maxio)**: Call on test sites only. Choose `cleanup_scope`: `customers` keeps the catalog, `all` also removes products. Afterwards poll until clearing finishes before seeding fixtures. Notes: `knowledge/operations/sites.md#clearsite`
-- **Signature**: `clearSite(request: Sites.ClearSiteRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
+- **Signature**: `clearSite(request?: Sites.ClearSiteRequest, options?: RequestOptions): ApiPromise<undefined, ApiError>`
 - **Wire**: `POST /sites/clear_data.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -29,7 +29,7 @@ Accessor: `client.sites` · Source: `src/resources/sites.ts` · 3 operations · 
 
 ### listChargifyJsPublicKeys
 
-- **Signature**: `listChargifyJsPublicKeys(request: Sites.ListChargifyJsPublicKeysRequest, options?: RequestOptions): ApiPromise<ListPublicKeysResponse, ApiError>`
+- **Signature**: `listChargifyJsPublicKeys(request?: Sites.ListChargifyJsPublicKeysRequest, options?: RequestOptions): ApiPromise<ListPublicKeysResponse, ApiError>`
 - **Wire**: `GET /chargify_js_keys.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

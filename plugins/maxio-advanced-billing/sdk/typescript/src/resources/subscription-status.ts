@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { cancellationRequestSchema, type CancellationRequest } from "../models/cancellation-request.js";
@@ -32,6 +33,12 @@ import {
 } from "../models/unions/cancel-subscription-error-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * Subscription Status allows you to manage a subscription's lifecycle, including retrying a failed
+ * payment, canceling, pausing, resuming, and reactivating a subscription. For more information, see
+ * [Understand Subscription
+ * States](https://docs.maxio.com/billing/subscriptions/management/subscription-states/understand-subscription-states).
+ */
 export class SubscriptionStatus {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -690,7 +697,7 @@ export namespace SubscriptionStatus {
   };
 
   export class CancelDelayedCancellationError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<CancelDelayedCancellationError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -703,7 +710,7 @@ export namespace SubscriptionStatus {
   };
 
   export class CancelDunningError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CancelDunningError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -717,10 +724,10 @@ export namespace SubscriptionStatus {
   };
 
   export class CancelSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error404", undefined>
       | Declared<"cancelSubscriptionErrorResponse", CancelSubscriptionErrorResponse>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CancelSubscriptionError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -739,9 +746,10 @@ export namespace SubscriptionStatus {
   };
 
   export class InitiateDelayedCancellationError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<InitiateDelayedCancellationError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -756,7 +764,7 @@ export namespace SubscriptionStatus {
   };
 
   export class PauseSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<PauseSubscriptionError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -770,7 +778,7 @@ export namespace SubscriptionStatus {
   };
 
   export class PreviewRenewalError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<PreviewRenewalError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -784,7 +792,7 @@ export namespace SubscriptionStatus {
   };
 
   export class ReactivateSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReactivateSubscriptionError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -804,7 +812,7 @@ export namespace SubscriptionStatus {
   };
 
   export class ResumeSubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ResumeSubscriptionError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -817,7 +825,7 @@ export namespace SubscriptionStatus {
   };
 
   export class RetrySubscriptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<RetrySubscriptionError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -831,7 +839,7 @@ export namespace SubscriptionStatus {
   };
 
   export class UpdateAutomaticSubscriptionResumptionError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateAutomaticSubscriptionResumptionError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

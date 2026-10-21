@@ -11,8 +11,8 @@ export const ServerEnvironment = {
 export type ServerEnvironment = (typeof ServerEnvironment)[keyof typeof ServerEnvironment];
 
 export type Servers = {
-  production: <Path extends string>(subPath: Path) => UrlTemplate<Path>;
-  ebb: <Path extends string>(subPath: Path) => UrlTemplate<Path>;
+  production: (subPath: string) => UrlTemplate;
+  ebb: (subPath: string) => UrlTemplate;
 };
 
 const usSchemas = {

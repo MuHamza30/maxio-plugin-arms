@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -31,6 +32,13 @@ import {
 } from "../models/wallet-products-list-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Wallet Product object is a billing product created specifically to denominate wallets and to
+ * price wallet purchases. A Wallet Product does not belong to a product family, and the Wallet
+ * Product behind a wallet cannot be changed after the wallet is created. For more information, see
+ * [Create and Manage Wallet
+ * Products](https://docs.maxio.com/billing/catalog/wallets/create-and-manage-wallet-products).
+ */
 export class WalletProducts {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -104,7 +112,7 @@ export class WalletProducts {
    * credential that could not be obtained
    */
   createWalletProduct(
-    request: WalletProducts.CreateWalletProductRequestParams,
+    request: WalletProducts.CreateWalletProductRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<WalletProductResponse, WalletProducts.CreateWalletProductError> {
     return this.#rawClient.execute(
@@ -147,7 +155,7 @@ export class WalletProducts {
    * credential that could not be obtained
    */
   listWalletProducts(
-    request: WalletProducts.ListWalletProductsRequest,
+    request: WalletProducts.ListWalletProductsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<WalletProductsListResponse, WalletProducts.ListWalletProductsError> {
     return this.#rawClient.execute(
@@ -350,11 +358,11 @@ export namespace WalletProducts {
   };
 
   export class ArchiveWalletProductError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error403", undefined>
       | Declared<"walletErrorResponse1", WalletErrorResponse1>
       | Declared<"walletErrorResponse12", WalletErrorResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ArchiveWalletProductError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -372,9 +380,10 @@ export namespace WalletProducts {
   };
 
   export class CreateWalletProductError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error403", undefined> | Declared<"walletErrorResponse1", WalletErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error403", undefined>
+      | Declared<"walletErrorResponse1", WalletErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateWalletProductError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -431,7 +440,7 @@ export namespace WalletProducts {
   };
 
   export class ListWalletProductsError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error403", undefined>>;
+    declare readonly payload: Declared<"error403", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListWalletProductsError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -447,9 +456,10 @@ export namespace WalletProducts {
   };
 
   export class ReadWalletProductError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error403", undefined> | Declared<"walletErrorResponse1", WalletErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error403", undefined>
+      | Declared<"walletErrorResponse1", WalletErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadWalletProductError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -466,9 +476,10 @@ export namespace WalletProducts {
   };
 
   export class ReadWalletProductUsageError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error403", undefined> | Declared<"walletErrorResponse1", WalletErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error403", undefined>
+      | Declared<"walletErrorResponse1", WalletErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadWalletProductUsageError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -485,11 +496,11 @@ export namespace WalletProducts {
   };
 
   export class UnarchiveWalletProductError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error403", undefined>
       | Declared<"walletErrorResponse1", WalletErrorResponse1>
       | Declared<"walletErrorResponse12", WalletErrorResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UnarchiveWalletProductError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },
@@ -512,11 +523,11 @@ export namespace WalletProducts {
   };
 
   export class UpdateWalletProductError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error403", undefined>
       | Declared<"walletErrorResponse1", WalletErrorResponse1>
       | Declared<"walletErrorResponse12", WalletErrorResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateWalletProductError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },

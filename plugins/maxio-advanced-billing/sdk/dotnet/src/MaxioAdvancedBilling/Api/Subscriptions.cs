@@ -16,6 +16,9 @@ using MaxioAdvancedBilling.Requests.Subscriptions;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Subscriptions connect a customer to a product and drive all recurring billing for that relationship, including invoice generation, billing start dates, and pricing structure across plan-based and planless configurations. For more information, see <see href="https://docs.maxio.com/billing/subscriptions/overview/understand-subscriptions">Understand Subscriptions</see>.
+/// </summary>
 public sealed class Subscriptions
 {
     private readonly RawClient _rawClient;

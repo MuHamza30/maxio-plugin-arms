@@ -173,21 +173,24 @@ def read_header(headers: Mapping[str, str], name: str, declared: TypeForm[T]) ->
         return None
 
 
-def find_link_target(headers: Mapping[str, str], rel: str) -> str | None:
-    """Return the target of the first ``Link`` header entry whose ``rel`` includes ``rel``.
+def find_link_target(headers: Mapping[str, str], *, header_name: str, rel: str) -> str | None:
+    """Return the target of the first entry of an RFC 8288 link header whose ``rel`` includes ``rel``.
 
+    The header is the one the operation's pointer names, ``Link`` when the API follows RFC 8288 to the letter.
     Entries are split on commas outside quotes, and parameters on semicolons outside quotes. ``rel`` is
     matched case-insensitively against each entry's space-separated ``rel`` list. Backslash escapes inside
-    quotes are not unescaped.
+    quotes are not unescaped. ``header_name`` and ``rel`` are keyword-only: both are strings, so a swap would
+    otherwise type-check.
 
     Args:
         headers: The response headers. Names may be in any case.
+        header_name: The header to read, matched case-insensitively.
         rel: The relation to find, such as ``"next"``.
 
     Returns:
-        The target as written. ``None`` if there is no ``Link`` header, no entry has that ``rel``, or a
+        The target as written. ``None`` if the header is missing or blank, no entry has that ``rel``, or a
         ``<`` has no closing ``>``."""
-    value = find_header(headers, "Link")
+    value = find_header(headers, header_name)
     if value is None:
         return None
     index = 0

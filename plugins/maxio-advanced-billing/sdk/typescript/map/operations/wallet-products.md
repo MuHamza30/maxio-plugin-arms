@@ -30,7 +30,7 @@ Accessor: `client.walletProducts` · Source: `src/resources/wallet-products.ts` 
 
 ### createWalletProduct
 
-- **Signature**: `createWalletProduct(request: WalletProducts.CreateWalletProductRequestParams, options?: RequestOptions): ApiPromise<WalletProductResponse, WalletProducts.CreateWalletProductError>`
+- **Signature**: `createWalletProduct(request?: WalletProducts.CreateWalletProductRequestParams, options?: RequestOptions): ApiPromise<WalletProductResponse, WalletProducts.CreateWalletProductError>`
 - **Wire**: `POST /wallet_products.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -53,7 +53,7 @@ Accessor: `client.walletProducts` · Source: `src/resources/wallet-products.ts` 
 
 ### listWalletProducts
 
-- **Signature**: `listWalletProducts(request: WalletProducts.ListWalletProductsRequest, options?: RequestOptions): ApiPromise<WalletProductsListResponse, WalletProducts.ListWalletProductsError>`
+- **Signature**: `listWalletProducts(request?: WalletProducts.ListWalletProductsRequest, options?: RequestOptions): ApiPromise<WalletProductsListResponse, WalletProducts.ListWalletProductsError>`
 - **Wire**: `GET /wallet_products.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

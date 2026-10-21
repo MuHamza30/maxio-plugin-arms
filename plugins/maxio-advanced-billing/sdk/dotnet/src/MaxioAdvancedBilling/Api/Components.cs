@@ -15,6 +15,12 @@ using MaxioAdvancedBilling.Requests.Components;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Component object represents an add-on item, such as a metered usage charge, quantity-based feature, or on/off toggle, that can be added to a subscription alongside the subscription's base Product. With the new catalog experience, the UI labels components as Products, while the API keeps the component name. See <see href="https://docs.maxio.com/billing/catalog/overview/using-the-new-product-catalog#catalog-terminology">Catalog terminology</see>.
+/// <para>
+/// Components belong to a Product Family and are billed according to their pricing scheme and kind. Components can also grant features to subscribers. See the <b>Create Component Feature Catalog Item</b> endpoint for details. For more information, see <see href="https://docs.maxio.com/billing/catalog/products/understand-products">Understand Products</see> and <see href="https://docs.maxio.com/billing/catalog/products/use-product-pricing-schemes#hybrid-pricing">Hybrid pricing</see>.
+/// </para>
+/// </summary>
 public sealed class Components
 {
     private readonly RawClient _rawClient;

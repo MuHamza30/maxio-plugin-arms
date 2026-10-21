@@ -68,7 +68,7 @@ getters (and any direct operations) come from the contract sheet (grounded in `s
 `src/resources/`) — not from the API's own documentation, and not from the compiled `dist/`. See
 **`docs/calling-endpoints.md`**.
 
-The options type always carries these five knobs (credential members vary per API — see
+The options type always carries these six knobs (credential members vary per API — see
 **`docs/authentication.md`**):
 
 ```ts
@@ -78,6 +78,8 @@ export type ClientOptions = {
   readonly retry?: RetryOptions | undefined;       // retry policy + per-attempt timeout (MILLISECONDS).
                                                    //   Retries ON by default
   readonly logging?: LoggingOptions | undefined;   // request/response logging — OFF by default
+  readonly eventStream?: EventStreamOptions | undefined; // event-stream idle timeout (MILLISECONDS) —
+                                                   //   read only by an EventStream operation
   readonly fetch?: FetchLike | undefined;          // the ONE transport extension point —
                                                    //   see docs/configuration-resilience.md
   // + one OPTIONAL credential member per auth scheme the API declares, and — for an OAuth2 scheme —
@@ -85,7 +87,7 @@ export type ClientOptions = {
 };
 ```
 
-Those five names are minted by the generator and cannot move; a credential spelled like one of them is
+Those six names are minted by the generator and cannot move; a credential spelled like one of them is
 the member that takes a suffix instead. **Every member is `readonly`**, and the client captures your
 options once, at construction — a different configuration means a new client. Each default is
 applied where the value is read: a server variable takes the `@default` on its member in

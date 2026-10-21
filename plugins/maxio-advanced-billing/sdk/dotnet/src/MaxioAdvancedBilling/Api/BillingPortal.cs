@@ -14,6 +14,9 @@ using MaxioAdvancedBilling.Requests.BillingPortal;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Billing Portal object allows you to enable, disable, and manage customer access to the self-service Billing Portal, where customers can view invoices and manage their own payment details. For more information, see <see href="https://docs.maxio.com/billing/billing-portal/overview/understand-the-billing-portal">Understand the Billing Portal</see>.
+/// </summary>
 public sealed class BillingPortal
 {
     private readonly RawClient _rawClient;

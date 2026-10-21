@@ -51,7 +51,7 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 ### createSignupProformaInvoice
 
-- **Signature**: `createSignupProformaInvoice(request: ProformaInvoices.CreateSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise<ProformaInvoice, ProformaInvoices.CreateSignupProformaInvoiceError>`
+- **Signature**: `createSignupProformaInvoice(request?: ProformaInvoices.CreateSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise<ProformaInvoice, ProformaInvoices.CreateSignupProformaInvoiceError>`
 - **Wire**: `POST /subscriptions/proforma_invoices.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -180,7 +180,7 @@ Accessor: `client.proformaInvoices` · Source: `src/resources/proforma-invoices.
 
 ### previewSignupProformaInvoice
 
-- **Signature**: `previewSignupProformaInvoice(request: ProformaInvoices.PreviewSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise<SignupProformaPreviewResponse, ProformaInvoices.PreviewSignupProformaInvoiceError>`
+- **Signature**: `previewSignupProformaInvoice(request?: ProformaInvoices.PreviewSignupProformaInvoiceRequest, options?: RequestOptions): ApiPromise<SignupProformaPreviewResponse, ProformaInvoices.PreviewSignupProformaInvoiceError>`
 - **Wire**: `POST /subscriptions/proforma_invoices/preview.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all

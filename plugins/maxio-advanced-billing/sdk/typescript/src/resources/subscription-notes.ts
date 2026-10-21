@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { errorListResponse1Schema, type ErrorListResponse1 } from "../models/error-list-response1.js";
@@ -16,6 +17,12 @@ import {
 } from "../models/update-subscription-note-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Subscription Note object stores an internal note attached to a subscription, used to record
+ * context, decisions, or history for your team.
+ *
+ * Notes are never exposed to the customer; they exist purely for internal reference.
+ */
 export class SubscriptionNotes {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -249,7 +256,7 @@ export namespace SubscriptionNotes {
   };
 
   export class CreateSubscriptionNoteError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateSubscriptionNoteError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -287,7 +294,7 @@ export namespace SubscriptionNotes {
   };
 
   export class ListSubscriptionNotesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListSubscriptionNotesError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -310,7 +317,7 @@ export namespace SubscriptionNotes {
   };
 
   export class UpdateSubscriptionNoteError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateSubscriptionNoteError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

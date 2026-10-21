@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.WalletTransactions;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Use Wallet Transactions to fund a wallet with a one-time grant, consume units with a direct debit, and read the wallet's append-only ledger. For more information, see <see href="https://docs.maxio.com/billing/catalog/wallets/understand-wallets">Understand Wallets</see>.
+/// </summary>
 public sealed class WalletTransactions
 {
     private readonly RawClient _rawClient;

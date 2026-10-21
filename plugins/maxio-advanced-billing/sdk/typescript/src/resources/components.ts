@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { basicDateFieldSchema, type BasicDateField } from "../models/basic-date-field.js";
@@ -30,6 +31,19 @@ import {
 } from "../models/update-component-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Component object represents an add-on item, such as a metered usage charge, quantity-based
+ * feature, or on/off toggle, that can be added to a subscription alongside the subscription's base
+ * Product. With the new catalog experience, the UI labels components as Products, while the API
+ * keeps the component name. See [Catalog
+ * terminology](https://docs.maxio.com/billing/catalog/overview/using-the-new-product-catalog#catalog-terminology).
+ *
+ * Components belong to a Product Family and are billed according to their pricing scheme and kind.
+ * Components can also grant features to subscribers. See the **Create Component Feature Catalog
+ * Item** endpoint for details. For more information, see [Understand
+ * Products](https://docs.maxio.com/billing/catalog/products/understand-products) and [Hybrid
+ * pricing](https://docs.maxio.com/billing/catalog/products/use-product-pricing-schemes#hybrid-pricing).
+ */
 export class Components {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -449,7 +463,7 @@ export class Components {
    * credential that could not be obtained
    */
   listComponents(
-    request: Components.ListComponentsRequest,
+    request: Components.ListComponentsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ComponentResponse[], ApiError> {
     return this.#rawClient.execute(
@@ -708,7 +722,7 @@ export namespace Components {
   };
 
   export class ArchiveComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ArchiveComponentError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -722,9 +736,10 @@ export namespace Components {
   };
 
   export class CreateEventBasedComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateEventBasedComponentError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -739,9 +754,10 @@ export namespace Components {
   };
 
   export class CreateMeteredComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateMeteredComponentError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -756,9 +772,10 @@ export namespace Components {
   };
 
   export class CreateOnOffComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateOnOffComponentError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -773,9 +790,10 @@ export namespace Components {
   };
 
   export class CreatePrepaidUsageComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreatePrepaidUsageComponentError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -790,9 +808,10 @@ export namespace Components {
   };
 
   export class CreateQuantityBasedComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateQuantityBasedComponentError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -938,7 +957,7 @@ export namespace Components {
   };
 
   export class UpdateComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateComponentError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -957,7 +976,7 @@ export namespace Components {
   };
 
   export class UpdateProductFamilyComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateProductFamilyComponentError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

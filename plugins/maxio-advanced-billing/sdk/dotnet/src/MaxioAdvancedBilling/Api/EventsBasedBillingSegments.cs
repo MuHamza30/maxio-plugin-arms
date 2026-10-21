@@ -13,6 +13,12 @@ using MaxioAdvancedBilling.Requests.EventsBasedBillingSegments;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Segment object defines a distinct pricing variation within an event-based billing metric, based on one or more property values, such as a specific country or usage category.
+/// <para>
+/// Each segment carries its own set of prices, letting a single metric charge different rates depending on which segment an event falls into.
+/// </para>
+/// </summary>
 public sealed class EventsBasedBillingSegments
 {
     private readonly RawClient _rawClient;

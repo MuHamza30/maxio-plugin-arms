@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.SubscriptionProducts;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Use the Subscription Products object to migrate a subscription from one product or price point to another, including previewing the effects of a migration before committing to it. For more information, see <see href="https://docs.maxio.com/billing/subscriptions/management/subscription-actions/upgrade-or-downgrade-a-subscription">Upgrade or Downgrade a Subscription</see>.
+/// </summary>
 public sealed class SubscriptionProducts
 {
     private readonly RawClient _rawClient;

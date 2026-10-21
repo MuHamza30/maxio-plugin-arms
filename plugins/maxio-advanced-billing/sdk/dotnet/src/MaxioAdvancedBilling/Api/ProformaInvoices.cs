@@ -14,6 +14,9 @@ using MaxioAdvancedBilling.Requests.ProformaInvoices;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Proforma Invoice object is a preview of an upcoming invoice, showing the charges a customer will be billed before the actual invoice is issued. A proforma invoice is not a finalized billing document and is commonly used to give customers advance visibility into what they owe. For more information, see <see href="https://docs.maxio.com/billing/invoicing/proforma-invoices/understand-proforma-invoices">Understand Proforma Invoices</see>.
+/// </summary>
 public sealed class ProformaInvoices
 {
     private readonly RawClient _rawClient;

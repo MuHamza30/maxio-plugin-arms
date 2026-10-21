@@ -56,7 +56,7 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 ### createPaymentProfile
 
 - **Provider rules (Maxio)**: Send `customer_id` and one payment source; with a `chargify_token`, no card or bank numbers (R15). It is not made a default: follow with `changeSubscriptionDefaultPaymentProfile` if a subscription should charge it (L6). Notes: `knowledge/operations/payment-profiles.md#createpaymentprofile`
-- **Signature**: `createPaymentProfile(request: PaymentProfiles.CreatePaymentProfileRequestParams, options?: RequestOptions): ApiPromise<PaymentProfileResponse, PaymentProfiles.CreatePaymentProfileError>`
+- **Signature**: `createPaymentProfile(request?: PaymentProfiles.CreatePaymentProfileRequestParams, options?: RequestOptions): ApiPromise<PaymentProfileResponse, PaymentProfiles.CreatePaymentProfileError>`
 - **Wire**: `POST /payment_profiles.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -137,7 +137,7 @@ Accessor: `client.paymentProfiles` · Source: `src/resources/payment-profiles.ts
 ### listPaymentProfiles
 
 - **Provider rules (Maxio)**: Pass `customer_id` in anything customer-facing. Notes: `knowledge/operations/payment-profiles.md#listpaymentprofiles`
-- **Signature**: `listPaymentProfiles(request: PaymentProfiles.ListPaymentProfilesRequest, options?: RequestOptions): ApiPromise<PaymentProfileResponse[], ApiError>`
+- **Signature**: `listPaymentProfiles(request?: PaymentProfiles.ListPaymentProfilesRequest, options?: RequestOptions): ApiPromise<PaymentProfileResponse[], ApiError>`
 - **Wire**: `GET /payment_profiles.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

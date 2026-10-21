@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.WalletAdjustments;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Wallet Adjustments post a signed correction against a specific grant, or against an overdraft, on a wallet's ledger. Adjustments are intended for support and operations corrections, and each adjustment requires a reason that is recorded on the ledger. For more information, see <see href="https://docs.maxio.com/billing/catalog/wallets/understand-wallets">Understand Wallets</see>.
+/// </summary>
 public sealed class WalletAdjustments
 {
     private readonly RawClient _rawClient;

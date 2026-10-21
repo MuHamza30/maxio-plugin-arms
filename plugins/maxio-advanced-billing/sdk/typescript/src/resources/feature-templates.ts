@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -28,6 +29,15 @@ import {
 } from "../models/update-feature-template-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Feature Template object defines a feature once at the site level, such as Single Sign-On, a
+ * monthly API call limit, or a support tier.
+ *
+ * A feature template is not billable on its own. Attach the template to products or components to
+ * grant the feature to subscribers. The kind (access_right, usage_limit, or service_right)
+ * determines how the feature's value behaves. For more information, see [Configure
+ * Entitlements](https://docs.maxio.com/billing/catalog/entitlements/configure-entitlements).
+ */
 export class FeatureTemplates {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -108,7 +118,7 @@ export class FeatureTemplates {
    * credential that could not be obtained
    */
   createFeatureTemplate(
-    request: FeatureTemplates.CreateFeatureTemplateRequestParams,
+    request: FeatureTemplates.CreateFeatureTemplateRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<FeatureTemplateResponse, FeatureTemplates.CreateFeatureTemplateError> {
     return this.#rawClient.execute(
@@ -153,7 +163,7 @@ export class FeatureTemplates {
    * credential that could not be obtained
    */
   listFeatureTemplates(
-    request: FeatureTemplates.ListFeatureTemplatesRequest,
+    request: FeatureTemplates.ListFeatureTemplatesRequest = {},
     options?: RequestOptions,
   ): ApiPromise<FeatureTemplatesListResponse, FeatureTemplates.ListFeatureTemplatesError> {
     return this.#rawClient.execute(
@@ -327,9 +337,10 @@ export namespace FeatureTemplates {
   };
 
   export class ArchiveFeatureTemplateError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"error404", undefined>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"error404", undefined>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ArchiveFeatureTemplateError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -342,9 +353,10 @@ export namespace FeatureTemplates {
   };
 
   export class CreateFeatureTemplateError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"errorListResponse12", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"errorListResponse12", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateFeatureTemplateError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -392,7 +404,7 @@ export namespace FeatureTemplates {
   };
 
   export class ListFeatureTemplatesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListFeatureTemplatesError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -405,9 +417,10 @@ export namespace FeatureTemplates {
   };
 
   export class ReadFeatureTemplateError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"errorListResponse1", ErrorListResponse1> | Declared<"error404", undefined>
-    >;
+    declare readonly payload:
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Declared<"error404", undefined>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadFeatureTemplateError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -421,11 +434,11 @@ export namespace FeatureTemplates {
   };
 
   export class RestoreFeatureTemplateError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"errorListResponse1", ErrorListResponse1>
       | Declared<"error404", undefined>
       | Declared<"errorListResponse12", ErrorListResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<RestoreFeatureTemplateError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -441,11 +454,11 @@ export namespace FeatureTemplates {
   };
 
   export class UpdateFeatureTemplateError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"errorListResponse1", ErrorListResponse1>
       | Declared<"error404", undefined>
       | Declared<"errorListResponse12", ErrorListResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateFeatureTemplateError> = [
       { on: 403, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },

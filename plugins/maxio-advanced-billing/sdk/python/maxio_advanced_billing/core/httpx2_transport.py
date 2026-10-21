@@ -29,7 +29,6 @@ import certifi
 import httpx2
 from typing_extensions import TypeIs
 
-from ._internal.content_disposition import render_content_disposition
 from .bodies import (
     BinaryBody,
     FormBody,
@@ -479,45 +478,36 @@ async def _drained_parts(body: RequestBody | None, stack: ExitStack) -> RequestB
 def _httpx2_part(part: MultipartPart, stack: ExitStack) -> tuple[str, Any]:
     """Render one part in httpx2's ``files=`` tuple spelling.
 
-    Text parts go through the *file* spelling -- ``(None, text)``, a part with no filename --
+    Text parts go through the *file* spelling -- ``(None, content)``, a part with no filename --
     rather than through ``data=``, because httpx2 chooses the encoding on the **truthiness** of
     ``files``: an operation declaring ``multipart/form-data`` with no binary part would otherwise
     be sent as ``application/x-www-form-urlencoded``. The rendered bytes are identical either way,
-    repeated keys and name escaping included, so the invariant costs nothing."""
+    repeated keys and name escaping included, so the invariant costs nothing. A text part's bytes
+    pass through the encoder as given: it frames them and encodes nothing."""
     match part:
-        case MultipartText(name, text, None):
-            return (name, (None, text))
-        case MultipartText(name, text, media_type):
-            return (name, (None, text, media_type))
+        case MultipartText(name, content, None):
+            return (name, (None, content))
+        case MultipartText(name, content, media_type):
+            return (name, (None, content, media_type))
         case MultipartFile(name, content, filename, media_type):
             return (name, (filename, _open(content, stack), media_type))
 
 
 def _body_kwargs(
     body: RequestBody | None,
-    headers: Mapping[str, str],
     stack: ExitStack,
     *,
     binary_content: Callable[[AsyncBinaryContent, ExitStack], object],
 ) -> dict[str, Any]:
-    """Map the request's body -- and the headers that describe it -- onto httpx2's keywords.
+    """Map the request's body onto the httpx2 keyword that carries it.
 
     This ``match`` is the only place the body union is interpreted, and it is exhaustive by
     construction: adding a body shape without handling it here is a type error.
 
-    Nothing here spells a media type, a charset or a filename. A body that has one carries it,
-    written at the endpoint from the operation's content key, and it is merged **underneath** the
-    request's own headers so a caller's ``extra_headers`` still wins -- the precedence httpx2 gives
-    its own derived headers. A text body is encoded with the charset it declares and labelled with
-    that same field, so the bytes and the label cannot disagree. A raw body that has a name -- given
-    or derived, the factory having already settled which -- takes a second derived header, its
-    ``Content-Disposition``, on that same precedence, and the nameless arm beneath it carries none
-    rather than an empty one. That pair is ordered name-first because
-    ``str()`` is what narrows the name for the renderer; the arm below is total over
-    :class:`BinaryBody`, which is what keeps this ``match`` exhaustive. The two arms that carry no
-    media type are the two whose media type belongs to the encoder: url-encoded is fixed by the
-    ``data=`` keyword, and multipart's boundary exists only once httpx2 has minted it. That is why
-    headers travel out of this function rather than beside it.
+    Nothing here spells a header. A body's label -- its media type, and a raw body's
+    ``Content-Disposition`` -- is already among ``request.headers``, folded there when the request was
+    built (``bodies.content_headers``), so this function moves bytes and nothing else. The one label
+    a transport still writes is multipart's, whose boundary exists only once httpx2 has minted it.
 
     ``binary_content`` is the one flavour-differing arm, passed as data with no default so each
     transport must name its own adapter -- ``_sync_content`` or ``_async_content``. One shared
@@ -527,45 +517,20 @@ def _body_kwargs(
     Args:
         body: The body being mapped -- the request's own, or the one :func:`_drained_parts`
             resolved from it.
-        headers: The request's headers, which every arm carries through and two arms extend.
         stack: The send's exit stack, onto which any handle opened for this body is registered.
         binary_content: The flavour's raw-body adapter.
 
     Returns:
-        The httpx2 keyword arguments carrying this body, ``headers`` among them."""
+        The httpx2 keyword argument carrying this body; empty when there is none."""
     match body:
         case None:
-            return {"headers": headers}
-        case JsonBody(None, media_type):
-            # ``json=None`` is indistinguishable to httpx2 from no ``json`` argument at all, so the
-            # body would vanish rather than going out as the four bytes the caller asked for.
-            # ``content=`` is the only keyword that will carry them.
-            return {"headers": {"content-type": media_type, **headers}, "content": b"null"}
-        case JsonBody(value, media_type):
-            return {"headers": {"content-type": media_type, **headers}, "json": value}
-        case FormBody(fields):
-            return {"headers": headers, "data": fields}
+            return {}
+        case JsonBody(content, _) | FormBody(content) | TextBody(content, _, _):
+            return {"content": content}
         case MultipartBody(parts):
-            return {"headers": headers, "files": [_httpx2_part(part, stack) for part in parts]}
-        case BinaryBody(content, str() as filename, media_type):
-            return {
-                "headers": {
-                    "content-type": media_type,
-                    "content-disposition": render_content_disposition(filename),
-                    **headers,
-                },
-                "content": binary_content(content, stack),
-            }
-        case BinaryBody(content, _, media_type):
-            return {
-                "headers": {"content-type": media_type, **headers},
-                "content": binary_content(content, stack),
-            }
-        case TextBody(text, media_type, charset):
-            return {
-                "headers": {"content-type": f"{media_type}; charset={charset}", **headers},
-                "content": text.encode(charset),
-            }
+            return {"files": [_httpx2_part(part, stack) for part in parts]}
+        case BinaryBody(content, _, _):
+            return {"content": binary_content(content, stack)}
 
 
 def _timeout_kwargs(request: HttpRequest) -> dict[str, Any]:
@@ -711,8 +676,9 @@ class Httpx2Client(HttpClient):
                 httpx2_request = self._client.build_request(
                     method=request.method,
                     url=request.url,
+                    headers=request.headers,
                     **_timeout_kwargs(request),
-                    **_body_kwargs(request.body, request.headers, stack, binary_content=_sync_content),
+                    **_body_kwargs(request.body, stack, binary_content=_sync_content),
                 )
                 response = self._client.send(httpx2_request, stream=True)
         except httpx2.TransportError as e:
@@ -766,8 +732,9 @@ class AsyncHttpx2Client(AsyncHttpClient):
                 httpx2_request = self._client.build_request(
                     method=request.method,
                     url=request.url,
+                    headers=request.headers,
                     **_timeout_kwargs(request),
-                    **_body_kwargs(body, request.headers, stack, binary_content=_async_content),
+                    **_body_kwargs(body, stack, binary_content=_async_content),
                 )
                 response = await self._client.send(httpx2_request, stream=True)
         except httpx2.TransportError as e:

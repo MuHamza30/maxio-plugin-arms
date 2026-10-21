@@ -34,7 +34,7 @@ from __future__ import annotations
 from typing import Final
 
 MAX_EVENT_BYTES: Final = 1 << 20
-"""Bytes held for one undispatched event before the stream is refused (1 MiB, Fern's bound)."""
+"""Bytes held for one undispatched event before the stream is refused (1 MiB)."""
 
 _BOM: Final = b"\xef\xbb\xbf"
 _LINE_ENDS: Final = (b"\n", b"\r")

@@ -2,13 +2,16 @@
 
 A state holds the value that moves from page to page (an offset, a page number, a cursor, a key, or the next
 page's URL and query) and the selectors the endpoint uses to read the next move off a response. After each
-successful page the loop calls ``advance``, which returns the next state, or ``None`` to stop.
+successful page the loop calls ``advance`` with the page, its headers and the number of items the page
+returned, read through ``items_selector``; ``advance`` returns the next state, or ``None`` to stop.
 
 States are frozen. ``advance`` returns a copy made with ``dataclasses.replace`` that changes only the moving
 value, so the selectors stay with the walk. The stop rules, and the order they are checked in, match the C#
 SDK. A state never advances to the value it just sent, so a server that keeps returning the same page ends
 the walk instead of looping forever. A selector over an ``OptionalNullable`` field may return ``UNSET``;
-every stop rule treats that as no answer.
+every stop rule treats that as no answer. ``items_selector`` follows the same rule: it returns the items field
+as modelled, and ``None`` or ``UNSET`` -- a nullable or omitted array -- is a page with no items, read through
+``optionality.items_or_empty``.
 
 An endpoint never names a state class. It calls a factory with the page model as a subscript, such as
 ``offset_state[Products](…)``. The subscript types the selectors, so a mistake inside one fails the build.
@@ -17,7 +20,9 @@ through a ``typing`` subscript. Calling a factory without its subscript fails th
 
 ``paginate`` and ``async_paginate`` run the loop: fetch the page for the current state, yield the result,
 stop after a ``Failure``, then ask ``advance`` for the next state. The result is yielded before it is
-checked, so a ``Failure`` is the last page the caller sees rather than one that is dropped. Each page is a
+checked, so a ``Failure`` is the last page the caller sees rather than one that is dropped. Neither raw view
+raises for an API error: ``iter_pages()`` carries the ``Failure`` and the item view yields nothing for it; only
+the parsed mode, ``results.unwrap``, raises ``ApiError`` there. Each page is a
 full ``execute``, so auth, retries, the idempotency key and ``request_options`` apply to every page.
 Building a paginator sends nothing; the first request goes out when iteration starts, which is why neither
 function is a coroutine.
@@ -41,10 +46,10 @@ from typing_extensions import TypeForm
 
 from ._internal.subscripts import SubscriptOnly
 from ._internal.urls import build_url
-from .optionality import OptionalNullable, UnsetType
+from .optionality import OptionalNullable, UnsetType, items_or_empty
 from .paginator import AsyncPaginator, Paginator
 from .params import Param, SerializationFormat, UrlTemplate, param
-from .results import ApiResult, Success, unwrap
+from .results import ApiResult, Success
 
 PayloadT = TypeVar("PayloadT")
 E = TypeVar("E")
@@ -55,22 +60,23 @@ ItemT = TypeVar("ItemT")
 class OffsetState(Generic[PayloadT]):
     """Moves by the number of items each page returned.
 
-    The next offset is the current offset (``None`` counts as ``0``) plus ``item_count``. The walk stops, in
-    this order: when the next offset reaches ``total_items``; when the page was empty; when ``has_more``
-    returns ``False``; or when there is no total and the page has fewer items than ``limit``. If ``has_more``
-    returns ``True``, the walk continues and the last rule is skipped."""
+    The next offset is the current offset (``None`` counts as ``0``) plus ``item_count``, the number of items
+    the loop read off the page through ``items_selector``. The walk stops, in this order: when the next offset
+    reaches ``total_items``; when the page was empty; when ``has_more`` returns ``False``; or when there is no
+    total and the page has fewer items than ``limit``. If ``has_more`` returns ``True``, the walk continues and
+    the last rule is skipped."""
 
     offset: int | None
     limit: int | None
-    item_count: Callable[[PayloadT], int]
     has_more: Callable[[PayloadT, Mapping[str, str]], OptionalNullable[bool]] | None = None
     total_items: Callable[[PayloadT, Mapping[str, str]], OptionalNullable[int]] | None = None
 
-    def advance(self, *, payload: PayloadT, headers: Mapping[str, str]) -> OffsetState[PayloadT] | None:
+    def advance(
+        self, *, payload: PayloadT, headers: Mapping[str, str], item_count: int
+    ) -> OffsetState[PayloadT] | None:
         """Return the next state, or ``None`` when a stop rule applies."""
-        data_count = self.item_count(payload)
         current_offset = self.offset if self.offset is not None else 0
-        next_offset = current_offset + data_count
+        next_offset = current_offset + item_count
         total_items = self.total_items(payload, headers) if self.total_items is not None else None
         if isinstance(total_items, int) and next_offset >= total_items:
             return None
@@ -79,7 +85,7 @@ class OffsetState(Generic[PayloadT]):
         has_more = self.has_more(payload, headers) if self.has_more is not None else None
         if isinstance(has_more, bool):
             return replace(self, offset=next_offset) if has_more else None
-        if not isinstance(total_items, int) and self.limit is not None and data_count < self.limit:
+        if not isinstance(total_items, int) and self.limit is not None and item_count < self.limit:
             return None
         return replace(self, offset=next_offset)
 
@@ -91,15 +97,15 @@ class PageState(Generic[PayloadT]):
     The next page is the current page (``None`` counts as ``1``) plus one. The walk stops, in this order: when
     the current page has reached ``total_pages``; when ``has_more`` returns ``False``; when the page was empty;
     or when there is no total and the page has fewer items than ``limit``. If ``has_more`` returns ``True``,
-    the walk continues and the last two rules are skipped."""
+    the walk continues and the last two rules are skipped. The page's size is ``item_count``, which the loop
+    reads through ``items_selector``."""
 
     page: int | None
     limit: int | None
-    item_count: Callable[[PayloadT], int]
     has_more: Callable[[PayloadT, Mapping[str, str]], OptionalNullable[bool]] | None = None
     total_pages: Callable[[PayloadT, Mapping[str, str]], OptionalNullable[int]] | None = None
 
-    def advance(self, *, payload: PayloadT, headers: Mapping[str, str]) -> PageState[PayloadT] | None:
+    def advance(self, *, payload: PayloadT, headers: Mapping[str, str], item_count: int) -> PageState[PayloadT] | None:
         """Return the next state, or ``None`` when a stop rule applies."""
         total_pages = self.total_pages(payload, headers) if self.total_pages is not None else None
         current_page = self.page if self.page is not None else 1
@@ -108,10 +114,9 @@ class PageState(Generic[PayloadT]):
         has_more = self.has_more(payload, headers) if self.has_more is not None else None
         if isinstance(has_more, bool):
             return replace(self, page=current_page + 1) if has_more else None
-        count = self.item_count(payload)
-        if count == 0:
+        if item_count == 0:
             return None
-        if not isinstance(total_pages, int) and self.limit is not None and count < self.limit:
+        if not isinstance(total_pages, int) and self.limit is not None and item_count < self.limit:
             return None
         return replace(self, page=current_page + 1)
 
@@ -122,13 +127,16 @@ class CursorState(Generic[PayloadT]):
 
     The walk stops when the next cursor is missing, empty or ``UNSET``, when it equals the cursor just sent,
     or when ``has_more`` returns ``False``. There is no ``count < limit`` rule on purpose: a short page that
-    still has a cursor does not mean the collection has ended."""
+    still has a cursor does not mean the collection has ended. ``item_count`` is accepted so every state answers
+    the same call, and is not read: a cursor, not a count, decides the next page."""
 
     cursor: str | None
     next_cursor: Callable[[PayloadT, Mapping[str, str]], OptionalNullable[str]]
     has_more: Callable[[PayloadT, Mapping[str, str]], OptionalNullable[bool]] | None = None
 
-    def advance(self, *, payload: PayloadT, headers: Mapping[str, str]) -> CursorState[PayloadT] | None:
+    def advance(
+        self, *, payload: PayloadT, headers: Mapping[str, str], item_count: int
+    ) -> CursorState[PayloadT] | None:
         """Return the next state, or ``None`` when a stop rule applies."""
         next_cursor = self.next_cursor(payload, headers)
         if not next_cursor:
@@ -146,23 +154,24 @@ class KeysetState(Generic[PayloadT]):
 
     The walk stops, in this order: when the page was empty; when ``has_more`` returns ``False``; when
     ``has_more`` gives no answer and the page has fewer items than ``limit``; or when the next key is ``None``,
-    ``UNSET`` or equal to the key just sent. ``""`` is a valid key, not a missing one."""
+    ``UNSET`` or equal to the key just sent. ``""`` is a valid key, not a missing one. The page's size is
+    ``item_count``, which the loop reads through ``items_selector``."""
 
     key: str | None
     limit: int | None
-    item_count: Callable[[PayloadT], int]
     next_key: Callable[[PayloadT, Mapping[str, str]], OptionalNullable[str]]
     has_more: Callable[[PayloadT, Mapping[str, str]], OptionalNullable[bool]] | None = None
 
-    def advance(self, *, payload: PayloadT, headers: Mapping[str, str]) -> KeysetState[PayloadT] | None:
+    def advance(
+        self, *, payload: PayloadT, headers: Mapping[str, str], item_count: int
+    ) -> KeysetState[PayloadT] | None:
         """Return the next state, or ``None`` when a stop rule applies."""
-        count = self.item_count(payload)
-        if count == 0:
+        if item_count == 0:
             return None
         has_more = self.has_more(payload, headers) if self.has_more is not None else None
         if has_more is False:
             return None
-        if not isinstance(has_more, bool) and self.limit is not None and count < self.limit:
+        if not isinstance(has_more, bool) and self.limit is not None and item_count < self.limit:
             return None
         next_key = self.next_key(payload, headers)
         if next_key is None or isinstance(next_key, UnsetType) or next_key == self.key:
@@ -174,16 +183,20 @@ class KeysetState(Generic[PayloadT]):
 class LinkState(Generic[PayloadT]):
     """Moves by following the next-page link a response gives, in its body or its ``Link`` header.
 
-    Following a link replaces both ``url_template`` (with the link's path) and ``query_params`` (with its
-    query). The link is resolved against the URL this state renders and must keep its scheme, host and port;
-    a link to another origin raises instead of being followed. The walk stops when the next link is missing,
-    empty or ``UNSET``, or when it renders to the same URL as this state."""
+    ``path_params`` fill the placeholders of the first ``url_template``. Following a link replaces
+    ``url_template`` (with the link's path), ``path_params`` (with none, since that path is literal) and
+    ``query_params`` (with its query). The link is resolved against the URL this state renders and must keep
+    its scheme, host and port; a link to another origin raises instead of being followed. The walk stops when
+    the next link is missing, empty or ``UNSET``, or when it renders to the same URL as this state.
+    ``item_count`` is accepted so every state answers the same call, and is not read: a link, not a count,
+    decides the next page."""
 
     url_template: UrlTemplate
+    path_params: Sequence[Param[Any]] = ()
     query_params: Sequence[Param[Any]]
     next_link: Callable[[PayloadT, Mapping[str, str]], OptionalNullable[str]]
 
-    def advance(self, *, payload: PayloadT, headers: Mapping[str, str]) -> LinkState[PayloadT] | None:
+    def advance(self, *, payload: PayloadT, headers: Mapping[str, str], item_count: int) -> LinkState[PayloadT] | None:
         """Return the state for the page's next link, or ``None`` when the walk stops.
 
         Raises:
@@ -191,11 +204,11 @@ class LinkState(Generic[PayloadT]):
         next_link = self.next_link(payload, headers)
         if not next_link:
             return None
-        current_url = build_url(self.url_template, query_params=self.query_params)
+        current_url = build_url(self.url_template, path_params=self.path_params, query_params=self.query_params)
         next_template, link_params = _resolve_next_link(current_url, next_link)
         if build_url(next_template, query_params=link_params) == current_url:
             return None
-        return replace(self, url_template=next_template, query_params=link_params)
+        return replace(self, url_template=next_template, path_params=(), query_params=link_params)
 
 
 def _resolve_next_link(current_url: str, next_link: str) -> tuple[UrlTemplate, tuple[Param[Any], ...]]:
@@ -228,7 +241,7 @@ class _OffsetStateFactory(SubscriptOnly):
 
     __slots__ = ()
     factory_name = "offset_state"
-    spelling = "offset_state[PayloadT](…), e.g. offset_state[Products](offset=offset, limit=limit, item_count=…)"
+    spelling = "offset_state[PayloadT](…), e.g. offset_state[Products](offset=offset, limit=limit, has_more=…)"
 
     def __getitem__(self, declared: TypeForm[PayloadT]) -> type[OffsetState[PayloadT]]:
         return OffsetState
@@ -239,7 +252,7 @@ class _PageStateFactory(SubscriptOnly):
 
     __slots__ = ()
     factory_name = "page_state"
-    spelling = "page_state[PayloadT](…), e.g. page_state[Products](page=page, limit=limit, item_count=…)"
+    spelling = "page_state[PayloadT](…), e.g. page_state[Products](page=page, limit=limit, has_more=…)"
 
     def __getitem__(self, declared: TypeForm[PayloadT]) -> type[PageState[PayloadT]]:
         return PageState
@@ -294,7 +307,7 @@ def paginate(
     *,
     initial_state: OffsetState[PayloadT],
     fetch_page: Callable[[OffsetState[PayloadT]], ApiResult[PayloadT, E]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> Paginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -303,7 +316,7 @@ def paginate(
     *,
     initial_state: PageState[PayloadT],
     fetch_page: Callable[[PageState[PayloadT]], ApiResult[PayloadT, E]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> Paginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -312,7 +325,7 @@ def paginate(
     *,
     initial_state: CursorState[PayloadT],
     fetch_page: Callable[[CursorState[PayloadT]], ApiResult[PayloadT, E]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> Paginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -321,7 +334,7 @@ def paginate(
     *,
     initial_state: KeysetState[PayloadT],
     fetch_page: Callable[[KeysetState[PayloadT]], ApiResult[PayloadT, E]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> Paginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -330,7 +343,7 @@ def paginate(
     *,
     initial_state: LinkState[PayloadT],
     fetch_page: Callable[[LinkState[PayloadT]], ApiResult[PayloadT, E]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> Paginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -338,7 +351,7 @@ def paginate(
     *,
     initial_state: PagingState[PayloadT],
     fetch_page: Callable[[Any], ApiResult[PayloadT, E]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> Paginator[ApiResult[PayloadT, E], ItemT]:
     """Walk a paginated operation on the sync client, one ``execute`` per page.
 
@@ -346,12 +359,13 @@ def paginate(
         initial_state: The first page's state, built with a state factory such as
             ``offset_state[Products](…)``.
         fetch_page: Sends the request for the state it is given and returns that page's ``ApiResult``.
-        items_selector: Returns one payload's items, in order. Iterating items unwraps each page first, so it
-            raises ``ApiError`` at a failed page.
+        items_selector: Returns one payload's items, in order, as the field is modelled: ``None`` or ``UNSET`` is a
+            page with none. Applied to successful pages only: a ``Failure`` page yields no items.
 
     Returns:
-        A lazy paginator that can be iterated more than once. Iterating it yields items. ``iter_pages()``
-        yields each ``ApiResult``, stops after a ``Failure`` and never raises."""
+        A lazy paginator that can be iterated more than once. Iterating it yields the items of each successful
+        page and ends at a ``Failure`` without raising; ``iter_pages()`` yields each ``ApiResult``, the ``Failure``
+        last, and never raises. Only the parsed mode, ``unwrap``, raises ``ApiError`` at a failed page."""
 
     def fetch_pages() -> Iterator[ApiResult[PayloadT, E]]:
         state = initial_state
@@ -360,12 +374,19 @@ def paginate(
             yield result
             if not isinstance(result, Success):
                 return
-            next_state = state.advance(payload=result.payload, headers=result.headers)
+            next_state = state.advance(
+                payload=result.payload,
+                headers=result.headers,
+                item_count=len(items_or_empty(items_selector(result.payload))),
+            )
             if next_state is None:
                 return
             state = next_state
 
-    return Paginator(fetch_pages, lambda result: items_selector(unwrap(result)))
+    return Paginator(
+        fetch_pages,
+        lambda result: items_or_empty(items_selector(result.payload)) if isinstance(result, Success) else (),
+    )
 
 
 @overload
@@ -373,7 +394,7 @@ def async_paginate(
     *,
     initial_state: OffsetState[PayloadT],
     fetch_page: Callable[[OffsetState[PayloadT]], Awaitable[ApiResult[PayloadT, E]]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> AsyncPaginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -382,7 +403,7 @@ def async_paginate(
     *,
     initial_state: PageState[PayloadT],
     fetch_page: Callable[[PageState[PayloadT]], Awaitable[ApiResult[PayloadT, E]]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> AsyncPaginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -391,7 +412,7 @@ def async_paginate(
     *,
     initial_state: CursorState[PayloadT],
     fetch_page: Callable[[CursorState[PayloadT]], Awaitable[ApiResult[PayloadT, E]]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> AsyncPaginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -400,7 +421,7 @@ def async_paginate(
     *,
     initial_state: KeysetState[PayloadT],
     fetch_page: Callable[[KeysetState[PayloadT]], Awaitable[ApiResult[PayloadT, E]]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> AsyncPaginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -409,7 +430,7 @@ def async_paginate(
     *,
     initial_state: LinkState[PayloadT],
     fetch_page: Callable[[LinkState[PayloadT]], Awaitable[ApiResult[PayloadT, E]]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> AsyncPaginator[ApiResult[PayloadT, E], ItemT]: ...
 
 
@@ -417,7 +438,7 @@ def async_paginate(
     *,
     initial_state: PagingState[PayloadT],
     fetch_page: Callable[[Any], Awaitable[ApiResult[PayloadT, E]]],
-    items_selector: Callable[[PayloadT], Sequence[ItemT]],
+    items_selector: Callable[[PayloadT], OptionalNullable[Sequence[ItemT]]],
 ) -> AsyncPaginator[ApiResult[PayloadT, E], ItemT]:
     """Walk a paginated operation on the async client, one awaited ``execute`` per page.
 
@@ -428,8 +449,8 @@ def async_paginate(
             ``offset_state[Products](…)``.
         fetch_page: Sends the request for the state it is given and returns an awaitable of that page's
             ``ApiResult``.
-        items_selector: Returns one payload's items, in order. Iterating items unwraps each page first, so it
-            raises ``ApiError`` at a failed page.
+        items_selector: Returns one payload's items, in order, as the field is modelled: ``None`` or ``UNSET`` is a
+            page with none. Applied to successful pages only: a ``Failure`` page yields no items.
 
     Returns:
         A lazy async paginator that can be iterated more than once, with the same item and page views as the
@@ -442,9 +463,16 @@ def async_paginate(
             yield result
             if not isinstance(result, Success):
                 return
-            next_state = state.advance(payload=result.payload, headers=result.headers)
+            next_state = state.advance(
+                payload=result.payload,
+                headers=result.headers,
+                item_count=len(items_or_empty(items_selector(result.payload))),
+            )
             if next_state is None:
                 return
             state = next_state
 
-    return AsyncPaginator(fetch_pages, lambda result: items_selector(unwrap(result)))
+    return AsyncPaginator(
+        fetch_pages,
+        lambda result: items_or_empty(items_selector(result.payload)) if isinstance(result, Success) else (),
+    )

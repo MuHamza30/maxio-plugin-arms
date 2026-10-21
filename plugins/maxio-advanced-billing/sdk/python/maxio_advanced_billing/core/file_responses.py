@@ -21,7 +21,7 @@ from pathlib import Path
 from typing_extensions import Self
 
 from ._internal.content_disposition import content_disposition_filename, safe_filename
-from ._internal.urls import strip_query
+from ._internal.redaction import redact_url
 from .transport import AsyncHttpResponse, HttpResponse
 
 _CHUNK_SIZE = 65_536
@@ -63,10 +63,11 @@ class FileResponse:
         self._closed = False
         # Captured here rather than read off the response in __del__, which can run at interpreter
         # shutdown where a property call into the transport may find its objects already torn down --
-        # and a finalizer that raises reports nothing. Stripped of its query string because this
-        # string's only reader is the abandonment warning, and a query-placed api key would
-        # otherwise reach stderr and the logs with it.
-        self._url = strip_query(response.url)
+        # and a finalizer that raises reports nothing. Rendered through ``redact_url`` with its
+        # defaults, unknown query values ``REDACTED``, because this string's only reader is the
+        # abandonment warning, and a query-placed api key would otherwise reach stderr and the logs
+        # with it.
+        self._url = redact_url(response.url)
         self.headers: Mapping[str, str] = response.headers
         self.media_type = self.headers.get("content-type")
         length = self.headers.get("content-length")
@@ -214,10 +215,11 @@ class AsyncFileResponse:
         self._closed = False
         # Captured here rather than read off the response in __del__, which can run at interpreter
         # shutdown where a property call into the transport may find its objects already torn down --
-        # and a finalizer that raises reports nothing. Stripped of its query string because this
-        # string's only reader is the abandonment warning, and a query-placed api key would
-        # otherwise reach stderr and the logs with it.
-        self._url = strip_query(response.url)
+        # and a finalizer that raises reports nothing. Rendered through ``redact_url`` with its
+        # defaults, unknown query values ``REDACTED``, because this string's only reader is the
+        # abandonment warning, and a query-placed api key would otherwise reach stderr and the logs
+        # with it.
+        self._url = redact_url(response.url)
         self.headers: Mapping[str, str] = response.headers
         self.media_type = self.headers.get("content-type")
         length = self.headers.get("content-length")

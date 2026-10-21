@@ -58,6 +58,7 @@ from .core import (
     BasicAuthCredentials,
     BasicAuthCredentialsOrDict,
     BasicAuthScheme,
+    LoggingOptionsOrDict,
     RetryOptionsOrDict,
     no_auth,
     param,
@@ -74,17 +75,23 @@ class AsyncMaxioAdvancedBillingClient(BaseMaxioAdvancedBillingClient[AsyncRawCli
         timeout: float = DEFAULT_TIMEOUT,
         server_config: ServerConfigOrDict | None = None,
         retry_options: int | RetryOptionsOrDict | None = None,
+        logging_options: LoggingOptionsOrDict | None = None,
         custom_async_http_client: AsyncHttpClient | None = None,
         basic_auth: BasicAuthCredentialsOrDict | None = None,
     ) -> None:
         super().__init__(
-            environment=environment, timeout=timeout, server_config=server_config, retry_options=retry_options
+            environment=environment,
+            timeout=timeout,
+            server_config=server_config,
+            retry_options=retry_options,
+            logging_options=logging_options,
         )
         self._raw_client = AsyncRawClient(
             http_client=(
                 custom_async_http_client if custom_async_http_client is not None else AsyncHttpx2Client(timeout=timeout)
             ),
             retry_options=self._retry_options,
+            logging_options=self._logging_options,
             global_headers=[
                 param[str]("User-Agent", "MaxioAdvancedBillingClient/1.0 Python"),
                 param[str]("X-APIMatic-Lang", "Python"),

@@ -9,7 +9,7 @@ Accessor: `client.customers` · Source: `src/resources/customers.ts` · 7 operat
 ### createCustomer
 
 - **Provider rules (Maxio)**: If your app has a user id, send it as `reference`, call `readCustomerByReference` first and create only on a 404. On the duplicate-reference 422, read the existing customer back (L2). Notes: `knowledge/operations/customers.md#createcustomer`
-- **Signature**: `createCustomer(request: Customers.CreateCustomerRequestParams, options?: RequestOptions): ApiPromise<CustomerResponse, Customers.CreateCustomerError>`
+- **Signature**: `createCustomer(request?: Customers.CreateCustomerRequestParams, options?: RequestOptions): ApiPromise<CustomerResponse, Customers.CreateCustomerError>`
 - **Wire**: `POST /customers.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -69,7 +69,7 @@ Accessor: `client.customers` · Source: `src/resources/customers.ts` · 7 operat
 ### listCustomers
 
 - **Provider rules (Maxio)**: Never take the first result of a `q` search as the customer; use `readCustomerByReference` for an exact match. For incremental sync send `date_field` with a start and an end; an unrecognized `date_field` is ignored (R9). Notes: `knowledge/operations/customers.md#listcustomers`
-- **Signature**: `listCustomers(request: Customers.ListCustomersRequest, options?: RequestOptions): ApiPromise<CustomerResponse[], ApiError>`
+- **Signature**: `listCustomers(request?: Customers.ListCustomersRequest, options?: RequestOptions): ApiPromise<CustomerResponse[], ApiError>`
 - **Wire**: `GET /customers.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent

@@ -13,6 +13,12 @@ using MaxioAdvancedBilling.Requests.Events;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Event object records a discrete occurrence within your account, such as a payment, renewal, or subscription state change.
+/// <para>
+/// The key identifies which type of event occurred, and event_specific_data carries a payload whose shape depends on that key.
+/// </para>
+/// </summary>
 public sealed class Events
 {
     private readonly RawClient _rawClient;

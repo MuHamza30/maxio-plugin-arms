@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { bankAccountResponseSchema, type BankAccountResponse } from "../models/bank-account-response.js";
@@ -33,6 +34,11 @@ import {
 } from "../models/update-payment-profile-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Payment Profile object represents a stored payment method on a customer's account. For more
+ * information, see [Managing Payment
+ * Methods](https://docs.maxio.com/getting-started/maxio-platform-basics/advanced-billing-overview-and-resources/subscription-summary-tabs/managing-payment-methods).
+ */
 export class PaymentProfiles {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -216,7 +222,7 @@ export class PaymentProfiles {
    * credential that could not be obtained
    */
   createPaymentProfile(
-    request: PaymentProfiles.CreatePaymentProfileRequestParams,
+    request: PaymentProfiles.CreatePaymentProfileRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<PaymentProfileResponse, PaymentProfiles.CreatePaymentProfileError> {
     return this.#rawClient.execute(
@@ -390,7 +396,7 @@ export class PaymentProfiles {
    * credential that could not be obtained
    */
   listPaymentProfiles(
-    request: PaymentProfiles.ListPaymentProfilesRequest,
+    request: PaymentProfiles.ListPaymentProfilesRequest = {},
     options?: RequestOptions,
   ): ApiPromise<PaymentProfileResponse[], ApiError> {
     return this.#rawClient.execute(
@@ -727,9 +733,10 @@ export namespace PaymentProfiles {
   };
 
   export class ChangeSubscriptionDefaultPaymentProfileError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ChangeSubscriptionDefaultPaymentProfileError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -745,7 +752,7 @@ export namespace PaymentProfiles {
   };
 
   export class ChangeSubscriptionGroupDefaultPaymentProfileError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ChangeSubscriptionGroupDefaultPaymentProfileError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -763,9 +770,10 @@ export namespace PaymentProfiles {
   };
 
   export class CreatePaymentProfileError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreatePaymentProfileError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -793,9 +801,10 @@ export namespace PaymentProfiles {
   };
 
   export class DeleteUnusedPaymentProfileError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<DeleteUnusedPaymentProfileError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -832,7 +841,7 @@ export namespace PaymentProfiles {
   };
 
   export class ReadOneTimeTokenError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadOneTimeTokenError> = [
       { on: 404, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -845,7 +854,7 @@ export namespace PaymentProfiles {
   };
 
   export class ReadPaymentProfileError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadPaymentProfileError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -858,9 +867,10 @@ export namespace PaymentProfiles {
   };
 
   export class SendRequestUpdatePaymentEmailError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<SendRequestUpdatePaymentEmailError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -875,9 +885,10 @@ export namespace PaymentProfiles {
   };
 
   export class UpdatePaymentProfileError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorStringMapResponse1", ErrorStringMapResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorStringMapResponse1", ErrorStringMapResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdatePaymentProfileError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -896,9 +907,10 @@ export namespace PaymentProfiles {
   };
 
   export class VerifyBankAccountError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<VerifyBankAccountError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

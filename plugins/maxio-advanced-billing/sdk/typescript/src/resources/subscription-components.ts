@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -86,6 +87,12 @@ import {
 import { usageResponseSchema, type UsageResponse } from "../models/usage-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * Use the Subscription Components object to allocate, adjust, and report usage for the components
+ * attached to a subscription, including quantity-based, metered, and event-based components. For
+ * more information, see [Managing Components and
+ * Usage](https://docs.maxio.com/getting-started/maxio-platform-basics/advanced-billing-overview-and-resources/subscription-summary-tabs/managing-components-and-usage).
+ */
 export class SubscriptionComponents {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -801,7 +808,7 @@ export class SubscriptionComponents {
    * credential that could not be obtained
    */
   listSubscriptionComponentsForSite(
-    request: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest,
+    request: SubscriptionComponents.ListSubscriptionComponentsForSiteRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ListSubscriptionComponentsResponse, ApiError> {
     return this.#rawClient.execute(
@@ -1164,7 +1171,7 @@ export namespace SubscriptionComponents {
   };
 
   export class AllocateComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<AllocateComponentError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1178,9 +1185,10 @@ export namespace SubscriptionComponents {
   };
 
   export class AllocateComponentsError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<AllocateComponentsError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -1212,7 +1220,7 @@ export namespace SubscriptionComponents {
   };
 
   export class BulkUpdateSubscriptionComponentsPricePointsError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"componentPricePointError1", ComponentPricePointError1>>;
+    declare readonly payload: Declared<"componentPricePointError1", ComponentPricePointError1> | Undeclared;
 
     static readonly errors: ErrorDecoders<BulkUpdateSubscriptionComponentsPricePointsError> = [
       {
@@ -1241,7 +1249,7 @@ export namespace SubscriptionComponents {
   };
 
   export class CreateUsageError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateUsageError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -1266,10 +1274,10 @@ export namespace SubscriptionComponents {
   };
 
   export class DeletePrepaidUsageAllocationError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error404", undefined>
       | Declared<"subscriptionComponentAllocationError1", SubscriptionComponentAllocationError1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<DeletePrepaidUsageAllocationError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -1299,9 +1307,10 @@ export namespace SubscriptionComponents {
   };
 
   export class ListAllocationsError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"errorListResponse1", ErrorListResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"errorListResponse1", ErrorListResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ListAllocationsError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -1502,7 +1511,7 @@ export namespace SubscriptionComponents {
   };
 
   export class PreviewAllocationsError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"componentAllocationError1", ComponentAllocationError1>>;
+    declare readonly payload: Declared<"componentAllocationError1", ComponentAllocationError1> | Undeclared;
 
     static readonly errors: ErrorDecoders<PreviewAllocationsError> = [
       {
@@ -1524,7 +1533,7 @@ export namespace SubscriptionComponents {
   };
 
   export class ReadSubscriptionComponentError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadSubscriptionComponentError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -1554,10 +1563,10 @@ export namespace SubscriptionComponents {
   };
 
   export class UpdatePrepaidUsageAllocationExpirationDateError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error404", undefined>
       | Declared<"subscriptionComponentAllocationError1", SubscriptionComponentAllocationError1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdatePrepaidUsageAllocationExpirationDateError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

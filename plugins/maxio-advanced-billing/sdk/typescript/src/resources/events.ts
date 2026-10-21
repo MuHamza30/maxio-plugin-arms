@@ -11,6 +11,13 @@ import { eventResponseSchema, type EventResponse } from "../models/event-respons
 import { listEventsDateFieldSchema, type ListEventsDateField } from "../models/list-events-date-field.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Event object records a discrete occurrence within your account, such as a payment, renewal,
+ * or subscription state change.
+ *
+ * The key identifies which type of event occurred, and event_specific_data carries a payload whose
+ * shape depends on that key.
+ */
 export class Events {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -122,7 +129,7 @@ export class Events {
    * credential that could not be obtained
    */
   listEvents(
-    request: Events.ListEventsRequest,
+    request: Events.ListEventsRequest = {},
     options?: RequestOptions,
   ): ApiPromise<EventResponse[], ApiError> {
     return this.#rawClient.execute(
@@ -277,7 +284,7 @@ export class Events {
    * credential that could not be obtained
    */
   readEventsCount(
-    request: Events.ReadEventsCountRequest,
+    request: Events.ReadEventsCountRequest = {},
     options?: RequestOptions,
   ): ApiPromise<CountResponse, ApiError> {
     return this.#rawClient.execute(

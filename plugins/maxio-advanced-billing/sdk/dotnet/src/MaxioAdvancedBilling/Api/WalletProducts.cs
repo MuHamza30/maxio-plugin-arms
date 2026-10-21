@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.WalletProducts;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Wallet Product object is a billing product created specifically to denominate wallets and to price wallet purchases. A Wallet Product does not belong to a product family, and the Wallet Product behind a wallet cannot be changed after the wallet is created. For more information, see <see href="https://docs.maxio.com/billing/catalog/wallets/create-and-manage-wallet-products">Create and Manage Wallet Products</see>.
+/// </summary>
 public sealed class WalletProducts
 {
     private readonly RawClient _rawClient;

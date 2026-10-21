@@ -14,6 +14,12 @@ using MaxioAdvancedBilling.Requests.ProductPricePoints;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Product Price Point object defines a specific pricing configuration for a Product, including price, billing interval, and trial terms.
+/// <para>
+/// A single Product can have multiple price points, letting you offer different rates or terms for the same product without creating separate products. For more information, see <see href="https://docs.maxio.com/billing/catalog/plans/setting-up-plan-price-points">Setting Up Plan Price Points</see>.
+/// </para>
+/// </summary>
 public sealed class ProductPricePoints
 {
     private readonly RawClient _rawClient;

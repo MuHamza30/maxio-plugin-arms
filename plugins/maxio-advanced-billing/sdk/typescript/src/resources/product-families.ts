@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { basicDateFieldSchema, type BasicDateField } from "../models/basic-date-field.js";
@@ -20,6 +21,12 @@ import {
 import { productResponseSchema, type ProductResponse } from "../models/product-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * The Product Family object groups related Products together for organizational purposes, such as
+ * products belonging to a single line of business, each sharing a family-level handle and
+ * accounting code. For more information, see [Organize Product
+ * Families](https://docs.maxio.com/billing/catalog/plans/organize-product-families).
+ */
 export class ProductFamilies {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -51,7 +58,7 @@ export class ProductFamilies {
    * credential that could not be obtained
    */
   createProductFamily(
-    request: ProductFamilies.CreateProductFamilyRequestParams,
+    request: ProductFamilies.CreateProductFamilyRequestParams = {},
     options?: RequestOptions,
   ): ApiPromise<ProductFamilyResponse, ProductFamilies.CreateProductFamilyError> {
     return this.#rawClient.execute(
@@ -91,7 +98,7 @@ export class ProductFamilies {
    * credential that could not be obtained
    */
   listProductFamilies(
-    request: ProductFamilies.ListProductFamiliesRequest,
+    request: ProductFamilies.ListProductFamiliesRequest = {},
     options?: RequestOptions,
   ): ApiPromise<ProductFamilyResponse[], ApiError> {
     return this.#rawClient.execute(
@@ -229,7 +236,7 @@ export namespace ProductFamilies {
   };
 
   export class CreateProductFamilyError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"errorListResponse1", ErrorListResponse1>>;
+    declare readonly payload: Declared<"errorListResponse1", ErrorListResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateProductFamilyError> = [
       { on: 422, kind: "errorListResponse1", decode: { kind: "json", schema: errorListResponse1Schema } },
@@ -332,7 +339,7 @@ export namespace ProductFamilies {
   };
 
   export class ListProductsForProductFamilyError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", string>>;
+    declare readonly payload: Declared<"error404", string> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListProductsForProductFamilyError> = [
       { on: 404, kind: "error404", decode: { kind: "json", schema: s.string() } },

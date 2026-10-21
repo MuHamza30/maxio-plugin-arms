@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import {
@@ -16,6 +17,12 @@ import {
 } from "../models/wallet-grant-result-response.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * Wallet Adjustments post a signed correction against a specific grant, or against an overdraft, on
+ * a wallet's ledger. Adjustments are intended for support and operations corrections, and each
+ * adjustment requires a reason that is recorded on the ledger. For more information, see
+ * [Understand Wallets](https://docs.maxio.com/billing/catalog/wallets/understand-wallets).
+ */
 export class WalletAdjustments {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -101,12 +108,12 @@ export namespace WalletAdjustments {
   };
 
   export class CreateWalletAdjustmentError extends ApiError {
-    declare readonly payload: ErrorPayload<
+    declare readonly payload:
       | Declared<"error403", undefined>
       | Declared<"walletErrorResponse1", WalletErrorResponse1>
       | Declared<"walletErrorResponse12", WalletErrorResponse1>
       | Declared<"walletErrorResponse13", WalletErrorResponse1>
-    >;
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateWalletAdjustmentError> = [
       { on: 403, kind: "error403", decode: { kind: "empty" } },

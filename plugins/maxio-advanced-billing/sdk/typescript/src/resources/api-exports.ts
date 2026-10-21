@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { batchJobResponseSchema, type BatchJobResponse } from "../models/batch-job-response.js";
@@ -12,6 +13,12 @@ import { singleErrorResponse1Schema, type SingleErrorResponse1 } from "../models
 import { subscriptionSchema, type Subscription } from "../models/subscription.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * API Exports allow you to generate and download bulk exports of subscriptions, invoices, and
+ * proforma invoices as asynchronous batch jobs, useful for reporting or migrating data outside the
+ * standard paginated list endpoints. For more information, see [Billing Export Fields
+ * Reference](https://docs.maxio.com/insights/data-export/field-references/billing-export-fields-reference#invoice-line-items-fields).
+ */
 export class ApiExports {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -377,9 +384,10 @@ export class ApiExports {
 
 export namespace ApiExports {
   export class ExportInvoicesError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"singleErrorResponse1", SingleErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"singleErrorResponse1", SingleErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ExportInvoicesError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -388,9 +396,10 @@ export namespace ApiExports {
   }
 
   export class ExportProformaInvoicesError extends ApiError {
-    declare readonly payload: ErrorPayload<
-      Declared<"error404", undefined> | Declared<"singleErrorResponse1", SingleErrorResponse1>
-    >;
+    declare readonly payload:
+      | Declared<"error404", undefined>
+      | Declared<"singleErrorResponse1", SingleErrorResponse1>
+      | Undeclared;
 
     static readonly errors: ErrorDecoders<ExportProformaInvoicesError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -399,7 +408,7 @@ export namespace ApiExports {
   }
 
   export class ExportSubscriptionsError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"singleErrorResponse1", SingleErrorResponse1>>;
+    declare readonly payload: Declared<"singleErrorResponse1", SingleErrorResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<ExportSubscriptionsError> = [
       { on: 409, kind: "singleErrorResponse1", decode: { kind: "json", schema: singleErrorResponse1Schema } },
@@ -429,7 +438,7 @@ export namespace ApiExports {
   };
 
   export class ListExportedInvoicesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListExportedInvoicesError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -459,7 +468,7 @@ export namespace ApiExports {
   };
 
   export class ListExportedProformaInvoicesError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListExportedProformaInvoicesError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -489,7 +498,7 @@ export namespace ApiExports {
   };
 
   export class ListExportedSubscriptionsError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ListExportedSubscriptionsError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -502,7 +511,7 @@ export namespace ApiExports {
   };
 
   export class ReadInvoicesExportError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadInvoicesExportError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -515,7 +524,7 @@ export namespace ApiExports {
   };
 
   export class ReadProformaInvoicesExportError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadProformaInvoicesExportError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -528,7 +537,7 @@ export namespace ApiExports {
   };
 
   export class ReadSubscriptionsExportError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<ReadSubscriptionsExportError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },

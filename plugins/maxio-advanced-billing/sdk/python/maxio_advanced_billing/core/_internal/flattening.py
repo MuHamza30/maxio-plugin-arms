@@ -2,9 +2,8 @@
 
 A parameter's value can be a scalar, a model, a mapping, or a collection of any of those, and how a
 *collection* explodes into keys depends on the parameter's :class:`SerializationFormat`. This module
-does that flattening once, for both destinations that need it: query strings
-(``urls.encode_query`` encodes the pairs) and form bodies
-(:func:`to_fields` collects them into a mapping).
+does that flattening once; both destinations that carry pairs -- a query string and a form body --
+then reach the wire through ``urls.urlencode_params``.
 
 Each parameter arrives carrying the adapter for its declared type, so the wire *format* is decided
 there rather than here: :func:`wire_value` dumps through that adapter -- the same step the path and
@@ -46,40 +45,6 @@ def flatten(params: Sequence[Param[Any]] | None) -> Pairs:
     for param in params or ():
         pairs.extend(_flatten_value(key=param.key, value=wire_value(param), fmt=param.serialization_format))
     return pairs
-
-
-def to_fields(params: Sequence[Param[Any]]) -> dict[str, str | list[str]]:
-    """Flatten ``params`` into a mapping, collecting repeated keys into a list.
-
-    This is the shape a form body takes: unlike a query string, which can repeat a key, a form
-    mapping needs the repeats gathered under one entry.
-
-    Every value is text or a list of text, never anything richer: :func:`flatten` has already
-    reduced each parameter to ``(key, value)`` pairs of ``str``, so the only structure left to
-    add here is the list a repeated key collects into.
-
-    Args:
-        params: The parameters to flatten into fields.
-
-    Returns:
-        Each key mapped to its text, or to the list of texts it collected.
-
-    Raises:
-        ValueError: If a parameter's value does not match its declared type."""
-    fields: dict[str, str | list[str]] = {}
-
-    for key, value in flatten(params):
-        if key not in fields:
-            fields[key] = value
-            continue
-
-        existing = fields[key]
-        if isinstance(existing, list):
-            existing.append(value)
-        else:
-            fields[key] = [existing, value]
-
-    return fields
 
 
 def _flatten_value(*, key: str, value: object, fmt: SerializationFormat) -> Pairs:

@@ -15,6 +15,9 @@ using MaxioAdvancedBilling.Requests.PaymentProfiles;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Payment Profile object represents a stored payment method on a customer's account. For more information, see <see href="https://docs.maxio.com/getting-started/maxio-platform-basics/advanced-billing-overview-and-resources/subscription-summary-tabs/managing-payment-methods">Managing Payment Methods</see>.
+/// </summary>
 public sealed class PaymentProfiles
 {
     private readonly RawClient _rawClient;

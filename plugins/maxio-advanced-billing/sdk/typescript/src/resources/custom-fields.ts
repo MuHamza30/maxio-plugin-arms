@@ -1,8 +1,9 @@
 import type { AuthSchemes } from "../auth-schemes.js";
-import { ApiError, type Declared, type ErrorDecoders, type ErrorPayload } from "../core/api-error.js";
+import { ApiError, type Declared, type Undeclared } from "../core/api-error.js";
 import type { ApiPromise } from "../core/api-promise.js";
 import type { RequestOptions } from "../core/api-request.js";
 import type { RawClient } from "../core/raw-client.js";
+import type { ErrorDecoders } from "../core/response-decoder.js";
 import { uuid } from "../core/uuid.js";
 import * as s from "../core/validation/index.js";
 import { basicDateFieldSchema, type BasicDateField } from "../models/basic-date-field.js";
@@ -34,6 +35,12 @@ import {
 } from "../models/update-metafields-request.js";
 import type { Servers } from "../servers.js";
 
+/**
+ * Custom Fields let you define Metafields for a resource type and manage the Metadata values
+ * attached to individual records, so you can capture and store additional data beyond built-in
+ * system fields. For more information, see [Understand Custom
+ * Fields](https://docs.maxio.com/configuration/advanced-billing/custom-fields/understand-custom-fields).
+ */
 export class CustomFields {
   readonly #rawClient: RawClient;
   readonly #servers: Servers;
@@ -525,7 +532,7 @@ export namespace CustomFields {
   };
 
   export class CreateMetadataError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"singleErrorResponse1", SingleErrorResponse1>>;
+    declare readonly payload: Declared<"singleErrorResponse1", SingleErrorResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateMetadataError> = [
       { on: 422, kind: "singleErrorResponse1", decode: { kind: "json", schema: singleErrorResponse1Schema } },
@@ -539,7 +546,7 @@ export namespace CustomFields {
   };
 
   export class CreateMetafieldsError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"singleErrorResponse1", SingleErrorResponse1>>;
+    declare readonly payload: Declared<"singleErrorResponse1", SingleErrorResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<CreateMetafieldsError> = [
       { on: 422, kind: "singleErrorResponse1", decode: { kind: "json", schema: singleErrorResponse1Schema } },
@@ -563,7 +570,7 @@ export namespace CustomFields {
   };
 
   export class DeleteMetadataError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<DeleteMetadataError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -578,7 +585,7 @@ export namespace CustomFields {
   };
 
   export class DeleteMetafieldError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"error404", undefined>>;
+    declare readonly payload: Declared<"error404", undefined> | Undeclared;
 
     static readonly errors: ErrorDecoders<DeleteMetafieldError> = [
       { on: 404, kind: "error404", decode: { kind: "empty" } },
@@ -709,7 +716,7 @@ export namespace CustomFields {
   };
 
   export class UpdateMetadataError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"singleErrorResponse1", SingleErrorResponse1>>;
+    declare readonly payload: Declared<"singleErrorResponse1", SingleErrorResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateMetadataError> = [
       { on: 422, kind: "singleErrorResponse1", decode: { kind: "json", schema: singleErrorResponse1Schema } },
@@ -723,7 +730,7 @@ export namespace CustomFields {
   };
 
   export class UpdateMetafieldError extends ApiError {
-    declare readonly payload: ErrorPayload<Declared<"singleErrorResponse1", SingleErrorResponse1>>;
+    declare readonly payload: Declared<"singleErrorResponse1", SingleErrorResponse1> | Undeclared;
 
     static readonly errors: ErrorDecoders<UpdateMetafieldError> = [
       { on: 422, kind: "singleErrorResponse1", decode: { kind: "json", schema: singleErrorResponse1Schema } },

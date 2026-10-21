@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import random
 from collections.abc import Mapping
+from collections.abc import Set as AbstractSet
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -30,7 +31,9 @@ from .transport import HttpMethod
 # field it lands on. A value out of range reaching the loop is not a rejected call but a malformed
 # one: a negative ``max_retries`` empties ``range(max_retries + 1)``, so ``execute`` sends nothing at
 # all. The four curve bounds are the client's alone and are aliased for uniformity;
-# ``status_codes_to_retry`` has no alias because it has no bound to single-source.
+# ``status_codes_to_retry`` has no alias because it has no bound to single-source -- but it shares a
+# *type* the same way: ``AbstractSet[int]`` at both boundaries, stored by pydantic as a ``frozenset``,
+# so the copy lands a ``frozenset`` on a field that already holds one.
 MaxRetries: TypeAlias = Annotated[int, Field(ge=0)]
 InitialDelay: TypeAlias = Annotated[float, Field(gt=0)]
 BackoffFactor: TypeAlias = Annotated[float, Field(ge=1)]
@@ -43,9 +46,8 @@ class RetryOptions(BaseModel):
 
     Caller input, so its constraints are declared rather than hand-written, exactly as they are on
     :class:`~.request_options.RequestOptions`. The field counts *retries*, not attempts, so
-    ``max_retries=0`` disables retrying -- the spelling the C# SDK's ``MaxRetries`` takes, and the
-    one Stainless, Fern and APIMatic v1 all use, so a count reads the same wherever a caller met it
-    before. The loop adds the initial attempt.
+    ``max_retries=0`` disables retrying -- the spelling Stainless, Fern and APIMatic v1 all use, so a
+    count reads the same wherever a caller met it before. The loop adds the initial attempt.
 
     Retries are counted rather than time budgeted. A wall-clock budget makes the elapsed time
     predictable and the attempt count arbitrary; counting retries makes the worst case
@@ -54,9 +56,8 @@ class RetryOptions(BaseModel):
     One status set under one method gate, and the gate covers a request that produced no response
     too. A 5xx or a 408 says the server may have processed the request; a dropped connection leaves
     that unknown; and a 429, though a refusal, is gated the same way rather than given a set of its
-    own -- the shape the C# SDK's ``RetryOptions`` takes, so one policy reads the same in both.
-    Nothing is repeated for a method outside ``http_methods_to_retry``; a caller whose API honors the
-    ``Idempotency-Key`` this SDK already sends on every non-GET declares that by adding ``POST``."""
+    own. Nothing is repeated for a method outside ``http_methods_to_retry``; a caller whose API honors
+    the ``Idempotency-Key`` this SDK already sends on every non-GET declares that by adding ``POST``."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -75,10 +76,10 @@ class RetryOptions(BaseModel):
     max_jitter: MaxJitter = 0.5
     """Widest random addition to one wait, in seconds. ``0`` makes the curve exact."""
 
-    status_codes_to_retry: frozenset[int] = frozenset({408, 429, 500, 502, 503, 504})
+    status_codes_to_retry: AbstractSet[int] = frozenset({408, 429, 500, 502, 503, 504})
     """Statuses that qualify for a retry -- for a method in ``http_methods_to_retry``, never otherwise."""
 
-    http_methods_to_retry: frozenset[HttpMethod] = frozenset({"GET", "HEAD", "PUT", "OPTIONS"})
+    http_methods_to_retry: AbstractSet[HttpMethod] = frozenset({"GET", "HEAD", "PUT", "OPTIONS"})
     """Methods safe to repeat blind. Add ``POST`` when the API honours our ``Idempotency-Key``."""
 
     @classmethod
@@ -86,7 +87,7 @@ class RetryOptions(BaseModel):
         """Return ``retry`` as a :class:`RetryOptions`, whichever spelling it arrived in.
 
         An instance passes straight through -- it validated itself when it was built -- and ``None``
-        yields ``RetryOptions()``, because **retrying is on by default** (C# parity): a caller who
+        yields ``RetryOptions()``, because **retrying is on by default**: a caller who
         configured nothing gets the tuned policy, three retries on the idempotent methods. Turning it
         off is ``0`` (or ``{"max_retries": 0}``); asking with a count alone is a bare ``int``, which is
         ``max_retries`` and leaves every other field at its default. It is handed to that field
@@ -126,8 +127,8 @@ class RetryOptionsDict(TypedDict):
     backoff_factor: NotRequired[float]
     max_delay: NotRequired[float]
     max_jitter: NotRequired[float]
-    status_codes_to_retry: NotRequired[frozenset[int]]
-    http_methods_to_retry: NotRequired[frozenset[HttpMethod]]
+    status_codes_to_retry: NotRequired[AbstractSet[int]]
+    http_methods_to_retry: NotRequired[AbstractSet[HttpMethod]]
 
 
 RetryOptionsOrDict: TypeAlias = RetryOptions | RetryOptionsDict
@@ -137,10 +138,14 @@ RetryOptionsOrDict: TypeAlias = RetryOptions | RetryOptionsDict
 def backoff_seconds(retries_taken: int, retry_options: RetryOptions) -> float:
     """The curve's wait after ``retries_taken`` retries, plus a random addition up to ``max_jitter``.
 
-    The exponential curve is the floor and the jitter sits on top of it, which is the shape the C#
-    SDK's ``MaxJitter`` takes -- so one policy produces the same waits in both. ``max_delay`` bounds
-    the **sum**, so a wait never exceeds it and the jitter is what the cap swallows first: every
-    attempt whose curve has reached the ceiling waits exactly ``max_delay``.
+    The exponential curve is the floor and the jitter sits on top of it. ``max_delay`` bounds the
+    **sum**, so a wait never exceeds it and the jitter is what the cap swallows first: every attempt
+    whose curve has reached the ceiling waits exactly ``max_delay``.
+
+    That includes a curve too large for a float. ``float ** int`` raises ``OverflowError`` rather
+    than answering infinity -- a factor of 2 does from the 1024th retry -- and the loop asks for this
+    wait while it still holds the discarded response, outside its close guard. So this never raises:
+    an overflow is read as past the ceiling.
 
     Args:
         retries_taken: How many retries this call has already made; ``0`` for the first one.
@@ -148,18 +153,21 @@ def backoff_seconds(retries_taken: int, retry_options: RetryOptions) -> float:
 
     Returns:
         Seconds to wait: the curve plus ``0.0`` to ``max_jitter``, capped at ``max_delay``."""
-    backoff_sec = retry_options.initial_delay * retry_options.backoff_factor**retries_taken
+    try:
+        backoff_sec = retry_options.initial_delay * retry_options.backoff_factor**retries_taken
+    except OverflowError:
+        backoff_sec = retry_options.max_delay
     return min(backoff_sec + random.uniform(0.0, retry_options.max_jitter), retry_options.max_delay)
 
 
 def is_retryable_body(body: RequestBody | None) -> bool:
     """Whether ``body`` can be sent again byte for byte.
 
-    ``None``, JSON, form and text bodies always can: each holds a value already reduced to bytes or
-    to strings, and re-encoding it is deterministic. The two that carry caller-held content -- a raw
-    binary body, and a multipart body's file parts -- are each asked about their content.
+    ``None``, JSON, form and text bodies always can: each already holds its wire bytes. The two that
+    carry caller-held content -- a raw binary body, and a multipart body's file parts -- are each
+    asked about their content.
 
-    A multipart body's text parts are not consulted: they hold strings. One non-retryable file part
+    A multipart body's text parts are not consulted: they hold their bytes. One non-retryable file part
     disqualifies the whole body, because the parts are encoded as a single stream.
 
     Args:

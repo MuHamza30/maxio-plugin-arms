@@ -60,7 +60,7 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 ### createSubscription
 
 - **Provider rules (Maxio)**: Find the customer (`readCustomerByReference`) and any plan it holds (L2); name it once (D1). Send `payment_collection_method` (R14), `reference`, a body-root `uniqueness_token` kept on resends (R12). Timeout, 409: unknown (R11). Notes: `knowledge/operations/subscriptions.md#createsubscription`
-- **Signature**: `createSubscription(request: Subscriptions.CreateSubscriptionRequestParams, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.CreateSubscriptionError>`
+- **Signature**: `createSubscription(request?: Subscriptions.CreateSubscriptionRequestParams, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.CreateSubscriptionError>`
 - **Wire**: `POST /subscriptions.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all
@@ -84,7 +84,7 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 ### findSubscription
 
 - **Provider rules (Maxio)**: A 404 is "not there", not proof that a create failed: after a create with an unknown outcome follow R11. That create gets a new `uniqueness_token` only after a corrected 422, or after a 409 once 120 s pass with nothing found. Notes: `knowledge/operations/subscriptions.md#findsubscription`
-- **Signature**: `findSubscription(request: Subscriptions.FindSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.FindSubscriptionError>`
+- **Signature**: `findSubscription(request?: Subscriptions.FindSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse, Subscriptions.FindSubscriptionError>`
 - **Wire**: `GET /subscriptions/lookup.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -105,7 +105,7 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 ### listSubscriptions
 
 - **Provider rules (Maxio)**: Page until a page comes back empty (R8). The `state` filter cannot name `soft_failure`: to list everyone with access, leave it out and classify each row's `state` (R9, R16). Filter `product` by id or exact name, never a handle. Notes: `knowledge/operations/subscriptions.md#listsubscriptions`
-- **Signature**: `listSubscriptions(request: Subscriptions.ListSubscriptionsRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse[], ApiError>`
+- **Signature**: `listSubscriptions(request?: Subscriptions.ListSubscriptionsRequest, options?: RequestOptions): ApiPromise<SubscriptionResponse[], ApiError>`
 - **Wire**: `GET /subscriptions.json`
 - **Auth**: `basicAuth`
 - **Request body**: none — no `Content-Type` header is sent
@@ -182,7 +182,7 @@ Accessor: `client.subscriptions` · Source: `src/resources/subscriptions.ts` · 
 ### previewSubscription
 
 - **Provider notes (Maxio)**: `knowledge/operations/subscriptions.md#previewsubscription`
-- **Signature**: `previewSubscription(request: Subscriptions.PreviewSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionPreviewResponse, ApiError>`
+- **Signature**: `previewSubscription(request?: Subscriptions.PreviewSubscriptionRequest, options?: RequestOptions): ApiPromise<SubscriptionPreviewResponse, ApiError>`
 - **Wire**: `POST /subscriptions/preview.json`
 - **Auth**: `basicAuth`
 - **Request body**: `application/json` — the `body` field. **Optional**: omit it and the request carries no body and no `Content-Type` header at all

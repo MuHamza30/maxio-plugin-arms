@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.SubscriptionGroupInvoiceAccount;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// The Subscription Group Invoice Account object lets you manage prepayments and service credits for the shared invoice account of a Subscription Group, applying at the group level rather than to an individual subscription.
+/// </summary>
 public sealed class SubscriptionGroupInvoiceAccount
 {
     private readonly RawClient _rawClient;

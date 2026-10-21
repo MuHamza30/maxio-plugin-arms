@@ -56,7 +56,7 @@ Do not vendor its `src/` into your project, point `tsconfig` `paths` at a throwa
 
 ## Imports — one entry, and only one
 
-**Every** public name is re-exported from the package root — the client, `ClientOptions`, `ServerEnvironment`, 841 model types with the schema value beside each, the error classes, and the runtime types (`ApiPromise`, `ApiResult`, `RequestOptions`, `RetryOptions`, `RequestRetryOptions`, `ErrorPayload`, `Declared`, `Schema`, `EnumSchema`, `Encoded`).
+**Every** public name is re-exported from the package root — the client, `ClientOptions`, `ServerEnvironment`, 841 model types with the schema value beside each, the error classes, and the runtime types (`ApiPromise`, `Pageable`, `PageableApiResult`, `ApiResult`, `RequestOptions`, `RetryOptions`, `RequestRetryOptions`, `Declared`, `Schema`, `EnumSchema`, `Encoded`).
 
 ```ts
 import { MaxioAdvancedBillingClient, ServerEnvironment, ApiError, MaxioAdvancedBillingError } from "maxio-advanced-billing";

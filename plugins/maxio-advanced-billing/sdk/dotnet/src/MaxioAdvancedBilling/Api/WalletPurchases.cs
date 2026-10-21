@@ -13,6 +13,9 @@ using MaxioAdvancedBilling.Requests.WalletPurchases;
 
 namespace MaxioAdvancedBilling.Api;
 
+/// <summary>
+/// Wallet Purchases let a subscription buy additional prepaid units for a wallet, charged according to the subscription's collection method. A purchase can be previewed to quote the price before anything is charged. For more information, see <see href="https://docs.maxio.com/billing/catalog/wallets/understand-wallets">Understand Wallets</see>.
+/// </summary>
 public sealed class WalletPurchases
 {
     private readonly RawClient _rawClient;

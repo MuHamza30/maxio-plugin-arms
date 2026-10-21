@@ -129,6 +129,45 @@ This SDK ships a generated **SDK map** -- [`sdk-map.md`](sdk-map.md) -- a determ
 
 Consult the map before scanning or grepping the source: it answers call-level contract questions by lookup, and for anything it does not carry -- model shapes, enum values, an endpoint's route or behavioural prose -- it names the one source file to read. How to read the map itself, including the SDK-wide defaults its rows rely on, is stated at the top of [`sdk-map.md`](sdk-map.md).
 
+## Logging
+
+The SDK logs every HTTP exchange through Python's standard `logging` module, under the `maxio_advanced_billing` logger, and configures nothing itself: with no logging set up, nothing is printed unless `MAXIO_ADVANCED_BILLING_LOG` is set. Turn it on as for any library:
+
+```python
+import logging
+
+logging.basicConfig()  # your application's handler; the root stays at WARNING
+logging.getLogger("maxio_advanced_billing").setLevel(logging.INFO)  # the SDK's lines; DEBUG adds the dumps that logging_options turns on
+```
+
+Or set one environment variable before the process starts, for a run you cannot edit: `MAXIO_ADVANCED_BILLING_LOG=info` writes the request and response lines, `MAXIO_ADVANCED_BILLING_LOG=debug` adds the request headers, the request body and the response headers. If your application has configured logging, its handlers and format are used; otherwise the SDK writes to stderr.
+
+Choose the detail with `logging_options`, a `LoggingOptions` from `maxio_advanced_billing.core`:
+
+```python
+from maxio_advanced_billing import MaxioAdvancedBillingClient
+from maxio_advanced_billing.core import LoggingOptions
+
+client = MaxioAdvancedBillingClient(
+    logging_options=LoggingOptions(log_request_headers=True, log_response_headers=True, log_request_body=True)
+)
+```
+
+A plain dict with the same keys is accepted too, as for every model-typed argument (see [Quick Start](#quick-start)): `logging_options={"log_request_headers": True}`.
+
+| Option | Default | Effect |
+| --- | --- | --- |
+| `log_request_headers` | `False` | Log the sent headers at DEBUG, masked. |
+| `log_response_headers` | `False` | Log the received headers at DEBUG, masked. |
+| `log_request_body` | `False` | Log the request body at DEBUG: its text when in memory, a description when streamed. |
+| `body_size_limit` | `32768` | Bytes of a logged body kept before it is cut. |
+| `redaction_placeholder` | `"REDACTED"` | What a hidden value prints as. |
+| `unmask_headers` | none | Header names to show although they are not on the safe list. |
+| `mask_headers` | none | Header names to hide although they are on the safe list. |
+| `mask_keys` | 11 credential names | Query and form keys whose values are always hidden; naming a set replaces the default. |
+
+A single call can be quietened with `request_options={"log_level": logging.WARNING}`: records below that level are not written for that call. It never turns on a record the client's options leave off. Header, query and form values print `REDACTED` unless known safe; a JSON body is printed as sent, so enable `log_request_body` only where its content may be logged; a response body is never logged. The levels and every field are under **Logging** in the SDK map.
+
 ## Best Practices
 
 > [!TIP]
